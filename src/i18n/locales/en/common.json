@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "title": "Eduard Gagite — Backend Engineer (Go)",
+    "description": "Personal site: info, contacts, and educational materials."
+  },
+  "materials": {
+    "note": "I create educational materials for backend engineers — concise cheatsheets and notes.",
+    "cta": "View materials",
+    "topicsShort": "Go · Kafka · gRPC · CI/CD"
+  },
+  "nav": {
+    "home": "Home",
+    "materials": "Materials"
+  },
+  "lang": {
+    "ru": "Рус",
+    "en": "Eng"
+  },
+  "hero": {
+    "name": "Eduard Gagite",
+    "role": "Backend Engineer (Go)",
+    "aboutTitle": "About",
+    "contactsTitle": "Contacts",
+    "telegram": "Telegram",
+    "github": "GitHub",
+    "email": "Email",
+    "bio": "I am a backend engineer focused on building high‑load, scalable services in Go. I design distributed systems with emphasis on efficiency, observability, and strong engineering practices.\n\nI build server applications, integrations and APIs, work with event‑driven architectures (Kafka, RabbitMQ), and rely on Docker and CI/CD. I prefer clean, structured code based on SOLID principles and Go industry best practices.\n\nI work with microservices, asynchronous queues, real‑time communication (gRPC, WebSocket), and optimize performance and infrastructure.\n\nI continuously learn and explore tools and patterns, and develop side projects. I studied at Sberbank's \"School 21\" — intensive hands‑on training, algorithms, systems thinking, and teamwork."
+  },
+  "promo": {
+    "title": "I create educational materials for backend engineers",
+    "cta": "Go to materials",
+    "snippetTitle": "Topics"
+  },
+  "footer": {
+    "copyright": "© {{year}} Eduard Gagite"
+  }
+}
+
+
