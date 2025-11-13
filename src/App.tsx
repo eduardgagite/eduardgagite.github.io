@@ -9,7 +9,7 @@ export function App() {
     <BrowserRouter>
       <div className="min-h-dvh h-dvh flex flex-col">
         <Header />
-        <main className="flex-1 overflow-auto lg:overflow-hidden">
+        <main className="flex-1 overflow-hidden">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/materials" element={<Materials />} />
