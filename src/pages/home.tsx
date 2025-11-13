@@ -73,7 +73,7 @@ export function Home() {
  */`}
             </pre>
             <pre className="mt-2 font-mono text-[clamp(13px,1.05vw,16px)] leading-6 whitespace-pre-wrap text-white/90 flex-1">
-{t('hero.bio')}
+              {renderHighlightedBio(t('hero.bio') as string, isRu)}
             </pre>
             <div className="mt-2">
               <div className="h-px w-full bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-60" />
@@ -92,6 +92,31 @@ export function Home() {
       </div>
     </section>
   );
+}
+
+const TECH_TOKENS_RU = ['Go', 'Kafka', 'RabbitMQ', 'Docker', 'CI/CD', 'gRPC', 'WebSocket'];
+const TECH_TOKENS_EN = ['Go', 'Kafka', 'RabbitMQ', 'Docker', 'CI/CD', 'gRPC', 'WebSocket'];
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function renderHighlightedBio(text: string, isRu: boolean) {
+  if (!text) return null;
+  const tokens = isRu ? TECH_TOKENS_RU : TECH_TOKENS_EN;
+  const pattern = new RegExp(`(${tokens.map(escapeRegex).join('|')})`, 'g');
+  const parts = text.split(pattern);
+
+  return parts.map((part, index) => {
+    if (tokens.includes(part)) {
+      return (
+        <span key={`tech-${index}`} className="text-emerald-300">
+          {part}
+        </span>
+      );
+    }
+    return part;
+  });
 }
 
 
