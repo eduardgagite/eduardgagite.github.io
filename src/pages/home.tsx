@@ -14,13 +14,13 @@ export function Home() {
   const githubHref = 'https://github.com/eduardgagite';
 
   return (
-    <section className="relative h-full w-full overflow-hidden">
+    <section className="relative h-full w-full overflow-auto lg:overflow-hidden">
       <NetworkBackground density="medium" color="#e9eef4" interactive />
 
-      <div className="relative mx-auto max-w-7xl h-full px-4 py-6 grid gap-8 items-stretch lg:grid-cols-[360px,1fr]">
+      <div className="relative mx-auto max-w-7xl h-full px-4 py-4 sm:py-6 grid gap-6 sm:gap-8 items-stretch lg:grid-cols-[360px,1fr]">
         {/* Left column: avatar + name + role + contacts */}
         <aside className="flex flex-col items-start self-center">
-          <div className="relative w-full max-w-[360px]">
+          <div className="relative w-full max-w-full sm:max-w-[320px] lg:max-w-[360px] mx-auto">
             <div className="absolute -inset-1 rounded-xl bg-gradient-to-br from-primary/40 to-white/10 blur opacity-60" aria-hidden />
             <div className="relative rounded-xl border border-white/10 bg-white/[0.03] p-4">
               <div className="aspect-square overflow-hidden rounded-md ring-1 ring-white/10">
@@ -59,14 +59,14 @@ export function Home() {
         </aside>
 
         {/* Right column: "About me" in code-like window */}
-        <div className="relative rounded-xl border border-white/10 bg-white/[0.03] shadow-lg flex flex-col min-h-0 h-full">
-          <div className="flex items-center gap-1.5 p-3 border-b border-white/10">
+        <div className="relative rounded-xl border border-white/10 bg-white/[0.03] shadow-lg flex flex-col min-h-0 lg:h-full">
+          <div className="flex items-center gap-1.5 p-3 sm:p-3 border-b border-white/10">
             <span className="size-2.5 rounded-full bg-red-400/70" />
             <span className="size-2.5 rounded-full bg-yellow-300/70" />
             <span className="size-2.5 rounded-full bg-green-400/70" />
             <span className="ml-3 text-xs opacity-70">about.ts</span>
           </div>
-          <div className="relative p-4 overflow-hidden flex-1 flex flex-col">
+          <div className="relative p-3 sm:p-4 overflow-hidden flex-1 flex flex-col">
             <pre className="font-mono text-[clamp(13px,1.05vw,16px)] leading-6 whitespace-pre-wrap">
 {`/**
  * ${isRu ? 'Обо мне' : 'About me'}
@@ -77,7 +77,7 @@ export function Home() {
             </pre>
             <div className="mt-2">
               <div className="h-px w-full bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-60" />
-              <div className="mt-2 flex items-center justify-between gap-3">
+              <div className="mt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3">
                 <p className="font-mono text-[12px] leading-5 opacity-90">
                   {t('materials.note')}
                   <span className="ml-2 opacity-70">[{t('materials.topicsShort')}]</span>
