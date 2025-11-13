@@ -10,30 +10,48 @@ export function LanguageSwitch() {
     i18n.changeLanguage(lng);
   }, [current, i18n]);
 
+  const isRu = current === 'ru';
+
   return (
-    <div className="inline-flex items-center rounded-lg bg-white/5 ring-1 ring-white/10 p-0.5 text-sm">
-      <button
-        type="button"
-        onClick={() => change('ru')}
-        className={`px-2.5 py-1 rounded-md transition ${
-          current === 'ru' ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white'
-        }`}
-        aria-pressed={current === 'ru'}
-        aria-label={t('lang.ru')}
-      >
-        {t('lang.ru')}
-      </button>
-      <button
-        type="button"
-        onClick={() => change('en')}
-        className={`px-2.5 py-1 rounded-md transition ${
-          current === 'en' ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white'
-        }`}
-        aria-pressed={current === 'en'}
-        aria-label={t('lang.en')}
-      >
-        {t('lang.en')}
-      </button>
+    <div className="inline-flex items-center rounded-md bg-white/[0.04] px-2 py-1 ring-1 ring-white/10">
+      <span className="mr-2 font-mono text-[11px] uppercase tracking-[0.16em] text-white/50">lang</span>
+      <div className="relative flex items-center gap-1 font-mono text-[12px]">
+        <span className="text-white/40">[</span>
+
+        <button
+          type="button"
+          onClick={() => change('ru')}
+          className="relative px-1.5 py-0.5"
+          aria-pressed={isRu}
+          aria-label={t('lang.ru')}
+        >
+          <span className={isRu ? 'text-emerald-300' : 'text-white/60 hover:text-white transition-colors'}>
+            ru
+          </span>
+          {isRu && (
+            <span className="pointer-events-none absolute inset-x-0 -bottom-0.5 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent" />
+          )}
+        </button>
+
+        <span className="text-white/40">|</span>
+
+        <button
+          type="button"
+          onClick={() => change('en')}
+          className="relative px-1.5 py-0.5"
+          aria-pressed={!isRu}
+          aria-label={t('lang.en')}
+        >
+          <span className={!isRu ? 'text-emerald-300' : 'text-white/60 hover:text-white transition-colors'}>
+            en
+          </span>
+          {!isRu && (
+            <span className="pointer-events-none absolute inset-x-0 -bottom-0.5 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent" />
+          )}
+        </button>
+
+        <span className="text-white/40">]</span>
+      </div>
     </div>
   );
 }
