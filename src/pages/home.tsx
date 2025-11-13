@@ -14,10 +14,10 @@ export function Home() {
   const githubHref = 'https://github.com/eduardgagite';
 
   return (
-    <section className="relative h-full w-full overflow-auto lg:overflow-hidden">
+    <section className="relative w-full overflow-auto lg:overflow-hidden lg:min-h-dvh">
       <NetworkBackground density="medium" color="#e9eef4" interactive />
 
-      <div className="relative mx-auto max-w-7xl h-full px-4 py-4 sm:py-6 grid gap-6 sm:gap-8 items-stretch lg:grid-cols-[360px,1fr]">
+      <div className="relative mx-auto max-w-7xl lg:h-full px-4 py-4 sm:py-6 grid gap-6 sm:gap-8 items-stretch lg:grid-cols-[360px,1fr]">
         {/* Left column: avatar + name + role + contacts */}
         <aside className="flex flex-col items-start self-center">
           <div className="relative w-full max-w-full sm:max-w-[320px] lg:max-w-[360px] mx-auto">
@@ -66,13 +66,13 @@ export function Home() {
             <span className="size-2.5 rounded-full bg-green-400/70" />
             <span className="ml-3 text-xs opacity-70">about.ts</span>
           </div>
-          <div className="relative p-3 sm:p-4 overflow-hidden flex-1 flex flex-col">
+          <div className="relative p-3 sm:p-4 overflow-hidden lg:flex-1 flex flex-col">
             <pre className="font-mono text-[clamp(13px,1.05vw,16px)] leading-6 whitespace-pre-wrap">
 {`/**
  * ${isRu ? 'Обо мне' : 'About me'}
  */`}
             </pre>
-            <pre className="mt-2 font-mono text-[clamp(13px,1.05vw,16px)] leading-6 whitespace-pre-wrap text-white/90 flex-1">
+            <pre className="mt-2 font-mono text-[clamp(13px,1.05vw,16px)] leading-6 whitespace-pre-wrap text-white/90 lg:flex-1">
 {t('hero.bio')}
             </pre>
             <div className="mt-2">
