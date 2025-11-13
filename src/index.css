@@ -1,0 +1,15 @@
+:root {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0b0c10;
+  color: #e9eef4;
+}
+
+
