@@ -16,7 +16,7 @@ export function ButtonLink({
   className = '',
 }: ButtonLinkProps) {
   const base =
-    'inline-flex items-center justify-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 transform-gpu hover:-translate-y-0.5';
+    'inline-flex items-center justify-center gap-2 rounded-md px-3 py-1.5 text-xs sm:text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 transform-gpu hover:-translate-y-0.5';
   const styles: Record<NonNullable<ButtonLinkProps['variant']>, string> = {
     primary:
       'bg-primary text-white hover:opacity-95 shadow-sm ring-1 ring-black/0',
