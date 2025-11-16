@@ -8,6 +8,7 @@ import { NetworkBackground } from '../components/background/network-canvas';
 export function Home() {
   const { t, i18n } = useTranslation();
   const isRu = (i18n.resolvedLanguage || 'ru') === 'ru';
+  const lang = isRu ? 'ru' : 'en';
   const name = useMemo(() => isRu ? profileContent.fullNameRu : profileContent.fullNameEn, [isRu]);
   const telegramHref = useMemo(() => `https://t.me/${profileContent.contact.telegramHandle}`, []);
   const emailHref = useMemo(() => `mailto:${profileContent.contact.email}`, []);
@@ -73,16 +74,16 @@ export function Home() {
  */`}
             </pre>
             <pre className="mt-2 font-mono text-[clamp(13px,1.05vw,16px)] leading-6 whitespace-pre-wrap text-white/90 flex-1">
-              {renderHighlightedBio(t('hero.bio') as string, isRu)}
+              {renderHighlightedBio({ text: t('hero.bio') as string, lang })}
             </pre>
             <div className="mt-2">
               <div className="h-px w-full bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-60" />
-              <div className="mt-2 flex items-center justify-between gap-3">
-                <p className="font-mono text-[12px] leading-5 opacity-90">
-                  {t('materials.note')}
-                  <span className="ml-2 opacity-70">[{t('materials.topicsShort')}]</span>
-                </p>
-                <ButtonLink href="/materials" variant="subtle" className="shrink-0 px-2.5 py-1.5 text-xs">
+              <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <pre className="font-mono text-[12px] leading-5 whitespace-pre-wrap text-white/85">
+{`// materials
+// ${t('materials.note')} [${t('materials.topicsShort')}]`}
+                </pre>
+                <ButtonLink href="/materials" variant="subtle" className="shrink-0 px-2.5 py-1.5 text-xs self-start sm:self-auto">
                   {t('materials.cta')}
                 </ButtonLink>
               </div>
@@ -94,16 +95,24 @@ export function Home() {
   );
 }
 
-const TECH_TOKENS_RU = ['Go', 'Kafka', 'RabbitMQ', 'Docker', 'CI/CD', 'gRPC', 'WebSocket'];
-const TECH_TOKENS_EN = ['Go', 'Kafka', 'RabbitMQ', 'Docker', 'CI/CD', 'gRPC', 'WebSocket'];
+const COMMON_TECH_TOKENS = ['Go', 'Kafka', 'RabbitMQ', 'Docker', 'CI/CD', 'gRPC', 'WebSocket'] as const;
+const TECH_TOKENS: Record<'ru' | 'en', readonly string[]> = {
+  ru: COMMON_TECH_TOKENS,
+  en: COMMON_TECH_TOKENS,
+};
+
+interface RenderHighlightedBioArgs {
+  text: string;
+  lang: 'ru' | 'en';
+}
 
 function escapeRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function renderHighlightedBio(text: string, isRu: boolean) {
+function renderHighlightedBio({ text, lang }: RenderHighlightedBioArgs) {
   if (!text) return null;
-  const tokens = isRu ? TECH_TOKENS_RU : TECH_TOKENS_EN;
+  const tokens = TECH_TOKENS[lang];
   const pattern = new RegExp(`(${tokens.map(escapeRegex).join('|')})`, 'g');
   const parts = text.split(pattern);
 
