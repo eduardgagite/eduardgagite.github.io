@@ -2,8 +2,15 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
-import { loadMaterialsTree, materialKey, type MaterialMeta, type MaterialsCategory, type MaterialsSection } from '../materials/loader';
-import { MarkdownArticle, assignHeadingSlug } from '../components/markdown/markdown-article';
+import {
+  loadMaterialsTree,
+  materialKey,
+  type MaterialMeta,
+  type MaterialsCategory,
+  type MaterialsSection,
+  type MaterialWithContent,
+} from '../materials/loader';
+import { MarkdownArticle } from '../components/markdown/markdown-article';
 
 export function Materials() {
   const { i18n, t } = useTranslation();
@@ -165,18 +172,17 @@ export function Materials() {
         />
 
         <MainSurface>
-            {isRoot ? (
-              <MaterialsIntro />
+          {isRoot ? (
+            <MaterialsIntro />
           ) : !activeCategory || !activeSection || !activeMaterial ? (
-              <EmptyState />
-            ) : (
-              <ArticleView
-                category={activeCategory}
-                section={activeSection}
-                articleKey={materialKey(activeMaterial.id)}
-                lang={lang}
-              />
-            )}
+            <EmptyState />
+          ) : (
+            <ArticleView
+              category={activeCategory}
+              section={activeSection}
+              material={activeMaterial}
+            />
+          )}
         </MainSurface>
       </div>
     </section>
@@ -706,10 +712,7 @@ function EmptyState() {
 }
 
 function MaterialsIntro() {
-  const { t, i18n } = useTranslation();
-  const lang = (i18n.resolvedLanguage || 'ru') === 'ru' ? 'ru' : 'en';
-  // preload tree in case we want counts or quick navigation later
-  useMemo(() => loadMaterialsTree(lang), [lang]);
+  const { t } = useTranslation();
 
   return (
     <div className="scroll-elegant flex h-full flex-col overflow-y-auto">
@@ -738,22 +741,15 @@ function MaterialsIntro() {
 interface ArticleViewProps {
   category: MaterialsCategory;
   section: MaterialsSection;
-  articleKey: string;
-  lang: 'ru' | 'en';
+  material: MaterialWithContent;
 }
 
-function ArticleView({ category, section, articleKey, lang }: ArticleViewProps) {
+function ArticleView({ category, section, material }: ArticleViewProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const tree = useMemo(() => loadMaterialsTree(lang), [lang]);
-  const article = tree.byId[articleKey];
-
-  if (!article) {
-    return <EmptyState />;
-  }
-
   const siblings = section.materials;
-  const index = siblings.findIndex((m) => materialKey(m.id) === articleKey);
+  const currentKey = materialKey(material.id);
+  const index = siblings.findIndex((m) => materialKey(m.id) === currentKey);
   const prev = index > 0 ? siblings[index - 1] : undefined;
   const next = index >= 0 && index < siblings.length - 1 ? siblings[index + 1] : undefined;
 
@@ -821,16 +817,16 @@ function ArticleView({ category, section, articleKey, lang }: ArticleViewProps) 
         <p className="text-[11px] uppercase tracking-[0.18em] text-white/55">
           {category.title} / {section.title}
         </p>
-        <h1 className="mt-1 text-2xl font-semibold leading-tight">{article.title}</h1>
-        {article.subtitle && (
+        <h1 className="mt-1 text-2xl font-semibold leading-tight">{material.title}</h1>
+        {material.subtitle && (
           <p className="mt-2 text-sm text-white/75">
-            {article.subtitle}
+            {material.subtitle}
           </p>
         )}
       </div>
 
       <div className="mt-4 flex-1 overflow-y-auto pr-1 scroll-elegant">
-        <MarkdownArticle content={article.content} />
+        <MarkdownArticle content={material.content} />
       </div>
 
       <div className="mt-4 border-t border-white/10 pt-3">
@@ -875,74 +871,3 @@ function ArticleView({ category, section, articleKey, lang }: ArticleViewProps) 
     </article>
   );
 }
-
-interface TocItem {
-  id: string;
-  title: string;
-  level: number;
-}
-
-interface TocPanelProps {
-  items: TocItem[];
-  title: string;
-  className?: string;
-}
-
-interface TocBuilderArgs {
-  content: string;
-}
-
-function TocPanel({ items, title, className }: TocPanelProps) {
-  if (!items.length) return null;
-  return (
-    <nav className={className} aria-label={title}>
-      <p className="text-[11px] uppercase tracking-[0.18em] text-white/55">
-        {title}
-      </p>
-      <ul className="mt-2 space-y-1 text-xs text-white/75">
-        {items.map((item) => (
-          <li
-            key={item.id}
-            style={{ marginLeft: item.level === 3 ? '0.75rem' : 0 }}
-          >
-            <a
-              href={`#${item.id}`}
-              className="block rounded-md px-2 py-1 transition hover:bg-white/5 hover:text-white"
-            >
-              {item.title}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-}
-
-function buildArticleToc({ content }: TocBuilderArgs): TocItem[] {
-  if (!content) return [];
-  const counts: Record<string, number> = {};
-
-  return content.split('\n').reduce<TocItem[]>((acc, line) => {
-    const match = line.match(/^(#{2,3})\s+(.*)/);
-    if (!match) return acc;
-    const level = match[1].length;
-    const cleaned = stripFormatting(match[2]);
-    if (!cleaned) return acc;
-    const id = assignHeadingSlug({ value: cleaned, counts });
-    acc.push({ id, title: cleaned, level });
-    return acc;
-  }, []);
-}
-
-function stripFormatting(value: string): string {
-  return value
-    .replace(/\[(.+?)\]\([^)]+\)/g, '$1')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/\*\*(.+?)\*\*/g, '$1')
-    .replace(/__(.+?)__/g, '$1')
-    .replace(/[*_]/g, '')
-    .trim();
-}
-
-
-

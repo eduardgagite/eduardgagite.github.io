@@ -1,12 +1,16 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitch } from './language-switch';
 import { Link } from 'react-router-dom';
 
 export function Header() {
   const { t } = useTranslation();
-  const initials = useMemo(() => 'EG', []);
+  const initials = 'EG';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navLinks = [
+    { to: '/', label: t('nav.home') },
+    { to: '/materials', label: t('nav.materials') },
+  ];
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -32,24 +36,17 @@ export function Header() {
 
         <nav className="justify-self-center hidden sm:block" aria-label="Primary">
           <ul className="flex items-center gap-1.5">
-            <li>
-              <Link
-                to="/"
-                className="group relative inline-flex items-center px-3 py-1.5 text-[13px] font-medium tracking-wide"
-              >
-                <span>{t('nav.home')}</span>
-                <span className="pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-white/70 opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/materials"
-                className="group relative inline-flex items-center px-3 py-1.5 text-[13px] font-medium tracking-wide"
-              >
-                <span>{t('nav.materials')}</span>
-                <span className="pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-white/70 opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
-              </Link>
-            </li>
+            {navLinks.map(({ to, label }) => (
+              <li key={to}>
+                <Link
+                  to={to}
+                  className="group relative inline-flex items-center px-3 py-1.5 text-[13px] font-medium tracking-wide"
+                >
+                  <span>{label}</span>
+                  <span className="pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-white/70 opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
 
@@ -69,9 +66,6 @@ export function Header() {
               <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           </button>
-          <div className="hidden sm:block">
-            {/* reserve space if needed */}
-          </div>
         </div>
       </div>
 
@@ -111,24 +105,17 @@ export function Header() {
             </div>
             <nav aria-label="Mobile">
               <ul className="flex flex-col">
-                <li>
-                  <Link
-                    to="/"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="block px-1 py-3 text-base font-medium tracking-wide hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-md"
-                  >
-                    {t('nav.home')}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/materials"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="block px-1 py-3 text-base font-medium tracking-wide hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-md"
-                  >
-                    {t('nav.materials')}
-                  </Link>
-                </li>
+                {navLinks.map(({ to, label }) => (
+                  <li key={`mobile-${to}`}>
+                    <Link
+                      to={to}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block px-1 py-3 text-base font-medium tracking-wide hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-md"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </nav>
           </div>
@@ -137,5 +124,4 @@ export function Header() {
     </header>
   );
 }
-
 

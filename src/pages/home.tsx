@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { profileContent } from '../content/profile';
 import { ButtonLink } from '../components/ui/button-link';
@@ -9,9 +8,9 @@ export function Home() {
   const { t, i18n } = useTranslation();
   const isRu = (i18n.resolvedLanguage || 'ru') === 'ru';
   const lang = isRu ? 'ru' : 'en';
-  const name = useMemo(() => isRu ? profileContent.fullNameRu : profileContent.fullNameEn, [isRu]);
-  const telegramHref = useMemo(() => `https://t.me/${profileContent.contact.telegramHandle}`, []);
-  const emailHref = useMemo(() => `mailto:${profileContent.contact.email}`, []);
+  const name = isRu ? profileContent.fullNameRu : profileContent.fullNameEn;
+  const telegramHref = `https://t.me/${profileContent.contact.telegramHandle}`;
+  const emailHref = `mailto:${profileContent.contact.email}`;
   const githubHref = 'https://github.com/eduardgagite';
 
   return (
@@ -127,5 +126,4 @@ function renderHighlightedBio({ text, lang }: RenderHighlightedBioArgs) {
     return part;
   });
 }
-
 
