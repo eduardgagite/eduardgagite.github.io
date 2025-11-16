@@ -10,7 +10,7 @@
     height: 100%;
   }
   body {
-    @apply bg-background text-foreground antialiased overflow-hidden;
+    @apply bg-background text-foreground antialiased;
     margin: 0;
   }
 }
