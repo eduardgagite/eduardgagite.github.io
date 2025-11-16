@@ -6,13 +6,18 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 export function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <div className="min-h-dvh h-dvh flex flex-col">
         <Header />
         <main className="flex-1 overflow-hidden">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/materials" element={<Materials />} />
+            <Route path="/materials/*" element={<Materials />} />
           </Routes>
         </main>
         <Footer />
