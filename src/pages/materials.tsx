@@ -96,7 +96,8 @@ export function Materials() {
   };
 
   useEffect(() => {
-    const targetCategoryId = activeCategory?.id || (isRoot ? firstCategory?.id : undefined);
+    if (isRoot) return;
+    const targetCategoryId = activeCategory?.id;
     if (!targetCategoryId) return;
     setCategoryOpen((prev) => {
       if (prev[targetCategoryId]) return prev;
@@ -105,6 +106,7 @@ export function Materials() {
   }, [activeCategory?.id, firstCategory?.id, isRoot]);
 
   useEffect(() => {
+    if (isRoot) return;
     const targetSectionId = activeSection?.id;
     if (!targetSectionId) return;
     setSectionOpen((prev) => {
