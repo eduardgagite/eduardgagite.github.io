@@ -1,12 +1,39 @@
 {
   "meta": {
-    "title": "Eduard Gagite — Backend Engineer (Go)",
+    "title": "Eduard Gagite - backend developer",
     "description": "Personal site: info, contacts, and educational materials."
   },
   "materials": {
     "note": "I create educational materials for backend engineers — concise cheatsheets and notes.",
     "cta": "View materials",
-    "topicsShort": "Go · Kafka · gRPC · CI/CD"
+    "topicsShort": "Go · Kafka · gRPC · CI/CD",
+    "sidebarIntro": "Browse topics, filter by tags, and jump back to the right notes.",
+    "statsCategories": "Categories",
+    "statsSections": "Sections",
+    "statsMaterials": "Materials",
+    "filtersTitle": "Filters",
+    "structureTitle": "Structure",
+    "introTitle": "About the Materials section",
+    "introP1": "This section is my living documentation for backend work: Go, messaging systems, infrastructure, CI/CD and everything around production services.",
+    "introP2": "Most materials started as personal notes. The focus is on real issues from real projects — from code structure and patterns to debugging and observability.",
+    "introP3": "Each article is meant to be self-contained: you can open it before a task, refresh the key ideas and immediately apply them in code.",
+    "philosophyTitle": "Section principles",
+    "philosophy1": "Grounded in hands-on experience and real-world problems, not purely academic examples.",
+    "philosophy2": "Show code and typical scenarios — what to write and why, not only high-level theory.",
+    "philosophy3": "Break complex topics into small, focused notes that are easy to revisit as cheatsheets.",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Title or description",
+    "levelFilter": "Level",
+    "tagsFilter": "Tags",
+    "filtersReset": "Reset filters",
+    "noMatches": "No materials match the filters.",
+    "tocTitle": "Contents",
+    "copyLink": "Copy link",
+    "copyLinkSuccess": "Link copied",
+    "backToSection": "Back to section",
+    "prevArticle": "Previous article",
+    "nextArticle": "Next article",
+    "keyboardHints": "Shortcuts: ← previous, → next, Esc section"
   },
   "nav": {
     "home": "Home",
