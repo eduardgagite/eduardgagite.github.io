@@ -32,7 +32,9 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
         const section = pathParts[materialsIndex + 2];
         // Remove ./ prefix if present
         const cleanSrc = src.startsWith('./') ? src.substring(2) : src;
-        // Build absolute path: /content/materials/category/section/image.png
+        // Support images/ subfolder: images/image.png -> category/section/images/image.png
+        // Or direct: image.png -> category/section/image.png
+        // Build absolute path: /content/materials/category/section/[images/]image.png
         return `/content/materials/${category}/${section}/${cleanSrc}`;
       }
     }
