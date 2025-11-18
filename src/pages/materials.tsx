@@ -826,7 +826,7 @@ function ArticleView({ category, section, material }: ArticleViewProps) {
       </div>
 
       <div className="mt-4 flex-1 overflow-y-auto pr-1 scroll-elegant">
-        <MarkdownArticle content={material.content} />
+        <MarkdownArticle content={material.content} materialPath={material.path} />
       </div>
 
       <div className="mt-4 border-t border-white/10 pt-3">
