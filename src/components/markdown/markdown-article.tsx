@@ -6,9 +6,38 @@ import { CodeBlock, InlineCode } from './code-block';
 
 export interface MarkdownArticleProps {
   content: string;
+  materialPath?: string;
 }
 
-export function MarkdownArticle({ content }: MarkdownArticleProps) {
+export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps) {
+  // Resolve image paths relative to the material file
+  const resolveImagePath = (src: string): string => {
+    if (!src) return src;
+    // If it's already an absolute URL, return as is
+    if (src.startsWith('http://') || src.startsWith('https://')) {
+      return src;
+    }
+    // If it's already an absolute path from root, return as is
+    if (src.startsWith('/')) {
+      return src;
+    }
+    // If materialPath is provided, resolve relative to it
+    if (materialPath) {
+      // materialPath is like: /content/materials/redis/intro/01-what-is-redis.ru.md
+      // Extract category/section from path: redis/intro
+      const pathParts = materialPath.split('/');
+      const materialsIndex = pathParts.indexOf('materials');
+      if (materialsIndex !== -1 && pathParts.length > materialsIndex + 2) {
+        const category = pathParts[materialsIndex + 1];
+        const section = pathParts[materialsIndex + 2];
+        // Remove ./ prefix if present
+        const cleanSrc = src.startsWith('./') ? src.substring(2) : src;
+        // Build absolute path: /content/materials/category/section/image.png
+        return `/content/materials/${category}/${section}/${cleanSrc}`;
+      }
+    }
+    return src;
+  };
   const headingCounts: Record<string, number> = {};
   const components: Components = {
     h1: ({ node, children, ...props }) => {
@@ -62,22 +91,27 @@ export function MarkdownArticle({ content }: MarkdownArticleProps) {
         />
       );
     }) as Components['code'],
-    img: ({ node, src, alt, ...props }) => (
-      <div className="my-4 overflow-hidden rounded-lg border border-white/10 bg-white/[0.02]">
-        <img
-          src={src}
-          alt={alt || ''}
-          className="w-full h-auto object-contain"
-          loading="lazy"
-          {...props}
-        />
-        {alt && (
-          <p className="px-3 py-2 text-xs text-white/60 border-t border-white/10">
-            {alt}
-          </p>
-        )}
-      </div>
-    ),
+    img: ({ node, src, alt, ...props }) => {
+      const resolvedSrc = resolveImagePath(src || '');
+      return (
+        <div className="my-4 flex justify-center">
+          <div className="overflow-hidden rounded-lg border border-white/10 bg-white/[0.02] max-w-[80%]">
+            <img
+              src={resolvedSrc}
+              alt={alt || ''}
+              className="w-full h-auto object-contain"
+              loading="lazy"
+              {...props}
+            />
+            {alt && (
+              <p className="px-3 py-2 text-xs text-white/60 border-t border-white/10">
+                {alt}
+              </p>
+            )}
+          </div>
+        </div>
+      );
+    },
   };
 
   return (
