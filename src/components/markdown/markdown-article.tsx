@@ -96,8 +96,8 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
     img: ({ node, src, alt, ...props }) => {
       const resolvedSrc = resolveImagePath(src || '');
       return (
-        <div className="my-4 flex justify-center">
-          <div className="overflow-hidden rounded-lg border border-white/10 bg-white/[0.02] max-w-[80%]">
+        <div className="my-4">
+          <div className="overflow-hidden rounded-lg border border-white/10 bg-white/[0.02] max-w-[60%]">
             <img
               src={resolvedSrc}
               alt={alt || ''}
