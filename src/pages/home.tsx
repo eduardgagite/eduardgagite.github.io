@@ -25,7 +25,7 @@ export function Home() {
             <div className="relative rounded-xl border border-white/10 bg-white/[0.03] p-4">
               <div className="aspect-square overflow-hidden rounded-md ring-1 ring-white/10">
                 <img
-                  src="/avatar.png"
+                  src="/avatar.jpg"
                   alt={name}
                   className="h-full w-full object-cover"
                   loading="eager"
