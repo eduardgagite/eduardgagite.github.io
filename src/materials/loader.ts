@@ -45,37 +45,15 @@ export interface MaterialsTree {
   byId: Record<string, MaterialWithContent>;
 }
 
-const materialsModules = (import.meta as any).glob('/content/materials/**/*.md', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-}) as Record<string, string>;
+import generated from './generated-materials.json';
+
+interface GeneratedMaterialsFile {
+  entries: MaterialWithContent[];
+}
 
 export function loadMaterialsTree(preferredLang: 'ru' | 'en'): MaterialsTree {
-  const entries: MaterialWithContent[] = [];
-
-  for (const [path, raw] of Object.entries(materialsModules)) {
-    if (!raw) continue;
-    const parsed = parseFrontmatter(raw);
-    const data = parsed.data as Partial<MaterialFrontmatter>;
-    if (
-      !data.title ||
-      !data.category ||
-      !data.categoryTitle ||
-      !data.section ||
-      !data.sectionTitle
-    ) continue;
-
-    const id = deriveIdFromPath(path);
-    if (!id) continue;
-
-    entries.push({
-      ...(data as MaterialFrontmatter),
-      id,
-      path,
-      content: parsed.content,
-    });
-  }
+  const file = generated as GeneratedMaterialsFile;
+  const entries = file.entries;
 
   // Group by canonical id (category/section/slug) and choose best lang
   const byCanonical: Record<string, MaterialWithContent[]> = {};
@@ -148,81 +126,4 @@ export function loadMaterialsTree(preferredLang: 'ru' | 'en'): MaterialsTree {
 export function materialKey(id: MaterialId): string {
   return `${id.category}/${id.section}/${id.slug}`;
 }
-
-function deriveIdFromPath(path: string): MaterialId | null {
-  // Example: /content/materials/golang/pointers/what-are-pointers.ru.md
-  const parts = path.split('/');
-  const idx = parts.indexOf('materials');
-  if (idx === -1 || parts.length < idx + 4) return null;
-  const category = parts[idx + 1] || '';
-  const section = parts[idx + 2] || '';
-  const file = parts[idx + 3] || '';
-
-  const match = file.match(/^(.*)\.(ru|en)\.md$/);
-  if (!match) return null;
-  const [, slug, lang] = match;
-  if (lang !== 'ru' && lang !== 'en') return null;
-
-  return { category, section, slug, lang };
-}
-
-interface ParsedFrontmatter {
-  data: Record<string, unknown>;
-  content: string;
-}
-
-function parseFrontmatter(raw: string): ParsedFrontmatter {
-  if (!raw.startsWith('---')) {
-    return { data: {}, content: raw };
-  }
-
-  const end = raw.indexOf('\n---', 3);
-  if (end === -1) {
-    return { data: {}, content: raw };
-  }
-
-  const header = raw.slice(3, end).trim();
-  const content = raw.slice(end + 4).replace(/^\s*\n/, '');
-  const lines = header.split('\n');
-  const data: Record<string, unknown> = {};
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
-    const [rawKey, ...rest] = trimmed.split(':');
-    if (!rawKey || rest.length === 0) continue;
-    const key = rawKey.trim();
-    const rawValue = rest.join(':').trim();
-    const value = parseFrontmatterValue(rawValue);
-    data[key] = value;
-  }
-
-  return { data, content };
-}
-
-function parseFrontmatterValue(rawValue: string): unknown {
-  if (!rawValue) return '';
-  const v = rawValue.trim();
-
-  if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
-    return v.slice(1, -1);
-  }
-
-  if (/^\d+$/.test(v)) return Number(v);
-
-  if (v.startsWith('[') && v.endsWith(']')) {
-    try {
-      return JSON.parse(v.replace(/'/g, '"'));
-    } catch {
-      return [];
-    }
-  }
-
-  if (v === 'true') return true;
-  if (v === 'false') return false;
-
-  return v;
-}
-
-
 

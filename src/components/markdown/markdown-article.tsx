@@ -1,4 +1,3 @@
-// @ts-nocheck
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Components } from 'react-markdown';
@@ -42,40 +41,44 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
   };
   const headingCounts: Record<string, number> = {};
   const components: Components = {
-    h1: ({ node, children, ...props }) => {
+    h1: (props: any) => {
+      const { node, children, ...rest } = props;
       const headingId = resolveHeadingId(node, headingCounts);
       return (
-        <h1 id={headingId} className="mb-4 text-2xl font-semibold" {...props}>
+        <h1 id={headingId} className="mb-4 text-2xl font-semibold" {...rest}>
           {children}
         </h1>
       );
     },
-    h2: ({ node, children, ...props }) => {
+    h2: (props: any) => {
+      const { node, children, ...rest } = props;
       const headingId = resolveHeadingId(node, headingCounts);
       return (
-        <h2 id={headingId} className="mt-6 mb-3 text-xl font-semibold" {...props}>
+        <h2 id={headingId} className="mt-6 mb-3 text-xl font-semibold" {...rest}>
           {children}
         </h2>
       );
     },
-    h3: ({ node, children, ...props }) => {
+    h3: (props: any) => {
+      const { node, children, ...rest } = props;
       const headingId = resolveHeadingId(node, headingCounts);
       return (
-        <h3 id={headingId} className="mt-4 mb-2 text-lg font-semibold" {...props}>
+        <h3 id={headingId} className="mt-4 mb-2 text-lg font-semibold" {...rest}>
           {children}
         </h3>
       );
     },
-    p: ({ node, ...props }) => (
+    p: (props: any) => (
       <p className="mb-3 text-sm leading-6 text-white/90" {...props} />
     ),
-    ul: ({ node, ...props }) => (
+    ul: (props: any) => (
       <ul className="mb-3 list-disc pl-5 text-sm leading-6 text-white/90" {...props} />
     ),
-    ol: ({ node, ...props }) => (
+    ol: (props: any) => (
       <ol className="mb-3 list-decimal pl-5 text-sm leading-6 text-white/90" {...props} />
     ),
-    code: (({ inline, className, children }) => {
+    code: ((props: any) => {
+      const { inline, className, children } = props;
       const match = /language-(\w+)/.exec(className || '');
       if (!inline && match) {
         return (
@@ -93,7 +96,8 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
         />
       );
     }) as Components['code'],
-    img: ({ node, src, alt, ...props }) => {
+    img: (props: any) => {
+      const { src, alt, ...rest } = props;
       const resolvedSrc = resolveImagePath(src || '');
       return (
         <div className="my-4">
@@ -103,7 +107,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
               alt={alt || ''}
               className="w-full h-auto object-contain"
               loading="lazy"
-              {...props}
+              {...rest}
             />
             {alt && (
               <p className="px-3 py-2 text-xs text-white/60 border-t border-white/10">
