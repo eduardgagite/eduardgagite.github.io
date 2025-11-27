@@ -1,14 +1,20 @@
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitch } from './language-switch';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export function Header() {
   const { t } = useTranslation();
+  const location = useLocation();
   const initials = 'EG';
   const navLinks = [
     { to: '/', label: t('nav.home') },
     { to: '/materials', label: t('nav.materials') },
   ];
+
+  const isActive = (to: string) => {
+    if (to === '/') return location.pathname === '/';
+    return location.pathname === to || location.pathname.startsWith(`${to}/`);
+  };
 
   return (
     <header className="w-full sticky top-0 z-20 border-b border-white/10 bg-background/80 backdrop-blur-md">
@@ -29,10 +35,17 @@ export function Header() {
               <li key={to}>
                 <Link
                   to={to}
-                  className="group relative inline-flex items-center px-3 py-1.5 text-[13px] font-medium tracking-wide"
+                  aria-current={isActive(to) ? 'page' : undefined}
+                  className={`group relative inline-flex items-center px-3 py-1.5 text-[13px] font-medium tracking-wide transition-colors ${
+                    isActive(to) ? 'text-white' : 'text-white/70 hover:text-white'
+                  }`}
                 >
                   <span>{label}</span>
-                  <span className="pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-white/70 opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
+                  <span
+                    className={`pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px bg-white/80 transition-opacity duration-150 ${
+                      isActive(to) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                    }`}
+                  />
                 </Link>
               </li>
             ))}
