@@ -39,7 +39,7 @@ export function Home() {
               <div className="relative w-full aspect-square rounded-xl overflow-hidden ring-1 ring-white/[0.08]">
                 <div className="absolute inset-0 bg-gradient-to-br from-sky-500/10 to-purple-500/10" />
                 <img
-                  src="/avatar.jpg"
+                  src="/images/avatar.jpg"
                   alt={name}
                   className="relative h-full w-full object-cover"
                   loading="eager"
