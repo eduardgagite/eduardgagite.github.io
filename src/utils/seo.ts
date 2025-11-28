@@ -11,7 +11,7 @@ interface SEOData {
 
 const DEFAULT_TITLE = 'Eduard Gagite — Backend Developer';
 const DEFAULT_DESCRIPTION = 'Backend-разработчик. Пишу на Go, работаю с Kafka, RabbitMQ, Docker, gRPC. Делюсь знаниями: курсы по Redis, Docker и другим технологиям.';
-const DEFAULT_OG_IMAGE = 'https://eduardgagite.github.io/og-image.png';
+const DEFAULT_OG_IMAGE = 'https://eduardgagite.github.io/images/og-image.png';
 const BASE_URL = 'https://eduardgagite.github.io';
 
 function getOrCreateMetaTag(property: string, attribute: 'name' | 'property' = 'name'): HTMLMetaElement {
