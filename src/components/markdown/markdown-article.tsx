@@ -45,7 +45,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
       const { node, children, ...rest } = props;
       const headingId = resolveHeadingId(node, headingCounts);
       return (
-        <h1 id={headingId} className="mb-4 text-2xl font-semibold" {...rest}>
+        <h1 id={headingId} {...rest}>
           {children}
         </h1>
       );
@@ -54,7 +54,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
       const { node, children, ...rest } = props;
       const headingId = resolveHeadingId(node, headingCounts);
       return (
-        <h2 id={headingId} className="mt-6 mb-3 text-xl font-semibold" {...rest}>
+        <h2 id={headingId} {...rest}>
           {children}
         </h2>
       );
@@ -63,20 +63,48 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
       const { node, children, ...rest } = props;
       const headingId = resolveHeadingId(node, headingCounts);
       return (
-        <h3 id={headingId} className="mt-4 mb-2 text-lg font-semibold" {...rest}>
+        <h3 id={headingId} {...rest}>
           {children}
         </h3>
       );
     },
-    p: (props: any) => (
-      <p className="mb-3 text-sm leading-6 text-white/90" {...props} />
-    ),
-    ul: (props: any) => (
-      <ul className="mb-3 list-disc pl-5 text-sm leading-6 text-white/90" {...props} />
-    ),
-    ol: (props: any) => (
-      <ol className="mb-3 list-decimal pl-5 text-sm leading-6 text-white/90" {...props} />
-    ),
+    h4: (props: any) => {
+      const { node, children, ...rest } = props;
+      const headingId = resolveHeadingId(node, headingCounts);
+      return (
+        <h4 id={headingId} {...rest}>
+          {children}
+        </h4>
+      );
+    },
+    p: (props: any) => <p {...props} />,
+    ul: (props: any) => <ul {...props} />,
+    ol: (props: any) => <ol {...props} />,
+    li: (props: any) => <li {...props} />,
+    blockquote: (props: any) => <blockquote {...props} />,
+    hr: () => <hr />,
+    a: (props: any) => {
+      const { href, children, ...rest } = props;
+      const isExternal = href?.startsWith('http');
+      return (
+        <a
+          href={href}
+          target={isExternal ? '_blank' : undefined}
+          rel={isExternal ? 'noopener noreferrer' : undefined}
+          {...rest}
+        >
+          {children}
+        </a>
+      );
+    },
+    table: (props: any) => <table {...props} />,
+    thead: (props: any) => <thead {...props} />,
+    tbody: (props: any) => <tbody {...props} />,
+    tr: (props: any) => <tr {...props} />,
+    th: (props: any) => <th {...props} />,
+    td: (props: any) => <td {...props} />,
+    strong: (props: any) => <strong {...props} />,
+    em: (props: any) => <em {...props} />,
     code: ((props: any) => {
       const { inline, className, children } = props;
       const match = /language-(\w+)/.exec(className || '');
@@ -100,8 +128,8 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
       const { src, alt, ...rest } = props;
       const resolvedSrc = resolveImagePath(src || '');
       return (
-        <div className="my-4">
-          <div className="overflow-hidden rounded-lg border border-white/10 bg-white/[0.02] max-w-[60%]">
+        <figure className="my-6">
+          <div className="overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] max-w-[70%]">
             <img
               src={resolvedSrc}
               alt={alt || ''}
@@ -109,24 +137,26 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
               loading="lazy"
               {...rest}
             />
-            {alt && (
-              <p className="px-3 py-2 text-xs text-white/60 border-t border-white/10">
-                {alt}
-              </p>
-            )}
           </div>
-        </div>
+          {alt && (
+            <figcaption className="mt-2 text-sm text-white/50 italic">
+              {alt}
+            </figcaption>
+          )}
+        </figure>
       );
     },
   };
 
   return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm, inlineCodeAsHighlightPlugin]}
-      components={components}
-    >
-      {content}
-    </ReactMarkdown>
+    <div className="prose-article">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm, inlineCodeAsHighlightPlugin]}
+        components={components}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
   );
 }
 
@@ -203,5 +233,3 @@ function formatInlineHighlightValue(value: unknown): string {
   const normalized = typeof value === 'string' ? value : String(value);
   return normalized.trim();
 }
-
-
