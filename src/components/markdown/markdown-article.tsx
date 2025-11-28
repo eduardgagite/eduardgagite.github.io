@@ -150,12 +150,12 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
 
   return (
     <div className="prose-article">
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm, inlineCodeAsHighlightPlugin]}
-        components={components}
-      >
-        {content}
-      </ReactMarkdown>
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm, inlineCodeAsHighlightPlugin]}
+      components={components}
+    >
+      {content}
+    </ReactMarkdown>
     </div>
   );
 }

@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { profileContent } from '../content/profile';
 import { ButtonLink } from '../components/ui/button-link';
 import { GithubIcon, MailIcon, TelegramIcon } from '../components/icons';
 import { NetworkBackground } from '../components/background/network-canvas';
+import { resetSEO } from '../utils/seo';
 
 export function Home() {
   const { t, i18n } = useTranslation();
@@ -12,6 +14,10 @@ export function Home() {
   const telegramHref = `https://t.me/${profileContent.contact.telegramHandle}`;
   const emailHref = `mailto:${profileContent.contact.email}`;
   const githubHref = 'https://github.com/eduardgagite';
+
+  useEffect(() => {
+    resetSEO();
+  }, []);
 
   return (
     <section className="relative h-full w-full overflow-hidden">

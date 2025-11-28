@@ -4,22 +4,23 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node scripts/generate-materials-json.mjs && vite",
-    "build": "node scripts/generate-materials-json.mjs && tsc -b && vite build",
+    "dev": "node scripts/generate-materials-json.mjs && node scripts/generate-sitemap.mjs && vite",
+    "build": "node scripts/generate-materials-json.mjs && node scripts/generate-sitemap.mjs && tsc -b && vite build",
     "postbuild": "cp dist/index.html dist/404.html",
     "preview": "vite preview --port 5173 --strictPort"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.27.0",
+    "framer-motion": "^12.23.24",
+    "gray-matter": "^4.0.3",
     "i18next": "^23.11.5",
     "i18next-browser-languagedetector": "^8.0.5",
+    "prism-react-renderer": "^2.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-i18next": "^15.0.2",
     "react-markdown": "^9.0.1",
-    "remark-gfm": "^4.0.0",
-    "gray-matter": "^4.0.3",
-    "prism-react-renderer": "^2.4.0"
+    "react-router-dom": "^6.27.0",
+    "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
@@ -35,4 +36,3 @@
     "node": ">=18"
   }
 }
-
