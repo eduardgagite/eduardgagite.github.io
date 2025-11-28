@@ -67,7 +67,8 @@ async function main() {
   }
 
   // Generate XML
-  const now = new Date().toISOString();
+  // Use W3C Datetime format (YYYY-MM-DD) for better compatibility
+  const now = new Date().toISOString().split('T')[0];
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
@@ -79,8 +80,10 @@ ${urls.map((url) => `  <url>
   </url>`).join('\n')}
 </urlset>`;
 
-  await writeFile(OUTPUT_FILE, xml, 'utf8');
+  // Write file with UTF-8 encoding (without BOM)
+  await writeFile(OUTPUT_FILE, xml, { encoding: 'utf8' });
   console.log(`Generated sitemap.xml with ${urls.length} URLs`);
+  console.log(`Sitemap location: ${OUTPUT_FILE}`);
 }
 
 main().catch((error) => {

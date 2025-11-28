@@ -65,36 +65,36 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
         {/* Gradient accent on left */}
         <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-sky-500/50 via-purple-500/50 to-sky-500/50 opacity-60" />
         
-        <Highlight
-          code={code.trimEnd()}
-          language={lang as any}
-          theme={themes.oneDark}
-        >
-          {({ className, style, tokens, getLineProps, getTokenProps }) => (
-            <pre
+      <Highlight
+        code={code.trimEnd()}
+        language={lang as any}
+        theme={themes.oneDark}
+      >
+        {({ className, style, tokens, getLineProps, getTokenProps }) => (
+          <pre
               className={`${className} m-0 overflow-x-auto py-4 pl-5 pr-4 font-mono text-[13px] leading-[1.7]`}
-              style={{ ...style, background: 'transparent' }}
-            >
-              {tokens.map((line, i) => {
-                const lineProps = getLineProps({ line, key: i });
-                return (
+            style={{ ...style, background: 'transparent' }}
+          >
+            {tokens.map((line, i) => {
+              const lineProps = getLineProps({ line, key: i });
+              return (
                   <div key={i} {...lineProps} className="group/line relative hover:bg-white/[0.02] transition-colors -mx-5 px-5">
                     {/* Line number */}
                     <span className="mr-6 inline-block w-5 select-none text-right font-mono text-[11px] text-white/20 group-hover/line:text-white/35 transition-colors">
                       {i + 1}
                     </span>
                     {/* Code tokens */}
-                    {line.map((token, key) => {
-                      const tokenProps = getTokenProps({ token, key });
-                      return <span key={key} {...tokenProps} />;
-                    })}
-                  </div>
-                );
-              })}
-            </pre>
-          )}
-        </Highlight>
-      </div>
+                  {line.map((token, key) => {
+                    const tokenProps = getTokenProps({ token, key });
+                    return <span key={key} {...tokenProps} />;
+                  })}
+                </div>
+              );
+            })}
+          </pre>
+        )}
+      </Highlight>
+    </div>
     </div>
   );
 }
