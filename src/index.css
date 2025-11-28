@@ -5,16 +5,38 @@
 @layer base {
   :root {
     color-scheme: dark;
+    --color-accent: #38bdf8;
+    --color-accent-secondary: #a855f7;
+    --color-surface: rgba(255, 255, 255, 0.03);
   }
+
   html, body, #root {
     height: 100%;
   }
+
   body {
     @apply bg-background text-foreground antialiased;
     margin: 0;
+    font-feature-settings: 'liga' 1, 'calt' 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Улучшенная типографика для заголовков */
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
+    font-family: 'Outfit', system-ui, sans-serif;
+    text-wrap: balance;
+  }
+
+  /* Улучшенная типографика для параграфов */
+  p {
+    text-wrap: pretty;
   }
 }
 
+/* Элегантные скроллбары */
 .scroll-elegant {
   scrollbar-width: thin;
   scrollbar-color: rgba(56, 189, 248, 0.9) rgba(255, 255, 255, 0.04);
@@ -41,6 +63,7 @@
   background: linear-gradient(180deg, rgba(125, 211, 252, 1), rgba(192, 132, 252, 1));
 }
 
+/* Inline highlight для markdown */
 .inline-md-highlight {
   display: inline-flex;
   align-items: center;
@@ -62,4 +85,235 @@
   opacity: 0.8;
 }
 
+/* === Стили для Markdown-контента === */
 
+/* Prose container */
+.prose-article {
+  @apply text-white/90;
+  line-height: 1.75;
+}
+
+/* Заголовки статей */
+.prose-article h1 {
+  @apply text-2xl sm:text-3xl font-bold tracking-tight text-white mb-6;
+  background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.prose-article h2 {
+  @apply text-xl sm:text-2xl font-semibold text-white mt-10 mb-4;
+  position: relative;
+  padding-left: 1rem;
+}
+
+.prose-article h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  bottom: 0.2em;
+  width: 3px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--color-accent), var(--color-accent-secondary));
+}
+
+.prose-article h3 {
+  @apply text-lg sm:text-xl font-semibold text-white/95 mt-8 mb-3;
+}
+
+.prose-article h4 {
+  @apply text-base font-semibold text-white/90 mt-6 mb-2;
+}
+
+/* Параграфы */
+.prose-article p {
+  @apply mb-4 text-[15px] leading-7 text-white/85;
+}
+
+/* Списки */
+.prose-article ul {
+  @apply mb-5 pl-0 text-[15px] leading-7 text-white/85;
+  list-style: none;
+}
+
+.prose-article ul li {
+  @apply relative pl-6 mb-2;
+}
+
+.prose-article ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.prose-article ol {
+  @apply mb-5 pl-0 text-[15px] leading-7 text-white/85;
+  list-style: none;
+  counter-reset: ol-counter;
+}
+
+.prose-article ol li {
+  @apply relative pl-8 mb-2;
+  counter-increment: ol-counter;
+}
+
+.prose-article ol li::before {
+  content: counter(ol-counter);
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  width: 1.5em;
+  height: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75em;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 50%;
+}
+
+/* Blockquote */
+.prose-article blockquote {
+  @apply my-6 py-4 px-5 text-[15px] leading-7 text-white/80 italic;
+  position: relative;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(168, 85, 247, 0.05));
+  border-radius: 0 12px 12px 0;
+  border-left: 3px solid;
+  border-image: linear-gradient(180deg, var(--color-accent), var(--color-accent-secondary)) 1;
+}
+
+.prose-article blockquote p {
+  @apply mb-0;
+}
+
+.prose-article blockquote::before {
+  content: '"';
+  position: absolute;
+  top: -0.5rem;
+  left: 0.5rem;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--color-accent);
+  opacity: 0.3;
+  font-family: Georgia, serif;
+}
+
+/* Ссылки */
+.prose-article a {
+  @apply text-sky-400 no-underline transition-all duration-200;
+  background: linear-gradient(transparent 90%, rgba(56, 189, 248, 0.3) 90%);
+}
+
+.prose-article a:hover {
+  @apply text-sky-300;
+  background: linear-gradient(transparent 80%, rgba(56, 189, 248, 0.4) 80%);
+}
+
+/* Горизонтальная линия */
+.prose-article hr {
+  @apply my-8 border-0 h-px;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.5), rgba(168, 85, 247, 0.5), transparent);
+}
+
+/* Таблицы */
+.prose-article table {
+  @apply w-full my-6 text-sm;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.prose-article thead {
+  @apply text-left;
+}
+
+.prose-article th {
+  @apply px-4 py-3 font-semibold text-white/90 border-b border-white/20;
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.prose-article th:first-child {
+  border-radius: 8px 0 0 0;
+}
+
+.prose-article th:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+.prose-article td {
+  @apply px-4 py-3 border-b border-white/10 text-white/80;
+}
+
+.prose-article tr:last-child td {
+  @apply border-b-0;
+}
+
+.prose-article tr:last-child td:first-child {
+  border-radius: 0 0 0 8px;
+}
+
+.prose-article tr:last-child td:last-child {
+  border-radius: 0 0 8px 0;
+}
+
+.prose-article tbody tr {
+  @apply transition-colors;
+}
+
+.prose-article tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Strong и em */
+.prose-article strong {
+  @apply font-semibold text-white;
+}
+
+.prose-article em {
+  @apply text-white/90;
+}
+
+/* Код внутри текста */
+.prose-article code:not(pre code) {
+  @apply font-mono text-[13px] px-1.5 py-0.5 rounded;
+  background: rgba(56, 189, 248, 0.15);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+/* Блоки кода */
+.prose-article pre {
+  @apply my-5 rounded-xl overflow-hidden;
+  background: rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.5);
+}
+
+.prose-article pre code {
+  @apply font-mono text-[13px] leading-6;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Изображения */
+.prose-article img {
+  @apply rounded-xl;
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.4);
+}
+
+/* Выделение текста */
+.prose-article ::selection {
+  background: rgba(56, 189, 248, 0.3);
+  color: white;
+}
