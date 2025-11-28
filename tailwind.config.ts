@@ -9,9 +9,12 @@ export default {
         foreground: '#e9eef4',
         primary: '#1f6feb',
       },
+      fontFamily: {
+        sans: ['Outfit', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'Consolas', 'monospace'],
+        display: ['Outfit', 'system-ui', 'sans-serif'],
+      },
     },
   },
   plugins: [],
 } satisfies Config;
-
-
