@@ -11,6 +11,7 @@ import {
   type MaterialWithContent,
 } from '../materials/loader';
 import { MarkdownArticle } from '../components/markdown/markdown-article';
+import { updateSEO, resetSEO, generateMaterialSEO } from '../utils/seo';
 
 export function Materials() {
   const { i18n, t } = useTranslation();
@@ -97,6 +98,22 @@ export function Materials() {
     if (!activeCategory || !activeSection || !fallbackMaterialSlug) return;
     navigate(`/materials/${activeCategory.id}/${activeSection.id}/${fallbackMaterialSlug}`, { replace: true });
   }, [isRoot, activeSlug, activeCategory, activeSection, fallbackMaterialSlug, navigate]);
+
+  useEffect(() => {
+    if (isRoot) {
+      updateSEO({
+        title: 'Материалы — Eduard Gagite',
+        description: 'Курсы и материалы по Redis, Docker и другим технологиям для backend-разработчиков.',
+        ogTitle: 'Материалы — Eduard Gagite',
+        ogDescription: 'Курсы и материалы по Redis, Docker и другим технологиям для backend-разработчиков.',
+        ogUrl: 'https://eduardgagite.github.io/materials',
+        canonical: 'https://eduardgagite.github.io/materials',
+      });
+      return () => {
+        resetSEO();
+      };
+    }
+  }, [isRoot]);
 
   const handleSelectMaterial = (category: MaterialsCategory, section: MaterialsSection, slug: string) => {
     navigate(`/materials/${category.id}/${section.id}/${slug}`);
@@ -752,6 +769,15 @@ function ArticleView({ category, section, material }: ArticleViewProps) {
   const index = siblings.findIndex((m) => materialKey(m.id) === currentKey);
   const prev = index > 0 ? siblings[index - 1] : undefined;
   const next = index >= 0 && index < siblings.length - 1 ? siblings[index + 1] : undefined;
+
+  useEffect(() => {
+    const path = `/materials/${material.id.category}/${material.id.section}/${material.id.slug}`;
+    const seoData = generateMaterialSEO(material, path);
+    updateSEO(seoData);
+    return () => {
+      resetSEO();
+    };
+  }, [material]);
 
   const goToMaterial = useCallback(
     (target?: MaterialMeta) => {
