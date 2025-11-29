@@ -110,6 +110,24 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://eduardgagite.github.io/materials/redis/data/05-geospatial-data</loc>
+    <lastmod>2025-11-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/redis/data/06-bitmaps</loc>
+    <lastmod>2025-11-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/redis/data/07-hyperloglog</loc>
+    <lastmod>2025-11-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://eduardgagite.github.io/materials/redis/ha-cluster/01-redis-sentinel</loc>
     <lastmod>2025-11-29</lastmod>
     <changefreq>monthly</changefreq>
@@ -153,6 +171,12 @@
   </url>
   <url>
     <loc>https://eduardgagite.github.io/materials/redis/intro/03-installation-and-setup</loc>
+    <lastmod>2025-11-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/redis/intro/04-when-not-to-use-redis</loc>
     <lastmod>2025-11-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -237,6 +261,12 @@
   </url>
   <url>
     <loc>https://eduardgagite.github.io/materials/redis/patterns/06-counters-and-metrics</loc>
+    <lastmod>2025-11-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/redis/patterns/07-distributed-locks</loc>
     <lastmod>2025-11-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
