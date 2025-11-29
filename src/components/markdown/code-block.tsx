@@ -60,12 +60,9 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
         </button>
       </div>
       
-      {/* Code content */}
-      <div className="relative">
-        {/* Gradient accent on left */}
-        <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-sky-500/50 via-purple-500/50 to-sky-500/50 opacity-60" />
-        
-      <Highlight
+        {/* Code content */}
+        <div className="relative">
+        <Highlight
         code={code.trimEnd()}
         language={lang as any}
         theme={themes.oneDark}
