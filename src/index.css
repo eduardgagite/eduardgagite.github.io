@@ -289,7 +289,7 @@
 }
 
 .prose-article td {
-  @apply px-4 py-3 border-b text-white/80;
+  @apply px-4 py-3 border-b;
   border-color: var(--theme-border);
   color: var(--theme-text-secondary);
 }

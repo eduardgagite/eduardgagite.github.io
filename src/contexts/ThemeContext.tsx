@@ -58,8 +58,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     root.style.setProperty('--theme-scrollbar-thumb', colors.scrollbarThumb);
 
     // Update color-scheme for system preferences
-    const isDark = themeId !== 'light';
-    root.style.colorScheme = isDark ? 'dark' : 'light';
+    root.style.colorScheme = 'dark';
   }, [theme, themeId]);
 
   const value: ThemeContextType = {
