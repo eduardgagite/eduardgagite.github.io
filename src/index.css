@@ -169,16 +169,16 @@
 }
 
 .prose-article ul li {
-  @apply relative pl-6 mb-3;
+  @apply mb-3;
   display: flex;
-  align-items: baseline;
+  gap: 0.75rem;
+  align-items: flex-start;
 }
 
 .prose-article ul li::before {
   content: '';
-  position: absolute;
-  left: 0;
-  top: 0.6em;
+  flex-shrink: 0;
+  margin-top: 0.65em;
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -194,15 +194,17 @@
 }
 
 .prose-article ol li {
-  @apply relative pl-9 mb-3;
+  @apply mb-3;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
   counter-increment: ol-counter;
 }
 
 .prose-article ol li::before {
   content: counter(ol-counter);
-  position: absolute;
-  left: 0;
-  top: 0;
+  flex-shrink: 0;
+  margin-top: 0.25em;
   width: 1.6em;
   height: 1.6em;
   display: flex;
