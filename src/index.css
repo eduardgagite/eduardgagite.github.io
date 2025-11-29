@@ -139,14 +139,16 @@
 }
 
 .prose-article ul li {
-  @apply relative pl-6 mb-2;
+  @apply relative pl-6 mb-3;
+  display: flex;
+  align-items: baseline;
 }
 
 .prose-article ul li::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 0.65em;
+  top: 0.6em;
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -161,7 +163,7 @@
 }
 
 .prose-article ol li {
-  @apply relative pl-8 mb-2;
+  @apply relative pl-9 mb-3;
   counter-increment: ol-counter;
 }
 
@@ -169,14 +171,15 @@
   content: counter(ol-counter);
   position: absolute;
   left: 0;
-  top: 0.1em;
-  width: 1.5em;
-  height: 1.5em;
+  top: 0;
+  width: 1.6em;
+  height: 1.6em;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75em;
+  font-size: 0.85em;
   font-weight: 600;
+  line-height: 1;
   color: var(--color-accent);
   background: rgba(56, 189, 248, 0.15);
   border: 1px solid rgba(56, 189, 248, 0.3);

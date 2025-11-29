@@ -27,6 +27,7 @@ export function Materials() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const filterOptions = useMemo(
     () => deriveFilterOptions({ categories: tree.categories }),
@@ -117,6 +118,7 @@ export function Materials() {
 
   const handleSelectMaterial = (category: MaterialsCategory, section: MaterialsSection, slug: string) => {
     navigate(`/materials/${category.id}/${section.id}/${slug}`);
+    setSidebarOpen(false);
   };
 
   useEffect(() => {
@@ -165,42 +167,105 @@ export function Materials() {
 
   return (
     <section className="h-full w-full overflow-hidden">
-      <div className="flex h-full w-full flex-col gap-4 px-3 py-4 sm:px-4 sm:py-6 sm:gap-6 lg:gap-8 md:flex-row">
-        <MaterialsSidebar
-          copy={sidebarCopy}
-          filterOptions={filterOptions}
-          searchQuery={searchQuery}
-          selectedLevel={selectedLevel}
-          selectedTag={selectedTag}
-          onSearchChange={setSearchQuery}
-          onSelectLevel={setSelectedLevel}
-          onSelectTag={setSelectedTag}
-          onResetFilters={resetFilters}
-          hasActiveFilters={hasActiveFilters}
-          categories={sidebarCategories}
-          categoryOpen={categoryOpen}
-          sectionOpen={sectionOpen}
-          activeCategoryId={displayActiveCategoryId}
-          activeSectionId={displayActiveSectionId}
-          activeMaterialKey={displayActiveMaterialKey}
-          onToggleCategory={toggleCategory}
-          onToggleSection={toggleSection}
-          onSelectMaterial={handleSelectMaterial}
-        />
+      <div className="flex h-full w-full flex-col gap-4 px-3 py-4 sm:px-4 sm:py-5 lg:gap-6 lg:flex-row">
+        
+        {/* Mobile sidebar toggle */}
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(true)}
+          className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-sm text-white/80 hover:bg-white/[0.05] transition-colors"
+        >
+          <MenuIcon className="w-5 h-5" />
+          <span>{sidebarCopy.heading}</span>
+        </button>
 
-        <MainSurface>
-          {isRoot ? (
-            <MaterialsIntro />
-          ) : !activeCategory || !activeSection || !activeMaterial ? (
-            <EmptyState />
-          ) : (
-            <ArticleView
-              category={activeCategory}
-              section={activeSection}
-              material={activeMaterial}
+        {/* Sidebar - Desktop */}
+        <aside className="hidden lg:block relative w-[300px] xl:w-[340px] shrink-0">
+          <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
+          <MaterialsSidebar
+            copy={sidebarCopy}
+            filterOptions={filterOptions}
+            searchQuery={searchQuery}
+            selectedLevel={selectedLevel}
+            selectedTag={selectedTag}
+            onSearchChange={setSearchQuery}
+            onSelectLevel={setSelectedLevel}
+            onSelectTag={setSelectedTag}
+            onResetFilters={resetFilters}
+            hasActiveFilters={hasActiveFilters}
+            categories={sidebarCategories}
+            categoryOpen={categoryOpen}
+            sectionOpen={sectionOpen}
+            activeCategoryId={displayActiveCategoryId}
+            activeSectionId={displayActiveSectionId}
+            activeMaterialKey={displayActiveMaterialKey}
+            onToggleCategory={toggleCategory}
+            onToggleSection={toggleSection}
+            onSelectMaterial={handleSelectMaterial}
+          />
+        </aside>
+
+        {/* Sidebar - Mobile Drawer */}
+        {sidebarOpen && (
+          <>
+            <div 
+              className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+              onClick={() => setSidebarOpen(false)}
             />
-          )}
-        </MainSurface>
+            <aside className="lg:hidden fixed inset-y-0 left-0 w-[85%] max-w-[360px] z-50 p-4">
+              <div className="relative h-full">
+                <button
+                  type="button"
+                  onClick={() => setSidebarOpen(false)}
+                  className="absolute -right-12 top-2 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white/80"
+                >
+                  <CloseIcon className="w-5 h-5" />
+                </button>
+                <MaterialsSidebar
+                  copy={sidebarCopy}
+                  filterOptions={filterOptions}
+                  searchQuery={searchQuery}
+                  selectedLevel={selectedLevel}
+                  selectedTag={selectedTag}
+                  onSearchChange={setSearchQuery}
+                  onSelectLevel={setSelectedLevel}
+                  onSelectTag={setSelectedTag}
+                  onResetFilters={resetFilters}
+                  hasActiveFilters={hasActiveFilters}
+                  categories={sidebarCategories}
+                  categoryOpen={categoryOpen}
+                  sectionOpen={sectionOpen}
+                  activeCategoryId={displayActiveCategoryId}
+                  activeSectionId={displayActiveSectionId}
+                  activeMaterialKey={displayActiveMaterialKey}
+                  onToggleCategory={toggleCategory}
+                  onToggleSection={toggleSection}
+                  onSelectMaterial={handleSelectMaterial}
+                />
+              </div>
+            </aside>
+          </>
+        )}
+
+        {/* Main content */}
+        <main className="relative flex-1 min-w-0">
+          <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
+          <div className="relative h-full rounded-[28px] border border-white/10 bg-white/[0.025] shadow-[0_28px_70px_-40px_rgba(0,0,0,0.85)] backdrop-blur overflow-hidden">
+            <div className="h-full overflow-hidden p-4 sm:p-5 lg:p-6">
+              {isRoot ? (
+                <MaterialsIntro />
+              ) : !activeCategory || !activeSection || !activeMaterial ? (
+                <EmptyState />
+              ) : (
+                <ArticleView
+                  category={activeCategory}
+                  section={activeSection}
+                  material={activeMaterial}
+                />
+              )}
+            </div>
+          </div>
+        </main>
       </div>
     </section>
   );
@@ -229,11 +294,6 @@ const EMPTY_SIDEBAR_STATE: SidebarState = {
   categories: {},
   sections: {},
 };
-
-const PANEL_GLOW_CLASS =
-  'pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl';
-const PANEL_BASE_CLASS =
-  'relative flex h-full w-full flex-col overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.025] shadow-[0_28px_70px_-40px_rgba(0,0,0,0.85)] backdrop-blur';
 
 function readSidebarState(): SidebarState {
   if (typeof window === 'undefined') return EMPTY_SIDEBAR_STATE;
@@ -333,7 +393,6 @@ function deriveFilterOptions({ categories }: FilterOptionsArgs): FilterOptions {
   };
 }
 
-
 function materialMatches({ material, criteria }: MaterialMatchArgs): boolean {
   if (criteria.level && material.level !== criteria.level) return false;
   if (criteria.tag && !material.tags?.includes(criteria.tag)) return false;
@@ -345,23 +404,6 @@ function materialMatches({ material, criteria }: MaterialMatchArgs): boolean {
 function findMaterial(tree: ReturnType<typeof loadMaterialsTree>, categoryId: string, sectionId: string, slug: string) {
   const key = materialKey({ category: categoryId, section: sectionId, slug, lang: 'ru' });
   return tree.byId[key];
-}
-
-interface MainSurfaceProps {
-  children: ReactNode;
-}
-
-function MainSurface({ children }: MainSurfaceProps) {
-  return (
-    <div className="relative flex h-full min-h-[520px] flex-1 md:min-h-[620px]">
-      <div className={PANEL_GLOW_CLASS} aria-hidden="true" />
-      <div className={`${PANEL_BASE_CLASS} flex-1`}>
-        <div className="flex-1 overflow-hidden p-4 sm:p-6">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
 }
 
 interface MaterialsSidebarProps {
@@ -408,118 +450,43 @@ function MaterialsSidebar({
   onSelectMaterial,
 }: MaterialsSidebarProps) {
   return (
-    <aside className="relative w-full shrink-0 md:w-[320px]">
-      <div className={PANEL_GLOW_CLASS} aria-hidden="true" />
-      <div className={`${PANEL_BASE_CLASS} gap-4 p-4`}>
-        <SidebarHeader copy={copy} />
-        <SidebarFilters
-          copy={copy}
-          searchQuery={searchQuery}
-          onSearchChange={onSearchChange}
-          filterOptions={filterOptions}
-          selectedLevel={selectedLevel}
-          selectedTag={selectedTag}
-          onSelectLevel={onSelectLevel}
-          onSelectTag={onSelectTag}
-          hasActiveFilters={hasActiveFilters}
-          onResetFilters={onResetFilters}
-        />
-        <div className="h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-        <SidebarTree
-          copy={copy}
-          categories={categories}
-          categoryOpen={categoryOpen}
-          sectionOpen={sectionOpen}
-          activeCategoryId={activeCategoryId}
-          activeSectionId={activeSectionId}
-          activeMaterialKey={activeMaterialKey}
-          onToggleCategory={onToggleCategory}
-          onToggleSection={onToggleSection}
-          onSelectMaterial={onSelectMaterial}
-        />
-      </div>
-    </aside>
-  );
-}
-
-interface SidebarHeaderProps {
-  copy: SidebarCopy;
-}
-
-function SidebarHeader({ copy }: SidebarHeaderProps) {
-  return (
-    <header className="space-y-2 rounded-2xl border border-white/5 bg-white/[0.02] p-3">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-white/55">{copy.heading}</p>
-      <p className="text-sm leading-5 text-white/80">{copy.intro}</p>
-    </header>
-  );
-}
-
-interface SidebarFiltersProps {
-  copy: SidebarCopy;
-  searchQuery: string;
-  onSearchChange: (value: string) => void;
-  filterOptions: FilterOptions;
-  selectedLevel: string | null;
-  selectedTag: string | null;
-  onSelectLevel: (value: string | null) => void;
-  onSelectTag: (value: string | null) => void;
-  hasActiveFilters: boolean;
-  onResetFilters: () => void;
-}
-
-function SidebarFilters({
-  copy,
-  searchQuery,
-  onSearchChange,
-  filterOptions,
-  selectedLevel,
-  selectedTag,
-  onSelectLevel,
-  onSelectTag,
-  hasActiveFilters,
-  onResetFilters,
-}: SidebarFiltersProps) {
-  const showLevels = filterOptions.levels.length > 0;
-  const showTags = filterOptions.tags.length > 0;
-
-  return (
-    <section className="space-y-3 rounded-2xl border border-white/5 bg-white/[0.02] p-3">
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-[10px] uppercase tracking-[0.2em] text-white/55">
-          {copy.filtersTitle}
-        </p>
-        {hasActiveFilters && (
-          <button
-            type="button"
-            onClick={onResetFilters}
-            className="text-[11px] font-medium text-primary transition hover:text-primary/80"
-          >
-            {copy.resetLabel}
-          </button>
-        )}
+    <div className="relative h-full rounded-[28px] border border-white/10 bg-white/[0.025] shadow-[0_28px_70px_-40px_rgba(0,0,0,0.85)] backdrop-blur overflow-hidden flex flex-col">
+      {/* Header */}
+      <div className="p-4 border-b border-white/[0.06]">
+        <p className="text-xs uppercase tracking-widest text-white/50 font-medium">{copy.heading}</p>
+        <p className="mt-2 text-sm leading-relaxed text-white/75">{copy.intro}</p>
       </div>
 
-      <label className="block text-xs text-white/70">
-        {copy.searchLabel}
-        <div className="mt-1 flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-3 py-2 transition focus-within:border-primary/60 focus-within:bg-white/[0.04]">
-          <SearchIcon className="h-4 w-4 flex-shrink-0 text-white/45" />
+      {/* Filters */}
+      <div className="p-4 border-b border-white/[0.06] space-y-3">
+        <div className="flex items-center justify-between">
+          <p className="text-[10px] uppercase tracking-widest text-white/50">{copy.filtersTitle}</p>
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={onResetFilters}
+              className="text-[11px] font-medium text-sky-400 hover:text-sky-300 transition-colors"
+            >
+              {copy.resetLabel}
+            </button>
+          )}
+        </div>
+
+        {/* Search */}
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.05] border border-white/[0.1] focus-within:border-sky-500/50 focus-within:bg-white/[0.08] transition-all">
+          <SearchIcon className="w-4 h-4 text-white/50" />
           <input
             type="search"
             value={searchQuery}
-            onChange={(event) => onSearchChange(event.target.value)}
+            onChange={(e) => onSearchChange(e.target.value)}
             placeholder={copy.searchPlaceholder}
-            className="w-full bg-transparent text-sm text-white placeholder:text-white/40 focus:outline-none"
+            className="flex-1 bg-transparent text-sm text-white placeholder:text-white/40 focus:outline-none"
           />
         </div>
-      </label>
 
-      {showLevels && (
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-white/55">
-            {copy.levelLabel}
-          </p>
-          <div className="mt-1.5 flex flex-wrap gap-1.5">
+        {/* Level filters */}
+        {filterOptions.levels.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
             {filterOptions.levels.map((level) => (
               <FilterChip
                 key={level}
@@ -529,15 +496,11 @@ function SidebarFilters({
               />
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {showTags && (
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.18em] text-white/55">
-            {copy.tagsLabel}
-          </p>
-          <div className="mt-1.5 flex max-h-24 flex-wrap gap-1.5 overflow-y-auto pr-1 scroll-elegant">
+        {/* Tag filters */}
+        {filterOptions.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto scroll-elegant">
             {filterOptions.tags.map((tag) => (
               <FilterChip
                 key={tag}
@@ -547,126 +510,88 @@ function SidebarFilters({
               />
             ))}
           </div>
-        </div>
-      )}
-    </section>
-  );
-}
+        )}
+      </div>
 
-interface SidebarTreeProps {
-  copy: SidebarCopy;
-  categories: MaterialsCategory[];
-  categoryOpen: Record<string, boolean>;
-  sectionOpen: Record<string, boolean>;
-  activeCategoryId?: string;
-  activeSectionId?: string;
-  activeMaterialKey?: string | null;
-  onToggleCategory: (categoryId: string) => void;
-  onToggleSection: (sectionId: string) => void;
-  onSelectMaterial: (category: MaterialsCategory, section: MaterialsSection, slug: string) => void;
-}
-
-function SidebarTree({
-  copy,
-  categories,
-  categoryOpen,
-  sectionOpen,
-  activeCategoryId,
-  activeSectionId,
-  activeMaterialKey,
-  onToggleCategory,
-  onToggleSection,
-  onSelectMaterial,
-}: SidebarTreeProps) {
-  return (
-    <section className="flex min-h-0 flex-1 flex-col">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-white/55">
-        {copy.structureTitle}
-      </p>
-      <div className="mt-2 flex-1 overflow-y-auto pr-2 scroll-elegant">
+      {/* Tree */}
+      <div className="flex-1 overflow-y-auto p-4 scroll-elegant">
+        <p className="text-[10px] uppercase tracking-widest text-white/50 mb-3">{copy.structureTitle}</p>
         {categories.length === 0 ? (
-          <p className="text-xs text-white/60">{copy.emptyLabel}</p>
+          <p className="text-sm text-white/60">{copy.emptyLabel}</p>
         ) : (
-          <ul className="space-y-1">
+          <ul className="space-y-2">
             {categories.map((category) => {
               const isCategoryOpen = !!categoryOpen[category.id];
               return (
-                <li key={category.id} className="rounded-xl border border-white/5 bg-white/[0.01]">
+                <li key={category.id}>
                   <button
                     type="button"
                     onClick={() => onToggleCategory(category.id)}
-                    aria-expanded={isCategoryOpen}
-                    className="flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-[13px] leading-5 transition hover:bg-white/[0.04]"
+                    className="flex w-full items-center justify-between gap-2 px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.15] transition-all text-left"
                   >
-                    <span className="truncate">{category.title}</span>
-                    <ChevronIcon
-                      className={`h-3.5 w-3.5 text-white/50 transition-transform ${isCategoryOpen ? 'rotate-180 text-primary/70' : ''}`}
-                    />
+                    <span className="text-sm font-medium text-white truncate">{category.title}</span>
+                    <ChevronIcon className={`w-4 h-4 text-white/50 transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} />
                   </button>
+                  
                   {isCategoryOpen && (
-                    <div className="border-t border-white/5 px-2.5 py-1.5">
-                      <ul className="space-y-1">
-                        {category.sections.map((section, sectionIndex) => {
-                          const isSectionActive =
-                            category.id === activeCategoryId && section.id === activeSectionId;
-                          const isSectionOpen = !!sectionOpen[section.id];
-                          return (
-                            <li key={section.id}>
-                              <button
-                                type="button"
-                                onClick={() => onToggleSection(section.id)}
-                                aria-expanded={isSectionOpen}
-                                aria-current={isSectionActive ? 'true' : undefined}
-                                className={`flex w-full items-center justify-between gap-2 rounded-lg px-2 py-1 text-left text-[12px] transition ${
-                                  isSectionActive
-                                    ? 'bg-primary/20 text-white'
-                                    : 'text-white/80 hover:bg-white/5'
-                                }`}
-                              >
-                                <span className="flex min-w-0 items-center gap-2">
-                                  <span className="rounded-md bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-white/60">
-                                    {sectionIndex + 1}
-                                  </span>
-                                  <span className="truncate">{section.title}</span>
+                    <ul className="mt-2 ml-3 space-y-1.5 border-l border-white/[0.1] pl-3">
+                      {category.sections.map((section, sectionIdx) => {
+                        const isSectionActive = category.id === activeCategoryId && section.id === activeSectionId;
+                        const isSectionOpen = !!sectionOpen[section.id];
+                        
+                        return (
+                          <li key={section.id}>
+                            <button
+                              type="button"
+                              onClick={() => onToggleSection(section.id)}
+                              className={`flex w-full items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg text-left transition-all ${
+                                isSectionActive
+                                  ? 'bg-sky-500/20 border border-sky-500/30 text-white'
+                                  : 'hover:bg-white/[0.06] text-white/80 hover:text-white'
+                              }`}
+                            >
+                              <span className="flex items-center gap-2 min-w-0">
+                                <span className="text-[10px] font-mono text-white/50 bg-white/[0.08] px-1.5 py-0.5 rounded">
+                                  {sectionIdx + 1}
                                 </span>
-                                <ChevronIcon
-                                  className={`h-3 w-3 text-white/45 transition-transform ${isSectionOpen ? 'rotate-180 text-primary/70' : ''}`}
-                                />
-                              </button>
-                              {isSectionOpen && section.materials.length > 0 && (
-                                <ul className="ml-4 mt-1 space-y-0.5 border-l border-white/10 pl-3">
-                                  {section.materials.map((material, materialIndex) => {
-                                    const key = materialKey(material.id);
-                                    const isMaterialActive = activeMaterialKey === key;
-                                    return (
-                                      <li key={key}>
-                                        <button
-                                          type="button"
-                                          onClick={() => onSelectMaterial(category, section, material.id.slug)}
-                                          aria-current={isMaterialActive ? 'true' : undefined}
-                                          className={`w-full rounded-md px-2 py-1 text-left text-[11px] transition ${
-                                            isMaterialActive
-                                              ? 'bg-primary/30 text-white'
-                                              : 'text-white/70 hover:bg-white/5'
-                                          }`}
-                                        >
-                                          <span className="flex items-center gap-2">
-                                            <span className="font-mono text-[10px] text-white/50">
-                                              {sectionIndex + 1}.{materialIndex + 1}
-                                            </span>
-                                            <span className="truncate">{material.title}</span>
+                                <span className="text-[13px] truncate">{section.title}</span>
+                              </span>
+                              <ChevronIcon className={`w-3.5 h-3.5 text-white/50 shrink-0 transition-transform ${isSectionOpen ? 'rotate-180' : ''}`} />
+                            </button>
+                            
+                            {isSectionOpen && section.materials.length > 0 && (
+                              <ul className="mt-1.5 ml-2 space-y-0.5">
+                                {section.materials.map((material, matIdx) => {
+                                  const key = materialKey(material.id);
+                                  const isActive = activeMaterialKey === key;
+                                  
+                                  return (
+                                    <li key={key}>
+                                      <button
+                                        type="button"
+                                        onClick={() => onSelectMaterial(category, section, material.id.slug)}
+                                        className={`w-full px-2.5 py-1.5 rounded-lg text-left text-[12px] transition-all ${
+                                          isActive
+                                            ? 'bg-sky-500/25 text-white'
+                                            : 'text-white/70 hover:bg-white/[0.06] hover:text-white'
+                                        }`}
+                                      >
+                                        <span className="flex items-center gap-2">
+                                          <span className="text-[10px] font-mono text-white/40">
+                                            {sectionIdx + 1}.{matIdx + 1}
                                           </span>
-                                        </button>
-                                      </li>
-                                    );
-                                  })}
-                                </ul>
-                              )}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
+                                          <span className="truncate">{material.title}</span>
+                                        </span>
+                                      </button>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
                   )}
                 </li>
               );
@@ -674,7 +599,7 @@ function SidebarTree({
           </ul>
         )}
       </div>
-    </section>
+    </div>
   );
 }
 
@@ -689,11 +614,10 @@ function FilterChip({ label, isActive, onClick }: FilterChipProps) {
     <button
       type="button"
       onClick={onClick}
-      aria-pressed={isActive}
-      className={`rounded-full border px-3 py-1 text-[11px] transition ${
+      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
         isActive
-          ? 'border-primary/70 bg-primary/25 text-white shadow-[0_0_12px_rgba(31,111,235,0.35)]'
-          : 'border-white/15 text-white/75 hover:border-white/45 hover:text-white'
+          ? 'bg-sky-500/25 text-sky-300 border border-sky-500/40'
+          : 'bg-white/[0.05] text-white/70 border border-white/[0.1] hover:bg-white/[0.1] hover:text-white'
       }`}
     >
       {label}
@@ -703,7 +627,7 @@ function FilterChip({ label, isActive, onClick }: FilterChipProps) {
 
 function SearchIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden focusable="false" {...props}>
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" {...props}>
       <circle cx="9" cy="9" r="5.5" strokeWidth="1.5" />
       <path d="m14.5 14.5 3 3" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
@@ -712,8 +636,24 @@ function SearchIcon(props: SVGProps<SVGSVGElement>) {
 
 function ChevronIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden focusable="false" {...props}>
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" {...props}>
       <path d="m5 8 5 5 5-5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function MenuIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+      <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function CloseIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+      <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
     </svg>
   );
 }
@@ -721,9 +661,7 @@ function ChevronIcon(props: SVGProps<SVGSVGElement>) {
 function EmptyState() {
   return (
     <div className="flex h-full items-center justify-center">
-      <p className="text-sm text-white/70">
-        Материалы пока не найдены.
-      </p>
+      <p className="text-sm text-white/60">Материалы пока не найдены.</p>
     </div>
   );
 }
@@ -732,23 +670,29 @@ function MaterialsIntro() {
   const { t } = useTranslation();
 
   return (
-    <div className="scroll-elegant flex h-full flex-col overflow-y-auto">
-      <h1 className="text-xl font-semibold">
-        {t('materials.introTitle')}
-      </h1>
-      <div className="mt-3 space-y-2 text-sm leading-6 text-white/90">
+    <div className="h-full overflow-y-auto scroll-elegant">
+      <h1 className="text-2xl font-bold text-white">{t('materials.introTitle')}</h1>
+      <div className="mt-4 space-y-3 text-[15px] leading-7 text-white/85">
         <p>{t('materials.introP1')}</p>
         <p>{t('materials.introP2')}</p>
         <p>{t('materials.introP3')}</p>
       </div>
-      <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2">
-        <p className="text-[11px] uppercase tracking-[0.18em] text-white/55">
-          {t('materials.philosophyTitle')}
-        </p>
-        <ul className="mt-2 space-y-1 text-[11px] leading-5 text-white/85 font-mono">
-          <li>{`// ${t('materials.philosophy1')}`}</li>
-          <li>{`// ${t('materials.philosophy2')}`}</li>
-          <li>{`// ${t('materials.philosophy3')}`}</li>
+      
+      <div className="mt-6 p-4 rounded-xl bg-white/[0.05] border border-white/[0.1]">
+        <p className="text-[10px] uppercase tracking-widest text-white/50 mb-3">{t('materials.philosophyTitle')}</p>
+        <ul className="space-y-2 font-mono text-[13px] text-white/75">
+          <li className="flex items-start gap-2">
+            <span className="text-sky-400">//</span>
+            <span>{t('materials.philosophy1')}</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-sky-400">//</span>
+            <span>{t('materials.philosophy2')}</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="text-sky-400">//</span>
+            <span>{t('materials.philosophy3')}</span>
+          </li>
         </ul>
       </div>
     </div>
@@ -787,17 +731,8 @@ function ArticleView({ category, section, material }: ArticleViewProps) {
     [navigate],
   );
 
-  const handleBackToSection = useCallback(() => {
-    navigate(`/materials/${category.id}/${section.id}`);
-  }, [navigate, category.id, section.id]);
-
-  const handlePrev = useCallback(() => {
-    goToMaterial(prev);
-  }, [goToMaterial, prev]);
-
-  const handleNext = useCallback(() => {
-    goToMaterial(next);
-  }, [goToMaterial, next]);
+  const handlePrev = useCallback(() => goToMaterial(prev), [goToMaterial, prev]);
+  const handleNext = useCallback(() => goToMaterial(next), [goToMaterial, next]);
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
@@ -806,94 +741,74 @@ function ArticleView({ category, section, material }: ArticleViewProps) {
       const tagName = target?.tagName?.toLowerCase();
       if (tagName === 'input' || tagName === 'textarea' || target?.isContentEditable) return;
 
-      if (event.key === 'ArrowLeft') {
-        if (!prev) return;
+      if (event.key === 'ArrowLeft' && prev) {
         event.preventDefault();
         handlePrev();
-      } else if (event.key === 'ArrowRight') {
-        if (!next) return;
+      } else if (event.key === 'ArrowRight' && next) {
         event.preventDefault();
         handleNext();
-      } else if (event.key === 'Escape') {
-        event.preventDefault();
-        handleBackToSection();
       }
     };
 
     window.addEventListener('keydown', handleKeydown);
     return () => window.removeEventListener('keydown', handleKeydown);
-  }, [handleBackToSection, handleNext, handlePrev, next, prev]);
+  }, [handleNext, handlePrev, next, prev]);
 
   return (
-    <article className="relative flex h-full flex-col overflow-hidden">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/70">
-        <button
-          type="button"
-          onClick={handleBackToSection}
-          className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1 transition hover:border-white/50 hover:text-white"
-        >
-          ← {t('materials.backToSection')}
-        </button>
-        <p className="text-[10px] text-white/50">
-          {t('materials.keyboardHints')}
+    <article className="h-full flex flex-col overflow-hidden">
+      {/* Header */}
+      <header className="shrink-0 pb-4 border-b border-white/[0.06]">
+        <p className="text-[11px] uppercase tracking-widest text-white/50">
+          {category.title} → {section.title}
         </p>
-      </div>
-
-      <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-        <p className="text-[11px] uppercase tracking-[0.18em] text-white/55">
-          {category.title} / {section.title}
-        </p>
-        <h1 className="mt-1 text-2xl font-semibold leading-tight">{material.title}</h1>
+        <h1 className="mt-2 text-xl sm:text-2xl font-bold text-white leading-tight">{material.title}</h1>
         {material.subtitle && (
-          <p className="mt-2 text-sm text-white/75">
-            {material.subtitle}
-          </p>
+          <p className="mt-2 text-sm text-white/70">{material.subtitle}</p>
         )}
-      </div>
+      </header>
 
-      <div className="mt-4 flex-1 overflow-y-auto pr-1 scroll-elegant">
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto py-4 scroll-elegant">
         <MarkdownArticle content={material.content} materialPath={material.path} />
       </div>
 
-      <div className="mt-4 border-t border-white/10 pt-3">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-          <button
-            type="button"
-            onClick={handleBackToSection}
-            className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1 text-[11px] transition hover:border-white/60 hover:text-white"
-          >
-            ⤺ {t('materials.backToSection')}
-          </button>
-          <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:justify-end">
-            <button
-              type="button"
-              onClick={handlePrev}
-              disabled={!prev}
-              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] transition ${
-                prev
-                  ? 'border-white/25 text-white hover:border-white/60 hover:text-white'
-                  : 'cursor-not-allowed border-white/5 text-white/30'
-              }`}
-            >
-              ← {t('materials.prevArticle')}
-              {prev && <span className="hidden sm:inline text-white/60">{prev.title}</span>}
-            </button>
-            <button
-              type="button"
-              onClick={handleNext}
-              disabled={!next}
-              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] transition ${
-                next
-                  ? 'border-white/25 text-white hover:border-white/60 hover:text-white'
-                  : 'cursor-not-allowed border-white/5 text-white/30'
-              }`}
-            >
-              {t('materials.nextArticle')} →
-              {next && <span className="hidden sm:inline text-white/60">{next.title}</span>}
-            </button>
+      {/* Footer navigation */}
+      <footer className="shrink-0 pt-4 border-t border-white/[0.06]">
+        <div className="flex items-center justify-between gap-3">
+          <NavButton onClick={handlePrev} disabled={!prev} direction="prev">
+            {prev?.title || t('materials.prevArticle')}
+          </NavButton>
+          <NavButton onClick={handleNext} disabled={!next} direction="next">
+            {next?.title || t('materials.nextArticle')}
+          </NavButton>
         </div>
-        </div>
-      </div>
+      </footer>
     </article>
+  );
+}
+
+interface NavButtonProps {
+  onClick: () => void;
+  disabled: boolean;
+  direction: 'prev' | 'next';
+  children: ReactNode;
+}
+
+function NavButton({ onClick, disabled, direction, children }: NavButtonProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`group flex items-center gap-2 px-3 py-2 rounded-xl text-[12px] transition-all max-w-[45%] ${
+        disabled
+          ? 'text-white/30 cursor-not-allowed'
+          : 'text-white/80 bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.1] hover:border-white/[0.15] hover:text-white'
+      }`}
+    >
+      {direction === 'prev' && <span className="shrink-0">←</span>}
+      <span className="truncate">{children}</span>
+      {direction === 'next' && <span className="shrink-0">→</span>}
+    </button>
   );
 }
