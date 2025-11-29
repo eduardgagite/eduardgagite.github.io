@@ -26,22 +26,19 @@ export function Home() {
         
         {/* Left column: avatar + name + role + contacts */}
         <aside className="flex flex-col items-center md:items-start self-center md:self-start lg:self-center">
-          <div className="relative w-full max-w-[min(360px,90vw)] group">
+          <div className="relative w-full max-w-[min(360px,90vw)]">
             {/* Glow effect */}
-            <div className="absolute -inset-2 rounded-2xl bg-gradient-to-br from-sky-500/20 via-purple-500/10 to-sky-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" aria-hidden />
+            <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
             
             {/* Card */}
-            <div className="relative rounded-2xl border border-white/[0.08] bg-[#0d1117]/70 backdrop-blur-xl p-5 overflow-hidden">
-              {/* Top gradient line */}
-              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-sky-500/40 to-transparent" />
+            <div className="relative rounded-[28px] border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 overflow-hidden shadow-[0_28px_70px_-40px_rgba(0,0,0,0.85)]">
               
               {/* Avatar */}
-              <div className="relative w-full aspect-square rounded-xl overflow-hidden ring-1 ring-white/[0.08]">
-                <div className="absolute inset-0 bg-gradient-to-br from-sky-500/10 to-purple-500/10" />
+              <div className="relative w-full aspect-square rounded-xl overflow-hidden ring-1 ring-white/10">
                 <img
                   src="/images/avatar.jpg"
                   alt={name}
-                  className="relative h-full w-full object-cover"
+                  className="h-full w-full object-cover"
                   loading="eager"
                 />
               </div>
@@ -49,26 +46,26 @@ export function Home() {
               {/* Name & Role */}
               <div className="mt-5">
                 <h1 className="text-xl font-semibold leading-tight text-white">{name}</h1>
-                <p className="mt-1.5 text-sm font-medium bg-gradient-to-r from-sky-400 to-purple-400 bg-clip-text text-transparent">
+                <p className="mt-1.5 text-sm font-medium text-blue-400">
                   {t('hero.role')}
                 </p>
               </div>
               
               {/* Divider */}
-              <div className="my-5 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+              <div className="my-5 h-px bg-white/10" />
               
               {/* Contact buttons */}
               <div className="space-y-2">
                 <ContactLink href={telegramHref} external icon={<TelegramIcon />}>
-                  <span className="text-white/70">Telegram</span>
+                  <span className="text-white/80">Telegram</span>
                   <span className="text-white/50">@{profileContent.contact.telegramHandle}</span>
                 </ContactLink>
                 <ContactLink href={emailHref} icon={<MailIcon />}>
-                  <span className="text-white/70">Email</span>
+                  <span className="text-white/80">Email</span>
                   <span className="text-white/50">{profileContent.contact.email}</span>
                 </ContactLink>
                 <ContactLink href={githubHref} external icon={<GithubIcon />}>
-                  <span className="text-white/70">GitHub</span>
+                  <span className="text-white/80">GitHub</span>
                   <span className="text-white/50">/eduardgagite</span>
                 </ContactLink>
               </div>
@@ -77,40 +74,37 @@ export function Home() {
         </aside>
 
         {/* Right column: "About me" in code-like window */}
-        <div className="relative group">
+        <div className="relative">
           {/* Glow effect */}
-          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-sky-500/10 to-purple-500/10 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
           
           {/* Window */}
-          <div className="relative h-full rounded-2xl border border-white/[0.08] bg-[#0d1117]/70 backdrop-blur-xl shadow-2xl shadow-black/20 flex flex-col min-h-0 overflow-hidden">
+          <div className="relative h-full rounded-[28px] border border-white/10 bg-white/[0.04] backdrop-blur-xl shadow-[0_28px_70px_-40px_rgba(0,0,0,0.85)] flex flex-col min-h-0 overflow-hidden">
             {/* Header */}
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06] bg-white/[0.02]">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10 bg-white/[0.02]">
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-[#ff5f56] shadow-[0_0_6px_rgba(255,95,86,0.3)]" />
-                <span className="w-3 h-3 rounded-full bg-[#ffbd2e] shadow-[0_0_6px_rgba(255,189,46,0.3)]" />
-                <span className="w-3 h-3 rounded-full bg-[#27c93f] shadow-[0_0_6px_rgba(39,201,63,0.3)]" />
+                <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                <span className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                <span className="w-3 h-3 rounded-full bg-[#27c93f]" />
               </div>
-              <span className="ml-2 text-xs text-white/40 font-mono">about.ts</span>
+              <span className="ml-2 text-xs text-white/50 font-mono">about.ts</span>
             </div>
             
             {/* Content */}
             <div className="relative p-5 overflow-auto flex-1 flex flex-col">
-              {/* Gradient accent line */}
-              <div className="absolute left-0 top-5 bottom-5 w-[2px] bg-gradient-to-b from-sky-500/40 via-purple-500/40 to-sky-500/40 rounded-full" />
-              
-              <pre className="pl-4 font-mono text-[clamp(13px,1.05vw,16px)] leading-6 whitespace-pre-wrap text-white/50">
+              <pre className="font-mono text-[clamp(13px,1.05vw,16px)] leading-6 whitespace-pre-wrap text-white/50">
 {`/**
  * ${isRu ? 'Обо мне' : 'About me'}
  */`}
               </pre>
               
-              <div className="mt-3 pl-4 font-mono text-[clamp(13px,1.05vw,16px)] leading-7 whitespace-pre-wrap text-white/85 flex-1">
+              <div className="mt-3 font-mono text-[clamp(13px,1.05vw,16px)] leading-7 whitespace-pre-wrap text-white/85 flex-1">
                 {renderHighlightedBio({ text: t('hero.bio') as string, lang })}
               </div>
               
               {/* Footer */}
-              <div className="mt-4 pl-4">
-                <div className="h-px w-full bg-gradient-to-r from-sky-500/30 via-purple-500/30 to-transparent" />
+              <div className="mt-4">
+                <div className="h-px w-full bg-white/10" />
                 <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <pre className="font-mono text-[12px] leading-5 whitespace-pre-wrap text-white/50">
 {`// materials
@@ -118,10 +112,10 @@ export function Home() {
                   </pre>
                   <a
                     href="/materials"
-                    className="group/btn inline-flex items-center gap-2 shrink-0 px-4 py-2 text-xs font-medium rounded-lg bg-gradient-to-r from-sky-500/10 to-purple-500/10 border border-sky-500/20 text-white/90 transition-all hover:from-sky-500/20 hover:to-purple-500/20 hover:border-sky-500/30 hover:shadow-[0_0_16px_rgba(56,189,248,0.15)] self-start sm:self-auto"
+                    className="inline-flex items-center gap-2 shrink-0 px-4 py-2 text-xs font-medium rounded-lg bg-white/[0.05] border border-white/10 text-white/90 transition-all hover:bg-white/[0.1] hover:border-white/20 self-start sm:self-auto"
                   >
                     {t('materials.cta')}
-                    <svg className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </a>
@@ -148,15 +142,15 @@ function ContactLink({ href, icon, children, external }: ContactLinkProps) {
     <a
       href={href}
       {...props}
-      className="group/link flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05] transition-all hover:bg-white/[0.05] hover:border-white/[0.1]"
+      className="group/link flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] transition-all hover:bg-white/[0.08] hover:border-white/15"
     >
-      <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-white/[0.05] to-white/[0.02] text-white/50 group-hover/link:text-sky-400 transition-colors">
+      <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/[0.05] text-white/60 group-hover/link:text-blue-400 transition-colors">
         {icon}
       </span>
       <div className="flex-1 min-w-0 flex flex-col text-sm">
         {children}
       </div>
-      <svg className="w-4 h-4 text-white/20 group-hover/link:text-white/40 transition-all group-hover/link:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg className="w-4 h-4 text-white/30 group-hover/link:text-white/50 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M7 17L17 7M17 7H7M17 7v10" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </a>
@@ -187,7 +181,7 @@ function renderHighlightedBio({ text, lang }: RenderHighlightedBioArgs) {
   return parts.map((part, index) => {
     if (tokens.includes(part)) {
       return (
-        <span key={`tech-${index}`} className="text-sky-400 font-medium">
+        <span key={`tech-${index}`} className="text-blue-400 font-medium">
           {part}
         </span>
       );
