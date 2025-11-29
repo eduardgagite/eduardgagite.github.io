@@ -88,7 +88,7 @@ export function Home() {
                 <span className="w-3 h-3 rounded-full bg-[#27c93f]" />
               </div>
               <span className="ml-2 text-xs text-white/50 font-mono">about.ts</span>
-            </div>
+          </div>
             
             {/* Content */}
             <div className="relative p-5 overflow-auto flex-1 flex flex-col">
@@ -96,10 +96,10 @@ export function Home() {
 {`/**
  * ${isRu ? 'Обо мне' : 'About me'}
  */`}
-              </pre>
+            </pre>
               
               <div className="mt-3 font-mono text-[clamp(13px,1.05vw,16px)] leading-7 whitespace-pre-wrap text-white/85 flex-1">
-                {renderHighlightedBio({ text: t('hero.bio') as string, lang })}
+              {renderHighlightedBio({ text: t('hero.bio') as string, lang })}
               </div>
               
               {/* Footer */}
@@ -109,12 +109,12 @@ export function Home() {
                   <pre className="font-mono text-[12px] leading-5 whitespace-pre-wrap text-white/50">
 {`// materials
 // ${t('materials.note')} [${t('materials.topicsShort')}]`}
-                  </pre>
+                </pre>
                   <a
                     href="/materials"
                     className="inline-flex items-center gap-2 shrink-0 px-4 py-2 text-xs font-medium rounded-lg bg-white/[0.05] border border-white/10 text-white/90 transition-all hover:bg-white/[0.1] hover:border-white/20 self-start sm:self-auto"
                   >
-                    {t('materials.cta')}
+                  {t('materials.cta')}
                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
