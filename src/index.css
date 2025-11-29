@@ -4,32 +4,10 @@
 
 @layer base {
   :root {
-    /* Theme CSS custom properties - will be set by ThemeProvider */
-    --theme-background: #0b0c10;
-    --theme-foreground: #e9eef4;
-    --theme-surface: rgba(255, 255, 255, 0.03);
-    --theme-primary: #1f6feb;
-    --theme-primary-hover: #388bfd;
-    --theme-accent: #38bdf8;
-    --theme-accent-secondary: #60a5fa;
-    --theme-success: #10b981;
-    --theme-warning: #f59e0b;
-    --theme-error: #ef4444;
-    --theme-card-background: rgba(255, 255, 255, 0.04);
-    --theme-border: rgba(255, 255, 255, 0.1);
-    --theme-border-hover: rgba(255, 255, 255, 0.2);
-    --theme-text: #ffffff;
-    --theme-text-secondary: rgba(255, 255, 255, 0.85);
-    --theme-text-muted: rgba(255, 255, 255, 0.5);
-    --theme-glow: rgba(31, 111, 235, 0.35);
-    --theme-network-color: #e9eef4;
-    --theme-scrollbar: rgba(255, 255, 255, 0.04);
-    --theme-scrollbar-thumb: rgba(56, 189, 248, 0.9);
-
-    /* Legacy color variables for backward compatibility */
-    --color-accent: var(--theme-accent);
-    --color-accent-secondary: var(--theme-accent-secondary);
-    --color-surface: var(--theme-surface);
+    color-scheme: dark;
+    --color-accent: #38bdf8;
+    --color-accent-secondary: #60a5fa;
+    --color-surface: rgba(255, 255, 255, 0.03);
   }
 
   html, body, #root {
@@ -37,9 +15,7 @@
   }
 
   body {
-    background-color: var(--theme-background);
-    color: var(--theme-foreground);
-    @apply antialiased;
+    @apply bg-background text-foreground antialiased;
     margin: 0;
     font-feature-settings: 'liga' 1, 'calt' 1;
     text-rendering: optimizeLegibility;
@@ -63,7 +39,7 @@
 /* Элегантные скроллбары */
 .scroll-elegant {
   scrollbar-width: thin;
-  scrollbar-color: var(--theme-scrollbar-thumb) var(--theme-scrollbar);
+  scrollbar-color: rgba(56, 189, 248, 0.9) rgba(255, 255, 255, 0.04);
 }
 
 .scroll-elegant::-webkit-scrollbar {
@@ -71,20 +47,20 @@
 }
 
 .scroll-elegant::-webkit-scrollbar-track {
-  background: var(--theme-scrollbar);
+  background: rgba(15, 23, 42, 0.45);
   border-radius: 999px;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .scroll-elegant::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--theme-accent), var(--theme-accent-secondary));
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.95), rgba(96, 165, 250, 0.85));
   border-radius: 999px;
   border: 1px solid rgba(15, 23, 42, 0.6);
-  box-shadow: 0 0 10px var(--theme-accent);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
 }
 
 .scroll-elegant::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--theme-accent-secondary), var(--theme-accent));
+  background: linear-gradient(180deg, rgba(125, 211, 252, 1), rgba(96, 165, 250, 1));
 }
 
 /* Inline highlight для markdown */
@@ -113,23 +89,21 @@
 
 /* Prose container */
 .prose-article {
-  color: var(--theme-text-secondary);
+  @apply text-white/90;
   line-height: 1.75;
 }
 
 /* Заголовки статей */
 .prose-article h1 {
-  @apply text-2xl sm:text-3xl font-bold tracking-tight mb-6;
-  color: var(--theme-text);
-  background: linear-gradient(135deg, var(--theme-text) 0%, var(--theme-text-secondary) 100%);
+  @apply text-2xl sm:text-3xl font-bold tracking-tight text-white mb-6;
+  background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .prose-article h2 {
-  @apply text-xl sm:text-2xl font-semibold mt-10 mb-4;
-  color: var(--theme-text);
+  @apply text-xl sm:text-2xl font-semibold text-white mt-10 mb-4;
   position: relative;
   padding-left: 1rem;
 }
@@ -146,25 +120,21 @@
 }
 
 .prose-article h3 {
-  @apply text-lg sm:text-xl font-semibold mt-8 mb-3;
-  color: var(--theme-text-secondary);
+  @apply text-lg sm:text-xl font-semibold text-white/95 mt-8 mb-3;
 }
 
 .prose-article h4 {
-  @apply text-base font-semibold mt-6 mb-2;
-  color: var(--theme-text-secondary);
+  @apply text-base font-semibold text-white/90 mt-6 mb-2;
 }
 
 /* Параграфы */
 .prose-article p {
-  @apply mb-4 text-[15px] leading-7;
-  color: var(--theme-text-secondary);
+  @apply mb-4 text-[15px] leading-7 text-white/85;
 }
 
 /* Списки */
 .prose-article ul {
-  @apply mb-5 pl-0 text-[15px] leading-7;
-  color: var(--theme-text-secondary);
+  @apply mb-5 pl-0 text-[15px] leading-7 text-white/85;
   list-style: none;
 }
 
@@ -187,8 +157,7 @@
 }
 
 .prose-article ol {
-  @apply mb-5 pl-0 text-[15px] leading-7;
-  color: var(--theme-text-secondary);
+  @apply mb-5 pl-0 text-[15px] leading-7 text-white/85;
   list-style: none;
   counter-reset: ol-counter;
 }
@@ -219,13 +188,12 @@
 
 /* Blockquote */
 .prose-article blockquote {
-  @apply my-6 py-4 px-5 text-[15px] leading-7 italic;
-  color: var(--theme-text-secondary);
+  @apply my-6 py-4 px-5 text-[15px] leading-7 text-white/80 italic;
   position: relative;
-  background: linear-gradient(135deg, var(--theme-accent)26, var(--theme-accent-secondary)1a);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(96, 165, 250, 0.05));
   border-radius: 0 12px 12px 0;
   border-left: 3px solid;
-  border-image: linear-gradient(180deg, var(--theme-accent), var(--theme-accent-secondary)) 1;
+  border-image: linear-gradient(180deg, var(--color-accent), var(--color-accent-secondary)) 1;
 }
 
 .prose-article blockquote p {
@@ -246,14 +214,13 @@
 
 /* Ссылки */
 .prose-article a {
-  color: var(--theme-accent);
-  @apply no-underline transition-all duration-200;
-  background: linear-gradient(transparent 90%, var(--theme-accent)4d 90%);
+  @apply text-sky-400 no-underline transition-all duration-200;
+  background: linear-gradient(transparent 90%, rgba(56, 189, 248, 0.3) 90%);
 }
 
 .prose-article a:hover {
-  color: var(--theme-accent-secondary);
-  background: linear-gradient(transparent 80%, var(--theme-accent)66 80%);
+  @apply text-sky-300;
+  background: linear-gradient(transparent 80%, rgba(56, 189, 248, 0.4) 80%);
 }
 
 /* Горизонтальная линия */
@@ -274,10 +241,8 @@
 }
 
 .prose-article th {
-  @apply px-4 py-3 font-semibold border-b;
-  color: var(--theme-text-secondary);
-  border-color: var(--theme-border);
-  background: var(--theme-accent)1a;
+  @apply px-4 py-3 font-semibold text-white/90 border-b border-white/20;
+  background: rgba(56, 189, 248, 0.1);
 }
 
 .prose-article th:first-child {
@@ -289,9 +254,7 @@
 }
 
 .prose-article td {
-  @apply px-4 py-3 border-b;
-  border-color: var(--theme-border);
-  color: var(--theme-text-secondary);
+  @apply px-4 py-3 border-b border-white/10 text-white/80;
 }
 
 .prose-article tr:last-child td {
@@ -311,25 +274,24 @@
 }
 
 .prose-article tbody tr:hover {
-  background: var(--theme-surface);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 /* Strong и em */
 .prose-article strong {
-  @apply font-semibold;
-  color: var(--theme-text);
+  @apply font-semibold text-white;
 }
 
 .prose-article em {
-  color: var(--theme-text-secondary);
+  @apply text-white/90;
 }
 
 /* Код внутри текста */
 .prose-article code:not(pre code) {
   @apply font-mono text-[13px] px-1.5 py-0.5 rounded;
-  background: var(--theme-accent)26;
-  color: var(--theme-accent-secondary);
-  border: 1px solid var(--theme-accent)33;
+  background: rgba(56, 189, 248, 0.15);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.2);
 }
 
 /* Блоки кода - стили переопределены в компоненте CodeBlock */
@@ -342,8 +304,8 @@
 
 /* Выделение текста */
 .prose-article ::selection {
-  background: var(--theme-accent)4d;
-  color: var(--theme-text);
+  background: rgba(56, 189, 248, 0.3);
+  color: white;
 }
 
 /* === Animations === */

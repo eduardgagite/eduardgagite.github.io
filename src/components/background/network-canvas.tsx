@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { useTheme } from '../../contexts/ThemeContext';
 
 interface NetworkBackgroundProps {
   density?: 'low' | 'medium' | 'high';
@@ -67,13 +66,9 @@ function usePrefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-export function NetworkBackground({ density = 'medium', color, interactive = false }: NetworkBackgroundProps) {
+export function NetworkBackground({ density = 'medium', color = '#e9eef4', interactive = false }: NetworkBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const { theme } = useTheme();
   const prefersReducedMotion = usePrefersReducedMotion();
-
-  // Use theme color if no custom color provided
-  const networkColor = color || theme.colors.networkColor;
 
   useEffect(() => {
     const c = canvasRef.current;
@@ -152,7 +147,7 @@ export function NetworkBackground({ density = 'medium', color, interactive = fal
 
       // Edges
       ctx.lineWidth = 1;
-      ctx.strokeStyle = `${networkColor}20`; // ~12.5% alpha
+      ctx.strokeStyle = `${color}20`; // ~12.5% alpha
       ctx.beginPath();
       for (const e of edges) {
         const a = points[e.a];
@@ -163,7 +158,7 @@ export function NetworkBackground({ density = 'medium', color, interactive = fal
       ctx.stroke();
 
       // Nodes
-      ctx.fillStyle = `${networkColor}66`; // ~40% alpha
+      ctx.fillStyle = `${color}66`; // ~40% alpha
       for (const p of points) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, 1.2, 0, Math.PI * 2);
@@ -172,7 +167,7 @@ export function NetworkBackground({ density = 'medium', color, interactive = fal
 
       // Packets along edges
       if (!prefersReducedMotion) {
-        ctx.fillStyle = `${networkColor}cc`; // ~80% alpha
+        ctx.fillStyle = `${color}cc`; // ~80% alpha
         for (const e of edges) {
           e.packetT += e.packetSpeed * dt * 0.08 * e.packetDir;
           if (e.packetT > 1) e.packetT = 0;
@@ -207,7 +202,7 @@ export function NetworkBackground({ density = 'medium', color, interactive = fal
       ro.disconnect();
       window.removeEventListener('mousemove', onMouseMove);
     };
-  }, [density, networkColor, interactive, prefersReducedMotion]);
+  }, [density, color, interactive, prefersReducedMotion]);
 
   return (
     <canvas
