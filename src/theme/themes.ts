@@ -16,6 +16,7 @@ export interface ThemeColors {
   // Primary brand color
   primary: string;
   primaryHover: string;
+  primaryRgb: string; // RGB values for gradients
   
   // Accent colors (for highlights, links, interactive elements)
   accent: string;
@@ -74,6 +75,7 @@ export const midnightTheme: Theme = {
     // Primary brand
     primary: '#1f6feb',
     primaryHover: '#388bfd',
+    primaryRgb: '31, 111, 235', // RGB values for gradients
     
     // Accent (sky/cyan tones)
     accent: '#38bdf8',

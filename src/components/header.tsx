@@ -19,15 +19,26 @@ export function Header() {
   return (
     <header className="w-full sticky top-0 z-20 backdrop-blur-md">
       <div className="relative border-b border-white/10 bg-background/80">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" aria-hidden />
+        <div 
+          className="absolute inset-0 pointer-events-none" 
+          aria-hidden 
+          style={{
+            background: 'linear-gradient(to right, rgba(var(--theme-primary-rgb), 0.05), transparent, rgba(var(--theme-primary-rgb), 0.05))'
+          }}
+        />
         <div className="mx-auto max-w-5xl px-4 h-16 grid grid-cols-[1fr_auto_1fr] items-center gap-4 relative">
           <Link to="/" className="flex items-center gap-3 group" aria-label="Home">
-            <div className="relative size-9 rounded-full bg-gradient-to-br from-primary/30 to-white/10 grid place-items-center text-xs font-semibold ring-1 ring-white/20 transition-all duration-300 group-hover:ring-white/40 group-hover:from-primary/40">
+            <div 
+                className="relative size-9 rounded-full grid place-items-center text-xs font-semibold ring-1 ring-white/20 transition-all duration-300 group-hover:ring-white/40"
+                style={{
+                  background: 'linear-gradient(to bottom right, rgba(var(--theme-primary-rgb), 0.30), rgba(255, 255, 255, 0.10))'
+                }}
+              >
               {initials}
             </div>
             <div className="leading-tight hidden sm:block">
               <span className="block text-sm font-semibold tracking-wide group-hover:text-white transition-colors">{'Eduard Gagite'}</span>
-              <span className="block text-[11px] text-primary/90">{t('hero.role')}</span>
+              <span className="block text-[11px]" style={{ color: 'rgba(var(--theme-primary-rgb), 0.9)' }}>{t('hero.role')}</span>
             </div>
           </Link>
 
@@ -46,9 +57,14 @@ export function Header() {
                   >
                     <span>{label}</span>
                     <span
-                      className={`pointer-events-none absolute left-4 right-4 -bottom-0.5 h-0.5 bg-gradient-to-r from-primary/80 to-primary transition-opacity duration-300 ${
-                        isActive(to) ? 'opacity-100' : 'opacity-0 group-hover:opacity-60'
-                      }`}
+                      style={{
+                      background: 'linear-gradient(to right, rgba(var(--theme-primary-rgb), 0.80), var(--theme-primary))',
+                      opacity: isActive(to) ? 1 : 0,
+                      transition: 'opacity 0.3s'
+                    }}
+                    className={`pointer-events-none absolute left-4 right-4 -bottom-0.5 h-0.5 transition-opacity duration-300 ${
+                      isActive(to) ? '' : 'group-hover:opacity-60'
+                    }`}
                     />
                   </Link>
                 </li>
