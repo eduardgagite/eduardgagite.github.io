@@ -1,7 +1,9 @@
 {
   "meta": {
-    "title": "Eduard Gagite - backend developer",
-    "description": "Личный сайт: информация, контакты и образовательные материалы."
+    "homeTitle": "Эдуард Гагитэ — backend-разработчик",
+    "homeDescription": "Личный сайт backend-разработчика: опыт, контакты и материалы по Go, Kafka, Redis и инфраструктуре.",
+    "materialsTitle": "Материалы по backend-разработке — Eduard Gagite",
+    "materialsDescription": "Курсы, шпаргалки и конспекты по Go, Kafka, Redis, Docker и CI/CD для backend-инженеров."
   },
   "materials": {
     "note": "Делаю образовательные материалы для backend‑разработчиков — удобные шпаргалки и краткие конспекты.",
