@@ -66,7 +66,9 @@ function usePrefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-export function NetworkBackground({ density = 'medium', color = '#e9eef4', interactive = false }: NetworkBackgroundProps) {
+export function NetworkBackground({ density = 'medium', color, interactive = false }: NetworkBackgroundProps) {
+  // Use CSS variable if no color provided
+  const effectiveColor = color ?? (getComputedStyle(document.documentElement).getPropertyValue('--theme-network-color').trim() || '#e9eef4');
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -147,7 +149,7 @@ export function NetworkBackground({ density = 'medium', color = '#e9eef4', inter
 
       // Edges
       ctx.lineWidth = 1;
-      ctx.strokeStyle = `${color}20`; // ~12.5% alpha
+      ctx.strokeStyle = `${effectiveColor}20`; // ~12.5% alpha
       ctx.beginPath();
       for (const e of edges) {
         const a = points[e.a];
@@ -158,7 +160,7 @@ export function NetworkBackground({ density = 'medium', color = '#e9eef4', inter
       ctx.stroke();
 
       // Nodes
-      ctx.fillStyle = `${color}66`; // ~40% alpha
+      ctx.fillStyle = `${effectiveColor}66`; // ~40% alpha
       for (const p of points) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, 1.2, 0, Math.PI * 2);
@@ -167,7 +169,7 @@ export function NetworkBackground({ density = 'medium', color = '#e9eef4', inter
 
       // Packets along edges
       if (!prefersReducedMotion) {
-        ctx.fillStyle = `${color}cc`; // ~80% alpha
+        ctx.fillStyle = `${effectiveColor}cc`; // ~80% alpha
         for (const e of edges) {
           e.packetT += e.packetSpeed * dt * 0.08 * e.packetDir;
           if (e.packetT > 1) e.packetT = 0;
@@ -202,7 +204,7 @@ export function NetworkBackground({ density = 'medium', color = '#e9eef4', inter
       ro.disconnect();
       window.removeEventListener('mousemove', onMouseMove);
     };
-  }, [density, color, interactive, prefersReducedMotion]);
+  }, [density, effectiveColor, interactive, prefersReducedMotion]);
 
   return (
     <canvas
