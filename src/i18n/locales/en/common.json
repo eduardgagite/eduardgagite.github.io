@@ -1,7 +1,9 @@
 {
   "meta": {
-    "title": "Eduard Gagite - backend developer",
-    "description": "Personal site: info, contacts, and educational materials."
+    "homeTitle": "Eduard Gagite — Backend Engineer",
+    "homeDescription": "Personal site of a backend engineer: experience, contact details, and materials on Go, Kafka, Redis, and infrastructure.",
+    "materialsTitle": "Backend materials — Eduard Gagite",
+    "materialsDescription": "Courses, cheatsheets, and notes on Go, Kafka, Redis, Docker, and CI/CD for backend engineers."
   },
   "materials": {
     "note": "I create educational materials for backend engineers — concise cheatsheets and notes.",
