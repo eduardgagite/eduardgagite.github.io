@@ -8,8 +8,7 @@ export default {
         // Legacy colors (kept for backward compatibility)
         background: 'var(--theme-background)',
         foreground: 'var(--theme-foreground)',
-        // Primary needs hardcoded value for opacity modifiers to work (e.g. primary/30)
-        primary: '#1f6feb',
+        primary: 'var(--theme-primary)',
         
         // Theme-aware semantic colors
         theme: {
