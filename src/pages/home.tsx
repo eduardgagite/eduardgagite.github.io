@@ -20,7 +20,7 @@ export function Home() {
 
   return (
     <section className="relative h-full w-full overflow-hidden">
-      <NetworkBackground density="medium" color="#e9eef4" interactive />
+      <NetworkBackground density="medium" interactive />
 
       <div className="relative mx-auto h-full w-full max-w-7xl px-3 py-4 sm:px-4 sm:py-6 grid gap-4 sm:gap-6 lg:gap-8 items-stretch md:[grid-template-rows:auto_1fr] lg:grid-cols-[360px,1fr] lg:[grid-template-rows:initial]">
         
@@ -45,8 +45,8 @@ export function Home() {
               
               {/* Name & Role */}
               <div className="mt-5">
-                <h1 className="text-xl font-semibold leading-tight text-white">{name}</h1>
-                <p className="mt-1.5 text-sm font-medium text-blue-400">
+                <h1 className="text-xl font-semibold leading-tight text-theme-text">{name}</h1>
+                <p className="mt-1.5 text-sm font-medium text-theme-accent">
                   {t('hero.role')}
                 </p>
               </div>
@@ -57,16 +57,16 @@ export function Home() {
               {/* Contact buttons */}
               <div className="space-y-2">
                 <ContactLink href={telegramHref} external icon={<TelegramIcon />}>
-                  <span className="text-white/80">Telegram</span>
-                  <span className="text-white/50">@{profileContent.contact.telegramHandle}</span>
+                  <span className="text-theme-text-secondary">Telegram</span>
+                  <span className="text-theme-text-muted">@{profileContent.contact.telegramHandle}</span>
                 </ContactLink>
                 <ContactLink href={emailHref} icon={<MailIcon />}>
-                  <span className="text-white/80">Email</span>
-                  <span className="text-white/50">{profileContent.contact.email}</span>
+                  <span className="text-theme-text-secondary">Email</span>
+                  <span className="text-theme-text-muted">{profileContent.contact.email}</span>
                 </ContactLink>
                 <ContactLink href={githubHref} external icon={<GithubIcon />}>
-                  <span className="text-white/80">GitHub</span>
-                  <span className="text-white/50">/eduardgagite</span>
+                  <span className="text-theme-text-secondary">GitHub</span>
+                  <span className="text-theme-text-muted">/eduardgagite</span>
                 </ContactLink>
               </div>
             </div>
@@ -144,7 +144,7 @@ function ContactLink({ href, icon, children, external }: ContactLinkProps) {
       {...props}
       className="group/link flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] transition-all hover:bg-white/[0.08] hover:border-white/15"
     >
-      <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/[0.05] text-white/60 group-hover/link:text-blue-400 transition-colors">
+      <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-theme-surface-elevated text-theme-text-muted group-hover/link:text-theme-accent transition-colors">
         {icon}
       </span>
       <div className="flex-1 min-w-0 flex flex-col text-sm">
@@ -181,7 +181,7 @@ function renderHighlightedBio({ text, lang }: RenderHighlightedBioArgs) {
   return parts.map((part, index) => {
     if (tokens.includes(part)) {
       return (
-        <span key={`tech-${index}`} className="text-blue-400 font-medium">
+        <span key={`tech-${index}`} className="text-theme-accent font-medium">
           {part}
         </span>
       );

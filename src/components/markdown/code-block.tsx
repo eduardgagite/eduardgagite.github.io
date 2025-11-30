@@ -22,9 +22,9 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
   };
 
   return (
-    <div className="group relative my-6 overflow-hidden rounded-2xl bg-[#0d1117] shadow-2xl shadow-black/40 ring-1 ring-white/[0.08]">
+    <div className="group relative my-6 overflow-hidden rounded-2xl bg-theme-code-background shadow-2xl shadow-black/40 ring-1 ring-theme-border">
       {/* Header bar */}
-      <div className="flex items-center justify-between border-b border-white/[0.06] bg-white/[0.02] px-4 py-2.5">
+      <div className="flex items-center justify-between border-b border-theme-border bg-theme-surface px-4 py-2.5">
         {/* Traffic lights */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
@@ -34,7 +34,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
           </div>
           {/* Language badge */}
           {lang && lang !== 'text' && (
-            <span className="ml-3 rounded-md bg-white/[0.06] px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-white/40">
+            <span className="ml-3 rounded-md bg-theme-surface-elevated px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-theme-text-faint">
               {lang}
             </span>
           )}
@@ -44,7 +44,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
         <button
           type="button"
           onClick={handleCopy}
-          className="flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] text-white/40 transition-all hover:bg-white/[0.06] hover:text-white/70"
+          className="flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] text-theme-text-faint transition-all hover:bg-theme-surface-elevated hover:text-theme-text-subtle"
         >
           {copied ? (
             <>
@@ -119,7 +119,7 @@ export interface InlineCodeProps {
 
 export function InlineCode({ children }: InlineCodeProps) {
   return (
-    <code className="rounded-md bg-sky-500/15 px-1.5 py-0.5 font-mono text-[13px] text-sky-300 border border-sky-500/20">
+    <code className="rounded-md bg-theme-accent/15 px-1.5 py-0.5 font-mono text-[13px] text-theme-accent border border-theme-accent/20">
       {children}
     </code>
   );

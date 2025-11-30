@@ -4,27 +4,55 @@
 
 @layer base {
   :root {
-    /* Theme CSS custom properties - will be set by ThemeProvider */
+    /* 
+     * Theme CSS custom properties
+     * Default values for midnight theme - will be overridden by ThemeProvider
+     */
+    
+    /* Base */
     --theme-background: #0b0c10;
     --theme-foreground: #e9eef4;
+    
+    /* Surfaces */
     --theme-surface: rgba(255, 255, 255, 0.03);
+    --theme-surface-elevated: rgba(255, 255, 255, 0.05);
+    --theme-card: rgba(255, 255, 255, 0.04);
+    
+    /* Primary brand */
     --theme-primary: #1f6feb;
     --theme-primary-hover: #388bfd;
+    
+    /* Accent */
     --theme-accent: #38bdf8;
     --theme-accent-secondary: #60a5fa;
+    
+    /* Semantic */
     --theme-success: #10b981;
     --theme-warning: #f59e0b;
     --theme-error: #ef4444;
-    --theme-card-background: rgba(255, 255, 255, 0.04);
-    --theme-border: rgba(255, 255, 255, 0.1);
-    --theme-border-hover: rgba(255, 255, 255, 0.2);
+    
+    /* Text hierarchy */
     --theme-text: #ffffff;
     --theme-text-secondary: rgba(255, 255, 255, 0.85);
     --theme-text-muted: rgba(255, 255, 255, 0.5);
+    --theme-text-subtle: rgba(255, 255, 255, 0.7);
+    --theme-text-faint: rgba(255, 255, 255, 0.4);
+    --theme-text-disabled: rgba(255, 255, 255, 0.3);
+    
+    /* Borders */
+    --theme-border: rgba(255, 255, 255, 0.1);
+    --theme-border-hover: rgba(255, 255, 255, 0.2);
+    
+    /* Special */
     --theme-glow: rgba(31, 111, 235, 0.35);
     --theme-network-color: #e9eef4;
+    
+    /* Scrollbar */
     --theme-scrollbar: rgba(255, 255, 255, 0.04);
     --theme-scrollbar-thumb: rgba(56, 189, 248, 0.9);
+    
+    /* Code */
+    --theme-code-background: #0d1117;
 
     /* Legacy color variables for backward compatibility */
     --color-accent: var(--theme-accent);
