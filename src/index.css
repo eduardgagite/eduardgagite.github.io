@@ -58,6 +58,12 @@
     --color-accent: var(--theme-accent);
     --color-accent-secondary: var(--theme-accent-secondary);
     --color-surface: var(--theme-surface);
+    
+    /* Dynamic primary gradients */
+    --gradient-primary-5: rgba(var(--theme-primary-rgb), 0.05);
+    --gradient-primary-30: rgba(var(--theme-primary-rgb), 0.30);
+    --gradient-primary-40: rgba(var(--theme-primary-rgb), 0.40);
+    --gradient-primary-80: rgba(var(--theme-primary-rgb), 0.80);
   }
 
   html, body, #root {

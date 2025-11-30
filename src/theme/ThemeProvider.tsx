@@ -28,7 +28,31 @@ function applyThemeToDocument(colors: ThemeColors): void {
     const cssVar = `--theme-${toKebabCase(key)}`;
     root.style.setProperty(cssVar, value);
   });
-}
+  
+  // Apply primary color variants for opacity support
+  root.style.setProperty('--color-primary', colors.primary);
+  // Convert hex to rgba with proper opacity
+  const hexToRgba = (hex: string, alpha: number) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+  
+  const primary5 = hexToRgba(colors.primary, 0.05);
+  const primary30 = hexToRgba(colors.primary, 0.30);
+  const primary40 = hexToRgba(colors.primary, 0.40);
+  const primary80 = hexToRgba(colors.primary, 0.80);
+  
+  root.style.setProperty('--color-primary-5', primary5);
+  root.style.setProperty('--color-primary-30', primary30);
+  root.style.setProperty('--color-primary-40', primary40);
+  root.style.setProperty('--color-primary-80', primary80);
+  
+  // Set RGB values for CSS gradients
+  root.style.setProperty('--theme-primary-rgb', colors.primaryRgb);
+  
+  }
 
 /**
  * Sets the theme class on the document for potential CSS selectors
