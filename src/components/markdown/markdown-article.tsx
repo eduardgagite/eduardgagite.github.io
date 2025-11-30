@@ -129,7 +129,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
       const resolvedSrc = resolveImagePath(src || '');
       return (
         <figure className="my-6">
-          <div className="overflow-hidden rounded-xl border border-white/10 bg-white/[0.02] max-w-[70%]">
+          <div className="overflow-hidden rounded-xl border border-theme-border bg-theme-surface max-w-[70%]">
             <img
               src={resolvedSrc}
               alt={alt || ''}
@@ -139,7 +139,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
             />
           </div>
           {alt && (
-            <figcaption className="mt-2 text-sm text-white/50 italic">
+            <figcaption className="mt-2 text-sm text-theme-text-muted italic">
               {alt}
             </figcaption>
           )}
