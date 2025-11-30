@@ -64,8 +64,8 @@ export const midnightTheme: Theme = {
   name: 'midnight',
   colors: {
     // Base
-    background: '#0b0c10',
-    foreground: '#e9eef4',
+    background: 'rgb(11, 12, 16)',
+    foreground: 'rgb(233, 238, 244)',
     
     // Surfaces (white with alpha for glass effect)
     surface: 'rgba(255, 255, 255, 0.03)',
@@ -73,21 +73,21 @@ export const midnightTheme: Theme = {
     card: 'rgba(255, 255, 255, 0.04)',
     
     // Primary brand
-    primary: '#1f6feb',
-    primaryHover: '#388bfd',
+    primary: 'rgb(31, 111, 235)',
+    primaryHover: 'rgb(56, 139, 253)',
     primaryRgb: '31, 111, 235', // RGB values for gradients
     
-    // Accent (sky/cyan tones)
-    accent: '#38bdf8',
-    accentSecondary: '#60a5fa',
+    // Accent
+    accent: 'rgb(59, 130, 246)',
+    accentSecondary: 'rgb(11, 87, 240)',
     
     // Semantic
-    success: '#10b981',
-    warning: '#f59e0b',
-    error: '#ef4444',
+    success: 'rgb(16, 185, 129)',
+    warning: 'rgb(245, 158, 11)',
+    error: 'rgb(239, 68, 68)',
     
     // Text hierarchy
-    text: '#ffffff',
+    text: 'rgb(255, 255, 255)',
     textSecondary: 'rgba(255, 255, 255, 0.85)',
     textMuted: 'rgba(255, 255, 255, 0.5)',
     textSubtle: 'rgba(255, 255, 255, 0.7)',
@@ -100,14 +100,14 @@ export const midnightTheme: Theme = {
     
     // Special
     glow: 'rgba(31, 111, 235, 0.35)',
-    networkColor: '#e9eef4',
+    networkColor: 'rgb(233, 238, 244)',
     
     // Scrollbar
     scrollbar: 'rgba(255, 255, 255, 0.04)',
     scrollbarThumb: 'rgba(56, 189, 248, 0.9)',
     
     // Code
-    codeBackground: '#0d1117',
+    codeBackground: 'rgb(13, 17, 23)',
   },
 };
 
