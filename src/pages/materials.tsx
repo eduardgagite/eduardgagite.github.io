@@ -523,15 +523,36 @@ function MaterialsSidebar({
           <ul className="space-y-2">
             {categories.map((category) => {
               const isCategoryOpen = !!categoryOpen[category.id];
+              const isCategoryActive = category.id === activeCategoryId;
               return (
                 <li key={category.id}>
                   <button
                     type="button"
                     onClick={() => onToggleCategory(category.id)}
-                    className="flex w-full items-center justify-between gap-2 px-3 py-2 rounded-xl bg-theme-card border border-theme-border hover:bg-theme-card hover:border-theme-border-hover transition-all text-left"
+                    className={`flex w-full items-center justify-between gap-2 px-3 py-2 rounded-xl border transition-all text-left relative overflow-hidden ${
+                      isCategoryActive
+                        ? 'text-theme-text shadow-[0_0_16px_rgba(31,111,235,0.2)]'
+                        : 'bg-theme-card border-theme-border hover:bg-theme-card hover:border-theme-border-hover'
+                    }`}
+                    style={isCategoryActive ? {
+                      background: 'linear-gradient(135deg, rgba(31, 111, 235, 0.25) 0%, rgba(31, 111, 235, 0.15) 50%, rgba(31, 111, 235, 0.08) 100%)',
+                      border: '1px solid rgba(31, 111, 235, 0.2)'
+                    } : undefined}
                   >
-                    <span className="text-sm font-medium text-theme-text truncate">{category.title}</span>
-                    <ChevronIcon className={`w-4 h-4 text-theme-text-muted transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} />
+                    {isCategoryActive && (
+                      <span 
+                        className="absolute inset-0 opacity-30"
+                        style={{
+                          background: 'radial-gradient(circle at left center, rgba(31, 111, 235, 0.4), transparent 70%)'
+                        }}
+                      />
+                    )}
+                    <span className={`text-sm truncate relative z-10 ${isCategoryActive ? 'font-semibold' : 'font-medium'}`}>
+                      {category.title}
+                    </span>
+                    <div className="flex items-center gap-2 shrink-0 relative z-10">
+                      <ChevronIcon className={`w-4 h-4 text-theme-text-muted transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} />
+                    </div>
                   </button>
                   
                   {isCategoryOpen && (
@@ -545,19 +566,37 @@ function MaterialsSidebar({
                               <button
                                 type="button"
                                 onClick={() => onToggleSection(section.id)}
-                              className={`flex w-full items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg text-left transition-all ${
+                                className={`flex w-full items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg text-left transition-all relative overflow-hidden ${
                                   isSectionActive
-                                  ? 'bg-theme-accent/20 border border-theme-accent/30 text-theme-text'
-                                  : 'hover:bg-theme-surface-elevated text-theme-text-secondary hover:text-theme-text'
+                                    ? 'text-theme-text shadow-[0_0_16px_rgba(31,111,235,0.2)]'
+                                    : 'hover:bg-theme-surface-elevated text-theme-text-secondary hover:text-theme-text'
                                 }`}
+                                style={isSectionActive ? {
+                                  background: 'linear-gradient(135deg, rgba(31, 111, 235, 0.25) 0%, rgba(31, 111, 235, 0.15) 50%, rgba(31, 111, 235, 0.08) 100%)',
+                                  border: '1px solid rgba(31, 111, 235, 0.2)'
+                                } : undefined}
                               >
-                              <span className="flex items-center gap-2 min-w-0">
-                                <span className="text-[10px] font-mono text-theme-text-muted bg-theme-card px-1.5 py-0.5 rounded">
-                                  {sectionIdx + 1}
+                                {isSectionActive && (
+                                  <span 
+                                    className="absolute inset-0 opacity-30"
+                                    style={{
+                                      background: 'radial-gradient(circle at left center, rgba(31, 111, 235, 0.4), transparent 70%)'
+                                    }}
+                                  />
+                                )}
+                                <span className="flex items-center gap-2 min-w-0 relative z-10">
+                                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
+                                    isSectionActive
+                                      ? 'text-theme-primary bg-theme-primary/20 font-semibold'
+                                      : 'text-theme-text-muted bg-theme-card'
+                                  }`}>
+                                    {sectionIdx + 1}
                                   </span>
-                                <span className="text-[13px] truncate">{section.title}</span>
+                                  <span className={`text-[13px] truncate ${isSectionActive ? 'font-semibold' : ''}`}>
+                                    {section.title}
+                                  </span>
                                 </span>
-                              <ChevronIcon className={`w-3.5 h-3.5 text-theme-text-muted shrink-0 transition-transform ${isSectionOpen ? 'rotate-180' : ''}`} />
+                                <ChevronIcon className={`w-3.5 h-3.5 text-theme-text-muted shrink-0 transition-transform ${isSectionOpen ? 'rotate-180' : ''}`} />
                               </button>
                             
                               {isSectionOpen && section.materials.length > 0 && (
@@ -571,17 +610,35 @@ function MaterialsSidebar({
                                         <button
                                           type="button"
                                           onClick={() => onSelectMaterial(category, section, material.id.slug)}
-                                        className={`w-full px-2.5 py-1.5 rounded-lg text-left text-[12px] transition-all ${
-                                          isActive
-                                            ? 'bg-theme-accent/25 text-theme-text'
-                                            : 'text-theme-text-subtle hover:bg-theme-surface-elevated hover:text-theme-text'
+                                          className={`w-full px-2.5 py-1.5 rounded-lg text-left text-[12px] transition-all relative overflow-hidden ${
+                                            isActive
+                                              ? 'text-theme-text shadow-[0_0_12px_rgba(31,111,235,0.15)]'
+                                              : 'text-theme-text-subtle hover:bg-theme-surface-elevated hover:text-theme-text'
                                           }`}
+                                          style={isActive ? {
+                                            background: 'linear-gradient(135deg, rgba(31, 111, 235, 0.25) 0%, rgba(31, 111, 235, 0.15) 50%, rgba(31, 111, 235, 0.08) 100%)',
+                                            border: '1px solid rgba(31, 111, 235, 0.2)'
+                                          } : undefined}
                                         >
-                                          <span className="flex items-center gap-2">
-                                          <span className="text-[10px] font-mono text-theme-text-faint">
-                                            {sectionIdx + 1}.{matIdx + 1}
+                                          {isActive && (
+                                            <span 
+                                              className="absolute inset-0 opacity-30"
+                                              style={{
+                                                background: 'radial-gradient(circle at left center, rgba(31, 111, 235, 0.4), transparent 70%)'
+                                              }}
+                                            />
+                                          )}
+                                          <span className="flex items-center gap-2 relative z-10">
+                                            <span className={`text-[10px] font-mono ${
+                                              isActive
+                                                ? 'text-theme-primary font-semibold'
+                                                : 'text-theme-text-faint'
+                                            }`}>
+                                              {sectionIdx + 1}.{matIdx + 1}
                                             </span>
-                                            <span className="truncate">{material.title}</span>
+                                            <span className={`truncate relative z-10 ${isActive ? 'font-semibold' : ''}`}>
+                                              {material.title}
+                                            </span>
                                           </span>
                                         </button>
                                       </li>
