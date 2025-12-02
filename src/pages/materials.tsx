@@ -261,6 +261,7 @@ export function Materials() {
               category={activeCategory}
               section={activeSection}
               material={activeMaterial}
+              tree={tree}
             />
           )}
             </div>
@@ -703,9 +704,10 @@ interface ArticleViewProps {
   category: MaterialsCategory;
   section: MaterialsSection;
   material: MaterialWithContent;
+  tree: ReturnType<typeof loadMaterialsTree>;
 }
 
-function ArticleView({ category, section, material }: ArticleViewProps) {
+function ArticleView({ category, section, material, tree }: ArticleViewProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const siblings = section.materials;
@@ -713,15 +715,17 @@ function ArticleView({ category, section, material }: ArticleViewProps) {
   const index = siblings.findIndex((m) => materialKey(m.id) === currentKey);
   const prev = index > 0 ? siblings[index - 1] : undefined;
   const next = index >= 0 && index < siblings.length - 1 ? siblings[index + 1] : undefined;
-
+  
   useEffect(() => {
     const path = `/materials/${material.id.category}/${material.id.section}/${material.id.slug}`;
-    const seoData = generateMaterialSEO(material, path);
+    const canonicalKey = `${material.id.category}/${material.id.section}/${material.id.slug}`;
+    const availableLangs = tree.availableLanguages[canonicalKey] || [material.id.lang];
+    const seoData = generateMaterialSEO(material, path, availableLangs);
     updateSEO(seoData);
     return () => {
       resetSEO();
     };
-  }, [material]);
+  }, [material, tree]);
 
   const goToMaterial = useCallback(
     (target?: MaterialMeta) => {

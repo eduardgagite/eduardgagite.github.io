@@ -6,7 +6,14 @@ interface SEOData {
   ogDescription?: string;
   ogImage?: string;
   ogUrl?: string;
+  ogType?: string;
+  ogLocale?: string;
   canonical?: string;
+  articleAuthor?: string;
+  articlePublishedTime?: string;
+  articleSection?: string;
+  hreflangLinks?: Array<{ lang: string; url: string }>;
+  structuredData?: object;
 }
 
 const DEFAULT_TITLE = 'Eduard Gagite — Backend Developer';
@@ -71,14 +78,84 @@ export function updateSEO(data: SEOData) {
     getOrCreateMetaTag('og:url', 'property').content = data.ogUrl;
   }
 
+  if (data.ogType !== undefined) {
+    getOrCreateMetaTag('og:type', 'property').content = data.ogType;
+  }
+
+  // Update og:locale
+  if (data.ogLocale !== undefined) {
+    getOrCreateMetaTag('og:locale', 'property').content = data.ogLocale;
+  }
+
+  // Update article metadata
+  if (data.articleAuthor !== undefined) {
+    getOrCreateMetaTag('article:author', 'property').content = data.articleAuthor;
+  }
+
+  if (data.articlePublishedTime !== undefined) {
+    getOrCreateMetaTag('article:published_time', 'property').content = data.articlePublishedTime;
+  }
+
+  if (data.articleSection !== undefined) {
+    getOrCreateMetaTag('article:section', 'property').content = data.articleSection;
+  }
+
   // Update canonical link
   if (data.canonical !== undefined) {
     const canonical = getOrCreateLinkTag('canonical');
     canonical.href = data.canonical;
   }
+
+  // Update hreflang links
+  if (data.hreflangLinks !== undefined) {
+    // Remove existing hreflang links
+    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(link => link.remove());
+    
+    // Add new hreflang links
+    data.hreflangLinks.forEach(({ lang, url }) => {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = lang;
+      link.href = url;
+      document.head.appendChild(link);
+    });
+  }
+
+  // Update structured data (JSON-LD)
+  if (data.structuredData !== undefined) {
+    // Remove existing article structured data
+    const existingScript = document.querySelector('script[type="application/ld+json"][data-type="article"]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // Add new structured data
+    if (data.structuredData) {
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.setAttribute('data-type', 'article');
+      script.textContent = JSON.stringify(data.structuredData);
+      document.head.appendChild(script);
+    }
+  }
 }
 
 export function resetSEO() {
+  // Remove article-specific metadata
+  const articleAuthorMeta = document.querySelector('meta[property="article:author"]');
+  const articleTimeMeta = document.querySelector('meta[property="article:published_time"]');
+  const articleSectionMeta = document.querySelector('meta[property="article:section"]');
+  if (articleAuthorMeta) articleAuthorMeta.remove();
+  if (articleTimeMeta) articleTimeMeta.remove();
+  if (articleSectionMeta) articleSectionMeta.remove();
+
+  // Remove hreflang links
+  document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(link => link.remove());
+
+  // Remove article structured data
+  const articleScript = document.querySelector('script[type="application/ld+json"][data-type="article"]');
+  if (articleScript) articleScript.remove();
+
   updateSEO({
     title: DEFAULT_TITLE,
     description: DEFAULT_DESCRIPTION,
@@ -86,19 +163,73 @@ export function resetSEO() {
     ogDescription: DEFAULT_DESCRIPTION,
     ogImage: DEFAULT_OG_IMAGE,
     ogUrl: BASE_URL,
+    ogType: 'website',
     canonical: BASE_URL,
   });
 }
 
-export function generateMaterialSEO(material: {
-  title: string;
-  subtitle?: string;
-  categoryTitle: string;
-  sectionTitle: string;
-}, path: string): SEOData {
+export function generateMaterialSEO(
+  material: {
+    title: string;
+    subtitle?: string;
+    categoryTitle: string;
+    sectionTitle: string;
+    id: {
+      category: string;
+      section: string;
+      slug: string;
+      lang: 'ru' | 'en';
+    };
+  },
+  path: string,
+  availableLanguages: Array<'ru' | 'en'> = ['ru']
+): SEOData {
   const fullTitle = `${material.title} — ${material.categoryTitle}`;
   const description = material.subtitle || `Материал из раздела ${material.sectionTitle} курса ${material.categoryTitle}.`;
   const url = `${BASE_URL}${path}`;
+  const currentLang = material.id.lang;
+  const ogLocale = currentLang === 'ru' ? 'ru_RU' : 'en_US';
+
+  // Generate hreflang links for available languages
+  const hreflangLinks = availableLanguages.map(lang => ({
+    lang: lang === 'ru' ? 'ru' : 'en',
+    url: `${BASE_URL}/materials/${material.id.category}/${material.id.section}/${material.id.slug}?lang=${lang}`
+  }));
+
+  // Add x-default hreflang
+  if (availableLanguages.length > 1) {
+    hreflangLinks.push({
+      lang: 'x-default',
+      url: `${BASE_URL}/materials/${material.id.category}/${material.id.section}/${material.id.slug}`
+    });
+  }
+
+  // Generate JSON-LD structured data for article
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: material.title,
+    description: description,
+    author: {
+      '@type': 'Person',
+      name: 'Eduard Gagite',
+      url: 'https://eduardgagite.github.io'
+    },
+    publisher: {
+      '@type': 'Person',
+      name: 'Eduard Gagite',
+      url: 'https://eduardgagite.github.io'
+    },
+    datePublished: new Date().toISOString().split('T')[0], // Can be enhanced with actual dates from frontmatter
+    dateModified: new Date().toISOString().split('T')[0],
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': url
+    },
+    articleSection: material.sectionTitle,
+    inLanguage: currentLang,
+    image: DEFAULT_OG_IMAGE
+  };
 
   return {
     title: fullTitle,
@@ -108,7 +239,14 @@ export function generateMaterialSEO(material: {
     ogDescription: description,
     ogImage: DEFAULT_OG_IMAGE,
     ogUrl: url,
+    ogType: 'article',
+    ogLocale,
     canonical: url,
+    articleAuthor: 'Eduard Gagite',
+    articlePublishedTime: new Date().toISOString().split('T')[0],
+    articleSection: material.sectionTitle,
+    hreflangLinks,
+    structuredData
   };
 }
 
