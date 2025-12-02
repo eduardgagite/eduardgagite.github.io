@@ -43,6 +43,7 @@ export interface MaterialsCategory {
 export interface MaterialsTree {
   categories: MaterialsCategory[];
   byId: Record<string, MaterialWithContent>;
+  availableLanguages: Record<string, Array<'ru' | 'en'>>; // Maps canonical key to available languages
 }
 
 import generated from './generated-materials.json';
@@ -65,13 +66,17 @@ export function loadMaterialsTree(preferredLang: 'ru' | 'en'): MaterialsTree {
 
   const picked: MaterialWithContent[] = [];
   const byId: Record<string, MaterialWithContent> = {};
+  const availableLanguages: Record<string, Array<'ru' | 'en'>> = {};
 
-  Object.values(byCanonical).forEach((variants) => {
+  Object.entries(byCanonical).forEach(([canonicalKey, variants]) => {
     let chosen = variants.find((v) => v.id.lang === preferredLang);
     if (!chosen) chosen = variants[0];
     picked.push(chosen);
     const key = materialKey(chosen.id);
     byId[key] = chosen;
+    
+    // Track available languages for this material
+    availableLanguages[canonicalKey] = variants.map(v => v.id.lang);
   });
 
   // Build categories/sections
@@ -120,7 +125,7 @@ export function loadMaterialsTree(preferredLang: 'ru' | 'en'): MaterialsTree {
 
   categories.sort((a, b) => a.title.localeCompare(b.title));
 
-  return { categories, byId };
+  return { categories, byId, availableLanguages };
 }
 
 export function materialKey(id: MaterialId): string {

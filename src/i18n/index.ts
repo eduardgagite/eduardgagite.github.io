@@ -23,8 +23,22 @@ export function initI18n() {
     });
 
   document.documentElement.lang = i18n.resolvedLanguage || 'ru';
+  
+  // Update og:locale when language changes
+  const updateOgLocale = (lng: string) => {
+    const ogLocale = lng === 'ru' ? 'ru_RU' : 'en_US';
+    let meta = document.querySelector<HTMLMetaElement>('meta[property="og:locale"]');
+    if (meta) {
+      meta.content = ogLocale;
+    }
+  };
+  
+  // Set initial og:locale
+  updateOgLocale(i18n.resolvedLanguage || 'ru');
+  
   i18n.on('languageChanged', (lng) => {
     document.documentElement.lang = lng;
+    updateOgLocale(lng);
   });
 
   return i18n;
