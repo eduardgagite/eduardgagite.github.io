@@ -19,7 +19,7 @@ export function Home() {
   }, []);
 
   return (
-    <section className="relative h-full w-full overflow-hidden">
+    <section className="relative h-full w-full overflow-y-auto overflow-x-hidden">
       <NetworkBackground density="medium" interactive />
 
       <div className="relative mx-auto h-full w-full max-w-7xl px-3 py-4 sm:px-4 sm:py-6 grid gap-4 sm:gap-6 lg:gap-8 items-stretch md:[grid-template-rows:auto_1fr] lg:grid-cols-[360px,1fr] lg:[grid-template-rows:initial]">
