@@ -166,7 +166,7 @@ export function Materials() {
   };
 
   return (
-    <section className="h-full w-full overflow-hidden">
+    <section className="h-full w-full overflow-y-auto overflow-x-hidden">
       <div className="flex h-full w-full flex-col gap-4 px-3 py-4 sm:px-4 sm:py-5 lg:gap-6 lg:flex-row">
         
         {/* Mobile sidebar toggle */}
