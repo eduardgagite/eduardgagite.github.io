@@ -28,20 +28,26 @@ async function main() {
   const urlSet = new Set();
   const urls = [];
 
-  // Add main pages
-  urls.push({
-    loc: `${BASE_URL}/`,
-    changefreq: 'weekly',
-    priority: '1.0',
-  });
+  // Add main pages (language-specific)
+  const mainPages = [
+    { path: '/', priority: '1.0' },
+    { path: '/materials', priority: '0.9' },
+  ];
 
-  urls.push({
-    loc: `${BASE_URL}/materials`,
-    changefreq: 'weekly',
-    priority: '0.9',
-  });
+  for (const page of mainPages) {
+    for (const lang of ['ru', 'en']) {
+      const loc = `${BASE_URL}${page.path}?lang=${lang}`;
+      if (urlSet.has(loc)) continue;
+      urlSet.add(loc);
+      urls.push({
+        loc,
+        changefreq: 'weekly',
+        priority: page.priority,
+      });
+    }
+  }
 
-  // Add material pages (prefer Russian version, but include both if available)
+  // Add material pages (language-specific URLs)
   const byCanonical = {};
   for (const entry of entries) {
     const canonicalKey = `${entry.id.category}/${entry.id.section}/${entry.id.slug}`;
@@ -52,11 +58,11 @@ async function main() {
   }
 
   for (const [canonicalKey, variants] of Object.entries(byCanonical)) {
-    // Prefer Russian, fallback to any available
-    const preferred = variants.find((v) => v.id.lang === 'ru') || variants[0];
-    const url = `${BASE_URL}/materials/${preferred.id.category}/${preferred.id.section}/${preferred.id.slug}`;
-    
-    if (!urlSet.has(url)) {
+    const sample = variants[0];
+    const langs = Array.from(new Set(variants.map((v) => v.id.lang)));
+    for (const lang of langs) {
+      const url = `${BASE_URL}/materials/${sample.id.category}/${sample.id.section}/${sample.id.slug}?lang=${lang}`;
+      if (urlSet.has(url)) continue;
       urlSet.add(url);
       urls.push({
         loc: url,

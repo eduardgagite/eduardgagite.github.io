@@ -3,6 +3,8 @@ import { Footer } from './components/footer';
 import { Home } from './pages/home';
 import { Materials } from './pages/materials';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { LanguageUrlSync } from './i18n/language-url-sync';
+import { NotFound } from './pages/not-found';
 
 export function App() {
   return (
@@ -12,12 +14,14 @@ export function App() {
         v7_relativeSplatPath: true,
       }}
     >
+      <LanguageUrlSync />
       <div className="h-dvh flex flex-col">
         <Header />
         <main className="flex-1 min-h-0">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/materials/*" element={<Materials />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />

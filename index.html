@@ -3,6 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script>
+      (function (l) {
+        if (!l.search) return
+        if (l.search[1] !== '/') return
+        var decoded = l.search
+          .slice(1)
+          .split('&')
+          .map(function (s) {
+            return s.replace(/~and~/g, '&')
+          })
+          .join('?')
+        window.history.replaceState(null, null, '/' + decoded.slice(1) + l.hash)
+      })(window.location)
+    </script>
     
     <!-- Primary Meta Tags -->
     <title>Eduard Gagite — Backend Developer</title>

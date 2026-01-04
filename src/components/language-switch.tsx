@@ -1,16 +1,22 @@
-import { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 export function LanguageSwitch() {
-  const { i18n, t } = useTranslation();
-  const current = i18n.resolvedLanguage || 'ru';
+  const { i18n, t } = useTranslation()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const current = i18n.resolvedLanguage || 'ru'
 
   const change = useCallback((lng: 'ru' | 'en') => {
-    if (lng === current) return;
-    i18n.changeLanguage(lng);
-  }, [current, i18n]);
+    if (lng === current) return
+    i18n.changeLanguage(lng)
+    const params = new URLSearchParams(location.search)
+    params.set('lang', lng)
+    navigate({ pathname: location.pathname, search: `?${params.toString()}`, hash: location.hash }, { replace: true })
+  }, [current, i18n, location.hash, location.pathname, location.search, navigate])
 
-  const isRu = current === 'ru';
+  const isRu = current === 'ru'
 
   return (
     <div className="inline-flex items-center" role="group" aria-label={t('lang.switch') ?? 'Language switch'}>

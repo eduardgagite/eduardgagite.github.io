@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "node scripts/generate-materials-json.mjs && node scripts/generate-sitemap.mjs && vite",
     "build": "node scripts/generate-materials-json.mjs && node scripts/generate-sitemap.mjs && tsc -b && vite build",
-    "postbuild": "cp dist/index.html dist/404.html",
     "preview": "vite preview --port 5173 --strictPort"
   },
   "dependencies": {

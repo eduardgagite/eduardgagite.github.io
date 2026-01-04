@@ -2,379 +2,415 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://eduardgagite.github.io/</loc>
+    <loc>https://eduardgagite.github.io/?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials</loc>
+    <loc>https://eduardgagite.github.io/?lang=en</loc>
+    <lastmod>2026-01-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/docker/intro/01-introduction-to-containerization</loc>
+    <loc>https://eduardgagite.github.io/materials?lang=en</loc>
+    <lastmod>2026-01-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/intro/01-introduction-to-containerization?lang=en</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/docker/intro/02-docker-tasks</loc>
+    <loc>https://eduardgagite.github.io/materials/docker/intro/01-introduction-to-containerization?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/docker/intro/03-vms-vs-containers</loc>
+    <loc>https://eduardgagite.github.io/materials/docker/intro/02-docker-tasks?lang=en</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/docker/intro/04-docker-architecture</loc>
+    <loc>https://eduardgagite.github.io/materials/docker/intro/02-docker-tasks?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/advanced/01-lua-scripts</loc>
+    <loc>https://eduardgagite.github.io/materials/docker/intro/03-vms-vs-containers?lang=en</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/advanced/02-transactions</loc>
+    <loc>https://eduardgagite.github.io/materials/docker/intro/03-vms-vs-containers?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/advanced/03-redis-modules</loc>
+    <loc>https://eduardgagite.github.io/materials/docker/intro/04-docker-architecture?lang=en</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/advanced/04-redisjson-search-graph</loc>
+    <loc>https://eduardgagite.github.io/materials/docker/intro/04-docker-architecture?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/clients/01-client-patterns</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/advanced/01-lua-scripts?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/clients/02-connections-pools-timeouts</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/advanced/02-transactions?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/clients/03-errors-retries-degradation</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/advanced/03-redis-modules?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/clients/04-idempotency-and-safety</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/advanced/04-redisjson-search-graph?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/data/01-data-structures</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/clients/01-client-patterns?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/data/02-basic-operations</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/clients/02-connections-pools-timeouts?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/data/03-ttl-and-key-expiration</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/clients/03-errors-retries-degradation?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/data/04-keys-and-namespaces</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/clients/04-idempotency-and-safety?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/data/05-geospatial-data</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/data/01-data-structures?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/data/06-bitmaps</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/data/02-basic-operations?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/data/07-hyperloglog</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/data/03-ttl-and-key-expiration?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/ha-cluster/01-redis-sentinel</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/data/04-keys-and-namespaces?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/ha-cluster/02-automatic-failover</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/data/05-geospatial-data?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/ha-cluster/03-redis-cluster</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/data/06-bitmaps?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/ha-cluster/04-sharding</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/data/07-hyperloglog?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/ha-cluster/05-scaling-and-load</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/ha-cluster/01-redis-sentinel?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/intro/01-what-is-redis</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/ha-cluster/02-automatic-failover?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/intro/02-architecture-and-principles</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/ha-cluster/03-redis-cluster?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/intro/03-installation-and-setup</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/ha-cluster/04-sharding?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/intro/04-when-not-to-use-redis</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/ha-cluster/05-scaling-and-load?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/memory/01-eviction-policies</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/intro/01-what-is-redis?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/memory/02-key-size-estimation</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/intro/02-architecture-and-principles?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/memory/03-memory-optimization</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/intro/03-installation-and-setup?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/monitoring/01-info-and-metrics</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/intro/04-when-not-to-use-redis?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/monitoring/02-monitor-and-slowlog</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/memory/01-eviction-policies?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/monitoring/03-logging</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/memory/02-key-size-estimation?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/monitoring/04-memory-hotkeys-diagnostics</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/memory/03-memory-optimization?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/monitoring/05-common-performance-issues</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/monitoring/01-info-and-metrics?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/patterns/01-caching</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/monitoring/02-monitor-and-slowlog?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/patterns/02-rate-limiting</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/monitoring/03-logging?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/patterns/03-task-queues</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/monitoring/04-memory-hotkeys-diagnostics?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/patterns/04-pubsub</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/monitoring/05-common-performance-issues?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/patterns/05-session-storage</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/patterns/01-caching?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/patterns/06-counters-and-metrics</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/patterns/02-rate-limiting?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/patterns/07-distributed-locks</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/patterns/03-task-queues?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/persistence/01-rdb</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/patterns/04-pubsub?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/persistence/02-aof</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/patterns/05-session-storage?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/persistence/03-combined-modes</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/patterns/06-counters-and-metrics?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/persistence/04-persistence-settings-and-backups</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/patterns/07-distributed-locks?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/replication/01-principles</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/persistence/01-rdb?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/replication/02-master-replica</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/persistence/02-aof?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/replication/03-failover-behavior</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/persistence/03-combined-modes?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/replication/04-sync-and-lag</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/persistence/04-persistence-settings-and-backups?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/security/01-basic-security</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/replication/01-principles?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/security/02-acl</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/replication/02-master-replica?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/security/03-network-and-tls</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/replication/03-failover-behavior?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/security/04-data-security-and-backups</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/replication/04-sync-and-lag?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/security/05-common-mistakes</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/security/01-basic-security?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/streams/01-principles</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/security/02-acl?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/streams/02-xadd-xread-xgroup</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/security/03-network-and-tls?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/streams/03-consumer-groups</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/security/04-data-security-and-backups?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/streams/04-message-queues</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/security/05-common-mistakes?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://eduardgagite.github.io/materials/redis/streams/05-practical-scenarios</loc>
+    <loc>https://eduardgagite.github.io/materials/redis/streams/01-principles?lang=ru</loc>
+    <lastmod>2026-01-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/redis/streams/02-xadd-xread-xgroup?lang=ru</loc>
+    <lastmod>2026-01-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/redis/streams/03-consumer-groups?lang=ru</loc>
+    <lastmod>2026-01-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/redis/streams/04-message-queues?lang=ru</loc>
+    <lastmod>2026-01-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/redis/streams/05-practical-scenarios?lang=ru</loc>
     <lastmod>2026-01-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

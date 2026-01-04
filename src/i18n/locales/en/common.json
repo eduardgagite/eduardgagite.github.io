@@ -62,6 +62,14 @@
   },
   "footer": {
     "copyright": "© {{year}} Eduard Gagite"
+  },
+  "notFound": {
+    "title": "Page not found — Eduard Gagite",
+    "description": "The link looks wrong or the page has been moved.",
+    "heading": "Page not found",
+    "hint": "Check the URL or go back home. If you came from search, the page might not be indexed yet after updates.",
+    "goHome": "Go home",
+    "goMaterials": "Go to materials"
   }
 }
 
