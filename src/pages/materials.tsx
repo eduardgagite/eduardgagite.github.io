@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode, SVGProps } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import {
   loadMaterialsTree,
   materialKey,
@@ -17,6 +17,7 @@ import { readLastMaterialsPath, writeLastMaterialsPath } from '../utils/material
 export function Materials() {
   const { i18n, t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const params = useParams<{ '*': string }>();
   const lang = (i18n.resolvedLanguage || 'ru') === 'ru' ? 'ru' : 'en';
 
@@ -120,19 +121,26 @@ export function Materials() {
 
   useEffect(() => {
     if (isRoot) {
+      const title = t('meta.materialsTitle') || 'Материалы — Eduard Gagite';
+      const description =
+        t('meta.materialsDescription') ||
+        'Курсы и материалы по Redis, Docker и другим технологиям для backend-разработчиков.';
+      const url = `https://eduardgagite.github.io${location.pathname}${location.search}`;
       updateSEO({
-        title: 'Материалы — Eduard Gagite',
-        description: 'Курсы и материалы по Redis, Docker и другим технологиям для backend-разработчиков.',
-        ogTitle: 'Материалы — Eduard Gagite',
-        ogDescription: 'Курсы и материалы по Redis, Docker и другим технологиям для backend-разработчиков.',
-        ogUrl: 'https://eduardgagite.github.io/materials',
-        canonical: 'https://eduardgagite.github.io/materials',
+        title,
+        description,
+        ogTitle: title,
+        ogDescription: description,
+        ogUrl: url,
+        ogType: 'website',
+        ogLocale: lang === 'ru' ? 'ru_RU' : 'en_US',
+        canonical: url,
       });
       return () => {
         resetSEO();
       };
     }
-  }, [isRoot]);
+  }, [isRoot, lang, location.pathname, location.search, t]);
 
   const handleSelectMaterial = (category: MaterialsCategory, section: MaterialsSection, slug: string) => {
     navigate(`/materials/${category.id}/${section.id}/${slug}`);
@@ -785,12 +793,24 @@ interface ArticleViewProps {
 function ArticleView({ category, section, material, tree }: ArticleViewProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const siblings = section.materials;
   const currentKey = materialKey(material.id);
   const index = siblings.findIndex((m) => materialKey(m.id) === currentKey);
   const prev = index > 0 ? siblings[index - 1] : undefined;
   const next = index >= 0 && index < siblings.length - 1 ? siblings[index + 1] : undefined;
   
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const urlLang = params.get('lang');
+    if (urlLang === material.id.lang) return;
+    params.set('lang', material.id.lang);
+    navigate(
+      { pathname: location.pathname, search: `?${params.toString()}`, hash: location.hash },
+      { replace: true },
+    );
+  }, [location.hash, location.pathname, location.search, material.id.lang, navigate]);
+
   useEffect(() => {
     const path = `/materials/${material.id.category}/${material.id.section}/${material.id.slug}`;
     const canonicalKey = `${material.id.category}/${material.id.section}/${material.id.slug}`;

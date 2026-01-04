@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { profileContent } from '../content/profile';
 import { GithubIcon, MailIcon, TelegramIcon } from '../components/icons';
 import { NetworkBackground } from '../components/background/network-canvas';
-import { resetSEO } from '../utils/seo';
+import { resetSEO, updateSEO } from '../utils/seo';
 
 export function Home() {
   const { t, i18n } = useTranslation();
+  const location = useLocation();
   const isRu = (i18n.resolvedLanguage || 'ru') === 'ru';
   const lang = isRu ? 'ru' : 'en';
   const name = isRu ? profileContent.fullNameRu : profileContent.fullNameEn;
@@ -15,8 +17,23 @@ export function Home() {
   const githubHref = 'https://github.com/eduardgagite';
 
   useEffect(() => {
-    resetSEO();
-  }, []);
+    const title = t('meta.homeTitle') || 'Eduard Gagite — Backend Developer';
+    const description = t('meta.homeDescription') || '';
+    const url = `https://eduardgagite.github.io${location.pathname}${location.search}`;
+    updateSEO({
+      title,
+      description,
+      ogTitle: title,
+      ogDescription: description,
+      ogUrl: url,
+      ogType: 'website',
+      ogLocale: lang === 'ru' ? 'ru_RU' : 'en_US',
+      canonical: url,
+    });
+    return () => {
+      resetSEO();
+    };
+  }, [lang, location.pathname, location.search, t]);
 
   return (
     <section className="relative h-full w-full overflow-y-auto overflow-x-hidden">

@@ -15,7 +15,8 @@ export function initI18n() {
       fallbackLng: 'ru',
       supportedLngs: ['ru', 'en'],
       detection: {
-        order: ['localStorage', 'navigator', 'htmlTag'],
+        order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],
+        lookupQuerystring: 'lang',
         caches: ['localStorage'],
       },
       interpolation: { escapeValue: false },
