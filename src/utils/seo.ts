@@ -21,6 +21,16 @@ const DEFAULT_DESCRIPTION = 'Backend-разработчик. Пишу на Go, �
 const DEFAULT_OG_IMAGE = 'https://eduardgagite.github.io/images/og-image.png';
 const BASE_URL = 'https://eduardgagite.github.io';
 
+function normalizeLang(value: string): 'ru' | 'en' {
+  return value === 'ru' ? 'ru' : 'en';
+}
+
+function buildUrlWithLang({ path, lang }: { path: string; lang: 'ru' | 'en' }): string {
+  const url = new URL(`${BASE_URL}${path}`);
+  url.searchParams.set('lang', lang);
+  return url.toString();
+}
+
 function getOrCreateMetaTag(property: string, attribute: 'name' | 'property' = 'name'): HTMLMetaElement {
   const selector = attribute === 'name' ? `meta[name="${property}"]` : `meta[property="${property}"]`;
   let meta = document.querySelector<HTMLMetaElement>(selector);
@@ -186,21 +196,27 @@ export function generateMaterialSEO(
 ): SEOData {
   const fullTitle = `${material.title} — ${material.categoryTitle}`;
   const description = material.subtitle || `Материал из раздела ${material.sectionTitle} курса ${material.categoryTitle}.`;
-  const url = `${BASE_URL}${path}`;
-  const currentLang = material.id.lang;
+  const currentLang = normalizeLang(material.id.lang);
+  const url = buildUrlWithLang({ path, lang: currentLang });
   const ogLocale = currentLang === 'ru' ? 'ru_RU' : 'en_US';
 
   // Generate hreflang links for available languages
-  const hreflangLinks = availableLanguages.map(lang => ({
+  const hreflangLinks = availableLanguages.map((lang) => ({
     lang: lang === 'ru' ? 'ru' : 'en',
-    url: `${BASE_URL}/materials/${material.id.category}/${material.id.section}/${material.id.slug}?lang=${lang}`
+    url: buildUrlWithLang({
+      path: `/materials/${material.id.category}/${material.id.section}/${material.id.slug}`,
+      lang,
+    }),
   }));
 
   // Add x-default hreflang
   if (availableLanguages.length > 1) {
     hreflangLinks.push({
       lang: 'x-default',
-      url: `${BASE_URL}/materials/${material.id.category}/${material.id.section}/${material.id.slug}`
+      url: buildUrlWithLang({
+        path: `/materials/${material.id.category}/${material.id.section}/${material.id.slug}`,
+        lang: 'ru',
+      }),
     });
   }
 
