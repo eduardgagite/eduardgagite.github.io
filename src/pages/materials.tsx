@@ -12,6 +12,7 @@ import {
 } from '../materials/loader';
 import { MarkdownArticle } from '../components/markdown/markdown-article';
 import { updateSEO, resetSEO, generateMaterialSEO } from '../utils/seo';
+import { readLastMaterialsPath, writeLastMaterialsPath } from '../utils/materials-location';
 
 export function Materials() {
   const { i18n, t } = useTranslation();
@@ -74,6 +75,14 @@ export function Materials() {
   const [activeCategoryId, activeSectionId, activeSlug] = segments;
   const isRoot = segments.length === 0;
 
+  useEffect(() => {
+    if (!isRoot) return;
+    const lastPath = readLastMaterialsPath({ lang });
+    if (!lastPath) return;
+    if (lastPath === '/materials') return;
+    navigate(lastPath, { replace: true });
+  }, [isRoot, lang, navigate]);
+
   const firstCategory = tree.categories[0];
   const effectiveCategoryId = activeCategoryId || firstCategory?.id;
   const activeCategory = tree.categories.find((c) => c.id === effectiveCategoryId) || firstCategory;
@@ -87,6 +96,15 @@ export function Materials() {
   const activeMaterial = activeCategory && activeSection && activeMaterialSlug
     ? findMaterial(tree, activeCategory.id, activeSection.id, activeMaterialSlug)
     : undefined;
+
+  useEffect(() => {
+    if (isRoot) return;
+    if (!activeCategory || !activeSection || !activeMaterialSlug) return;
+    writeLastMaterialsPath({
+      lang,
+      path: `/materials/${activeCategory.id}/${activeSection.id}/${activeMaterialSlug}`,
+    });
+  }, [activeCategory, activeMaterialSlug, activeSection, isRoot, lang]);
 
   const activeMaterialKey = activeMaterial ? materialKey(activeMaterial.id) : null;
   const displayActiveCategoryId = isRoot ? undefined : activeCategory?.id;

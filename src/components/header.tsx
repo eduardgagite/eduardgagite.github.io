@@ -1,19 +1,23 @@
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitch } from './language-switch';
 import { Link, useLocation } from 'react-router-dom';
+import { readLastMaterialsPath } from '../utils/materials-location';
 
 export function Header() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const initials = 'EG';
+  const lang = (i18n.resolvedLanguage || 'ru') === 'ru' ? 'ru' : 'en';
+  const materialsTo = readLastMaterialsPath({ lang }) || '/materials';
   const navLinks = [
     { to: '/', label: t('nav.home') },
-    { to: '/materials', label: t('nav.materials') },
+    { to: materialsTo, label: t('nav.materials'), activeBase: '/materials' },
   ];
 
-  const isActive = (to: string) => {
+  const isActive = ({ to, activeBase }: { to: string; activeBase?: string }) => {
     if (to === '/') return location.pathname === '/';
-    return location.pathname === to || location.pathname.startsWith(`${to}/`);
+    const base = activeBase || to;
+    return location.pathname === base || location.pathname.startsWith(`${base}/`);
   };
 
   return (
@@ -44,13 +48,13 @@ export function Header() {
 
           <nav className="justify-self-center" aria-label="Primary">
             <ul className="flex items-center gap-1">
-              {navLinks.map(({ to, label }) => (
-                <li key={to}>
+              {navLinks.map(({ to, label, activeBase }) => (
+                <li key={activeBase || to}>
                   <Link
                     to={to}
-                    aria-current={isActive(to) ? 'page' : undefined}
+                    aria-current={isActive({ to, activeBase }) ? 'page' : undefined}
                     className={`group relative inline-flex items-center px-4 py-2 text-[13px] font-medium tracking-wide transition-all duration-300 rounded-md ${
-                      isActive(to) 
+                      isActive({ to, activeBase }) 
                         ? 'text-white bg-white/[0.08]' 
                         : 'text-white/70 hover:text-white hover:bg-white/[0.04]'
                     }`}
@@ -59,11 +63,11 @@ export function Header() {
                     <span
                       style={{
                       background: 'linear-gradient(to right, rgba(var(--theme-primary-rgb), 0.80), var(--theme-primary))',
-                      opacity: isActive(to) ? 1 : 0,
+                      opacity: isActive({ to, activeBase }) ? 1 : 0,
                       transition: 'opacity 0.3s'
                     }}
                     className={`pointer-events-none absolute left-4 right-4 -bottom-0.5 h-0.5 transition-opacity duration-300 ${
-                      isActive(to) ? '' : 'group-hover:opacity-60'
+                      isActive({ to, activeBase }) ? '' : 'group-hover:opacity-60'
                     }`}
                     />
                   </Link>
