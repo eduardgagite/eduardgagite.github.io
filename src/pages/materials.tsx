@@ -801,17 +801,6 @@ function ArticleView({ category, section, material, tree }: ArticleViewProps) {
   const next = index >= 0 && index < siblings.length - 1 ? siblings[index + 1] : undefined;
   
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const urlLang = params.get('lang');
-    if (urlLang === material.id.lang) return;
-    params.set('lang', material.id.lang);
-    navigate(
-      { pathname: location.pathname, search: `?${params.toString()}`, hash: location.hash },
-      { replace: true },
-    );
-  }, [location.hash, location.pathname, location.search, material.id.lang, navigate]);
-
-  useEffect(() => {
     const path = `/materials/${material.id.category}/${material.id.section}/${material.id.slug}`;
     const canonicalKey = `${material.id.category}/${material.id.section}/${material.id.slug}`;
     const availableLangs = tree.availableLanguages[canonicalKey] || [material.id.lang];

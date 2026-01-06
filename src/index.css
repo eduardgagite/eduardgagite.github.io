@@ -121,27 +121,8 @@
   background: linear-gradient(180deg, var(--theme-accent-secondary), var(--theme-accent));
 }
 
-/* Inline highlight для markdown */
-.inline-md-highlight {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.45);
-  background: linear-gradient(120deg, rgba(56, 189, 248, 0.18), rgba(14, 165, 233, 0.08));
-  color: rgba(224, 242, 254, 0.95);
-  font-size: 0.86em;
-  letter-spacing: 0.02em;
-  text-shadow: 0 0 8px rgba(56, 189, 248, 0.35);
-}
-
-.inline-md-highlight::before {
-  content: '↗';
-  font-size: 0.75em;
-  color: rgba(56, 189, 248, 0.9);
-  opacity: 0.8;
-}
+/* Inline highlight для markdown - DEPRECATED, но оставим для совместимости пока */
+/* .inline-md-highlight было удалено */
 
 /* === Стили для Markdown-контента === */
 
@@ -203,16 +184,14 @@
 }
 
 .prose-article ul li {
-  @apply mb-3;
-  display: flex;
-  gap: 0.75rem;
-  align-items: flex-start;
+  @apply mb-3 relative pl-6;
 }
 
 .prose-article ul li::before {
   content: '';
-  flex-shrink: 0;
-  margin-top: 0.65em;
+  position: absolute;
+  left: 0;
+  top: 0.65em;
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -228,17 +207,15 @@
 }
 
 .prose-article ol li {
-  @apply mb-3;
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
+  @apply mb-3 relative pl-10;
   counter-increment: ol-counter;
 }
 
 .prose-article ol li::before {
   content: counter(ol-counter);
-  flex-shrink: 0;
-  margin-top: 0.25em;
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 1.6em;
   height: 1.6em;
   display: flex;
@@ -253,31 +230,41 @@
   border-radius: 50%;
 }
 
-/* Blockquote */
+/* Blockquote - стилизован как info/note box */
 .prose-article blockquote {
-  @apply my-6 py-4 px-5 text-[15px] leading-7 italic;
+  @apply my-6 py-4 px-5 text-[15px] leading-7;
   color: var(--theme-text-secondary);
   position: relative;
-  background: linear-gradient(135deg, var(--theme-accent)26, var(--theme-accent-secondary)1a);
-  border-radius: 0 12px 12px 0;
-  border-left: 3px solid;
-  border-image: linear-gradient(180deg, var(--theme-accent), var(--theme-accent-secondary)) 1;
+  background: rgba(56, 189, 248, 0.08);
+  border-radius: 12px;
+  border-left: 4px solid var(--theme-accent);
+  font-style: normal;
 }
 
 .prose-article blockquote p {
+  @apply mb-3;
+}
+
+.prose-article blockquote p:last-of-type {
   @apply mb-0;
 }
 
-.prose-article blockquote::before {
-  content: '"';
-  position: absolute;
-  top: -0.5rem;
-  left: 0.5rem;
-  font-size: 3rem;
-  line-height: 1;
-  color: var(--color-accent);
-  opacity: 0.3;
-  font-family: Georgia, serif;
+.prose-article blockquote code,
+.prose-article blockquote pre {
+  font-style: normal;
+}
+
+.prose-article blockquote strong {
+  color: var(--theme-accent);
+}
+
+/* CodeBlock внутри blockquote */
+.prose-article blockquote > div {
+  @apply my-4 -mx-1;
+}
+
+.prose-article blockquote > div:last-child {
+  @apply mb-0;
 }
 
 /* Ссылки */
@@ -360,12 +347,19 @@
   color: var(--theme-text-secondary);
 }
 
-/* Код внутри текста */
+/* Код внутри текста (inline code) */
+.inline-code,
 .prose-article code:not(pre code) {
-  @apply font-mono text-[13px] px-1.5 py-0.5 rounded;
-  background: var(--theme-accent)26;
-  color: var(--theme-accent-secondary);
-  border: 1px solid var(--theme-accent)33;
+  display: inline;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.875em;
+  font-weight: 500;
+  padding: 0.2em 0.5em;
+  border-radius: 6px;
+  background: rgba(56, 189, 248, 0.12);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  white-space: nowrap;
 }
 
 /* Блоки кода - стили переопределены в компоненте CodeBlock */
