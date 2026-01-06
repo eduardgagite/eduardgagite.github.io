@@ -73,17 +73,21 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
             style={{ ...style, background: 'transparent' }}
           >
             {tokens.map((line, i) => {
-              const lineProps = getLineProps({ line, key: i });
+              const { key: lineKey, className: lineClassName, ...lineProps } = getLineProps({ line, key: i });
               return (
-                  <div key={i} {...lineProps} className="group/line relative hover:bg-white/[0.02] transition-colors -mx-5 px-5">
+                  <div
+                    key={lineKey ?? i}
+                    {...lineProps}
+                    className={`group/line relative hover:bg-white/[0.02] transition-colors -mx-5 px-5 ${lineClassName ?? ''}`}
+                  >
                     {/* Line number */}
                     <span className="mr-6 inline-block w-5 select-none text-right font-mono text-[11px] text-white/20 group-hover/line:text-white/35 transition-colors">
                       {i + 1}
                     </span>
                     {/* Code tokens */}
-                  {line.map((token, key) => {
-                    const tokenProps = getTokenProps({ token, key });
-                    return <span key={key} {...tokenProps} />;
+                  {line.map((token, tokenIndex) => {
+                    const { key: tokenKey, ...tokenProps } = getTokenProps({ token, key: tokenIndex });
+                    return <span key={tokenKey ?? tokenIndex} {...tokenProps} />;
                   })}
                 </div>
               );
@@ -119,7 +123,7 @@ export interface InlineCodeProps {
 
 export function InlineCode({ children }: InlineCodeProps) {
   return (
-    <code className="rounded-md bg-theme-accent/15 px-1.5 py-0.5 font-mono text-[13px] text-theme-accent border border-theme-accent/20">
+    <code className="inline-code">
       {children}
     </code>
   );
