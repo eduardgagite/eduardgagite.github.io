@@ -56,6 +56,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://eduardgagite.github.io/materials/docker/compose/01-compose-intro?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/compose/02-commands?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/compose/03-depends-on?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/compose/04-restart-policies?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/compose/05-env-files?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://eduardgagite.github.io/materials/docker/images/01-base-images?lang=ru</loc>
     <lastmod>2026-01-06</lastmod>
     <changefreq>monthly</changefreq>
@@ -110,6 +140,66 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://eduardgagite.github.io/materials/docker/networking/01-ports?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/networking/02-network-types?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/networking/03-container-communication?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/registry/01-push-pull?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/registry/02-tagging-strategies?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/registry/03-ci-cd-basics?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/security/01-rootless?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/security/02-resource-limits?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/security/03-secrets?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/security/04-attack-surface?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://eduardgagite.github.io/materials/docker/setup/01-installation?lang=ru</loc>
     <lastmod>2026-01-06</lastmod>
     <changefreq>monthly</changefreq>
@@ -141,6 +231,30 @@
   </url>
   <url>
     <loc>https://eduardgagite.github.io/materials/docker/storage/03-backup-restore?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/troubleshooting/01-troubleshooting-flow?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/troubleshooting/02-network-issues?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/troubleshooting/03-build-issues?lang=ru</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/materials/docker/troubleshooting/04-platform-specifics?lang=ru</loc>
     <lastmod>2026-01-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
