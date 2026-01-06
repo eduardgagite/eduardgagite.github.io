@@ -215,7 +215,7 @@
   content: counter(ol-counter);
   position: absolute;
   left: 0;
-  top: 0;
+  top: 0.1em;
   width: 1.6em;
   height: 1.6em;
   display: flex;
@@ -228,6 +228,36 @@
   background: rgba(56, 189, 248, 0.15);
   border: 1px solid rgba(56, 189, 248, 0.3);
   border-radius: 50%;
+}
+
+/* Вложенные списки (ul/ol внутри li) */
+.prose-article li > ul,
+.prose-article li > ol {
+  @apply mt-3 ml-6;
+}
+
+/* Вложенные ol используют буллиты вместо номеров */
+.prose-article ol ol {
+  counter-reset: none;
+}
+
+.prose-article ol ol li {
+  @apply pl-6;
+  counter-increment: none;
+}
+
+.prose-article ol ol li::before {
+  content: '—';
+  width: auto;
+  height: auto;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-size: 1em;
+  font-weight: 400;
 }
 
 /* Task List (чекбоксы) — скрываем номера/маркеры когда есть чекбокс */
