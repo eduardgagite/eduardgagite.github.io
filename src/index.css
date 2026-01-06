@@ -230,6 +230,65 @@
   border-radius: 50%;
 }
 
+/* Task List (чекбоксы) — скрываем номера/маркеры когда есть чекбокс */
+.prose-article ul li:has(input[type="checkbox"])::before,
+.prose-article ol li:has(input[type="checkbox"])::before {
+  display: none;
+}
+
+.prose-article ol li:has(input[type="checkbox"]) {
+  padding-left: 0;
+}
+
+.prose-article ul li:has(input[type="checkbox"]) {
+  padding-left: 0;
+}
+
+.prose-article li:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: flex-start;
+}
+
+.prose-article input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(56, 189, 248, 0.5);
+  border-radius: 5px;
+  background: rgba(56, 189, 248, 0.1);
+  cursor: pointer;
+  margin-right: 12px;
+  margin-top: 3px;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.prose-article input[type="checkbox"]:hover {
+  border-color: var(--color-accent);
+  background: rgba(56, 189, 248, 0.2);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+}
+
+.prose-article input[type="checkbox"]:checked {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
+  border-color: var(--color-accent);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+}
+
+.prose-article input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
 /* Blockquote - стилизован как info/note box */
 .prose-article blockquote {
   @apply my-6 py-4 px-5 text-[15px] leading-7;
