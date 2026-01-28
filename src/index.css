@@ -121,8 +121,27 @@
   background: linear-gradient(180deg, var(--theme-accent-secondary), var(--theme-accent));
 }
 
-/* Inline highlight для markdown - DEPRECATED, но оставим для совместимости пока */
-/* .inline-md-highlight было удалено */
+/* Inline highlight для markdown */
+.inline-md-highlight {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: linear-gradient(120deg, rgba(56, 189, 248, 0.18), rgba(14, 165, 233, 0.08));
+  color: rgba(224, 242, 254, 0.95);
+  font-size: 0.86em;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.35);
+}
+
+.inline-md-highlight::before {
+  content: '↗';
+  font-size: 0.75em;
+  color: rgba(56, 189, 248, 0.9);
+  opacity: 0.8;
+}
 
 /* === Стили для Markdown-контента === */
 
@@ -184,14 +203,16 @@
 }
 
 .prose-article ul li {
-  @apply mb-3 relative pl-6;
+  @apply mb-3;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
 }
 
 .prose-article ul li::before {
   content: '';
-  position: absolute;
-  left: 0;
-  top: 0.65em;
+  flex-shrink: 0;
+  margin-top: 0.65em;
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -207,15 +228,17 @@
 }
 
 .prose-article ol li {
-  @apply mb-3 relative pl-10;
+  @apply mb-3;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
   counter-increment: ol-counter;
 }
 
 .prose-article ol li::before {
   content: counter(ol-counter);
-  position: absolute;
-  left: 0;
-  top: 0.1em;
+  flex-shrink: 0;
+  margin-top: 0.25em;
   width: 1.6em;
   height: 1.6em;
   display: flex;
@@ -230,130 +253,31 @@
   border-radius: 50%;
 }
 
-/* Вложенные списки (ul/ol внутри li) */
-.prose-article li > ul,
-.prose-article li > ol {
-  @apply mt-3 ml-6;
-}
-
-/* Вложенные ol используют буллиты вместо номеров */
-.prose-article ol ol {
-  counter-reset: none;
-}
-
-.prose-article ol ol li {
-  @apply pl-6;
-  counter-increment: none;
-}
-
-.prose-article ol ol li::before {
-  content: '—';
-  width: auto;
-  height: auto;
-  position: absolute;
-  left: 0;
-  top: 0;
-  background: none;
-  border: none;
-  color: var(--color-accent);
-  font-size: 1em;
-  font-weight: 400;
-}
-
-/* Task List (чекбоксы) — скрываем номера/маркеры когда есть чекбокс */
-.prose-article ul li:has(input[type="checkbox"])::before,
-.prose-article ol li:has(input[type="checkbox"])::before {
-  display: none;
-}
-
-.prose-article ol li:has(input[type="checkbox"]) {
-  padding-left: 0;
-}
-
-.prose-article ul li:has(input[type="checkbox"]) {
-  padding-left: 0;
-}
-
-.prose-article li:has(input[type="checkbox"]) {
-  display: flex;
-  align-items: flex-start;
-}
-
-.prose-article input[type="checkbox"] {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(56, 189, 248, 0.5);
-  border-radius: 5px;
-  background: rgba(56, 189, 248, 0.1);
-  cursor: pointer;
-  margin-right: 12px;
-  margin-top: 3px;
-  position: relative;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-
-.prose-article input[type="checkbox"]:hover {
-  border-color: var(--color-accent);
-  background: rgba(56, 189, 248, 0.2);
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
-}
-
-.prose-article input[type="checkbox"]:checked {
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
-  border-color: var(--color-accent);
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
-}
-
-.prose-article input[type="checkbox"]:checked::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 5px;
-  width: 5px;
-  height: 9px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-}
-
-/* Blockquote - стилизован как info/note box */
+/* Blockquote */
 .prose-article blockquote {
-  @apply my-6 py-4 px-5 text-[15px] leading-7;
+  @apply my-6 py-4 px-5 text-[15px] leading-7 italic;
   color: var(--theme-text-secondary);
   position: relative;
-  background: rgba(56, 189, 248, 0.08);
-  border-radius: 12px;
-  border-left: 4px solid var(--theme-accent);
-  font-style: normal;
+  background: linear-gradient(135deg, var(--theme-accent)26, var(--theme-accent-secondary)1a);
+  border-radius: 0 12px 12px 0;
+  border-left: 3px solid;
+  border-image: linear-gradient(180deg, var(--theme-accent), var(--theme-accent-secondary)) 1;
 }
 
 .prose-article blockquote p {
-  @apply mb-3;
-}
-
-.prose-article blockquote p:last-of-type {
   @apply mb-0;
 }
 
-.prose-article blockquote code,
-.prose-article blockquote pre {
-  font-style: normal;
-}
-
-.prose-article blockquote strong {
-  color: var(--theme-accent);
-}
-
-/* CodeBlock внутри blockquote */
-.prose-article blockquote > div {
-  @apply my-4 -mx-1;
-}
-
-.prose-article blockquote > div:last-child {
-  @apply mb-0;
+.prose-article blockquote::before {
+  content: '"';
+  position: absolute;
+  top: -0.5rem;
+  left: 0.5rem;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--color-accent);
+  opacity: 0.3;
+  font-family: Georgia, serif;
 }
 
 /* Ссылки */
@@ -436,19 +360,12 @@
   color: var(--theme-text-secondary);
 }
 
-/* Код внутри текста (inline code) */
-.inline-code,
+/* Код внутри текста */
 .prose-article code:not(pre code) {
-  display: inline;
-  font-family: 'JetBrains Mono', Consolas, monospace;
-  font-size: 0.875em;
-  font-weight: 500;
-  padding: 0.2em 0.5em;
-  border-radius: 6px;
-  background: rgba(56, 189, 248, 0.12);
-  color: #7dd3fc;
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  white-space: nowrap;
+  @apply font-mono text-[13px] px-1.5 py-0.5 rounded;
+  background: var(--theme-accent)26;
+  color: var(--theme-accent-secondary);
+  border: 1px solid var(--theme-accent)33;
 }
 
 /* Блоки кода - стили переопределены в компоненте CodeBlock */
