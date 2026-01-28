@@ -151,7 +151,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
   return (
     <div className="prose-article">
     <ReactMarkdown
-      remarkPlugins={[remarkGfm, inlineCodeAsHighlightPlugin]}
+      remarkPlugins={[remarkGfm]}
       components={components}
     >
       {content}
@@ -191,45 +191,5 @@ function extractHeadingText(node: any): string {
   if (typeof node.value === 'string') return node.value;
   if (!Array.isArray(node.children)) return '';
   return node.children.map(extractHeadingText).join('');
-}
-function inlineCodeAsHighlightPlugin() {
-  return (tree: any) => {
-    transformInlineCodeNodes(tree);
-  };
-}
-
-function transformInlineCodeNodes(node: any) {
-  if (!node || !Array.isArray(node.children)) return;
-  node.children = node.children.map((child: any) => {
-    if (child?.type === 'inlineCode') {
-      return createInlineHighlightNode(child.value);
-    }
-    transformInlineCodeNodes(child);
-    return child;
-  });
-}
-
-function createInlineHighlightNode(value: unknown) {
-  return {
-    type: 'mdInlineHighlight',
-    data: {
-      hName: 'span',
-      hProperties: {
-        className: 'inline-md-highlight',
-      },
-    },
-    children: [
-      {
-        type: 'text',
-        value: formatInlineHighlightValue(value),
-      },
-    ],
-  };
-}
-
-function formatInlineHighlightValue(value: unknown): string {
-  if (value === null || value === undefined) return '';
-  const normalized = typeof value === 'string' ? value : String(value);
-  return normalized.trim();
 }
 
