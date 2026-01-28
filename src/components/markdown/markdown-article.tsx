@@ -83,7 +83,6 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
     li: (props: any) => <li {...props} />,
     blockquote: (props: any) => <blockquote {...props} />,
     hr: () => <hr />,
-    pre: (props: any) => <>{props.children}</>,
     a: (props: any) => {
       const { href, children, ...rest } = props;
       const isExternal = href?.startsWith('http');
@@ -109,32 +108,18 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
     code: ((props: any) => {
       const { inline, className, children } = props;
       const match = /language-(\w+)/.exec(className || '');
-      const codeContent = String(children ?? '');
-      const isMultiLine = codeContent.includes('\n');
-
-      // If explicit language is provided, usage of block is expected
-      if (match) {
+      if (!inline && match) {
         return (
           <CodeBlock
-            code={codeContent}
+            code={String(children ?? '')}
             language={match[1]}
           />
         );
       }
-
-      // If explicit inline prop is true, use InlineCode
       if (inline) return <InlineCode>{children}</InlineCode>;
-
-      // Heuristic: If no language, no newlines, and relatively short -> treat as inline code
-      // This helps when 'inline' prop is missing or false but content looks like inline code
-      if (!isMultiLine && codeContent.length < 150) {
-        return <InlineCode>{children}</InlineCode>;
-      }
-
-      // Fallback to CodeBlock for multiline or long content without language
       return (
         <CodeBlock
-          code={codeContent}
+          code={String(children ?? '')}
           language={match?.[1]}
         />
       );
@@ -166,7 +151,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
   return (
     <div className="prose-article">
     <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
+      remarkPlugins={[remarkGfm, inlineCodeAsHighlightPlugin]}
       components={components}
     >
       {content}
@@ -207,3 +192,44 @@ function extractHeadingText(node: any): string {
   if (!Array.isArray(node.children)) return '';
   return node.children.map(extractHeadingText).join('');
 }
+function inlineCodeAsHighlightPlugin() {
+  return (tree: any) => {
+    transformInlineCodeNodes(tree);
+  };
+}
+
+function transformInlineCodeNodes(node: any) {
+  if (!node || !Array.isArray(node.children)) return;
+  node.children = node.children.map((child: any) => {
+    if (child?.type === 'inlineCode') {
+      return createInlineHighlightNode(child.value);
+    }
+    transformInlineCodeNodes(child);
+    return child;
+  });
+}
+
+function createInlineHighlightNode(value: unknown) {
+  return {
+    type: 'mdInlineHighlight',
+    data: {
+      hName: 'span',
+      hProperties: {
+        className: 'inline-md-highlight',
+      },
+    },
+    children: [
+      {
+        type: 'text',
+        value: formatInlineHighlightValue(value),
+      },
+    ],
+  };
+}
+
+function formatInlineHighlightValue(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  const normalized = typeof value === 'string' ? value : String(value);
+  return normalized.trim();
+}
+
