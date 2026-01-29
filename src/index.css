@@ -121,7 +121,6 @@
   background: linear-gradient(180deg, var(--theme-accent-secondary), var(--theme-accent));
 }
 
-
 /* === Стили для Markdown-контента === */
 
 /* Prose container */
@@ -341,9 +340,9 @@
 
 /* Код внутри текста */
 .prose-article code:not(pre code) {
-  @apply font-mono text-[13px] px-1.5 py-0.5 rounded;
+  @apply font-mono font-semibold text-[13px] px-1.5 py-0.5 rounded;
   background: var(--theme-accent)26;
-  color: var(--theme-accent-secondary);
+  color: #e0f2fe;
   border: 1px solid var(--theme-accent)33;
 }
 
