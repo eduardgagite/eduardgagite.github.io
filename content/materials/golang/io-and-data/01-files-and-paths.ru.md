@@ -8,11 +8,11 @@ sectionOrder: 5
 order: 1
 ---
 
-Любая программа рано или поздно должна что-то сохранить или прочитать с диска. В Go работа с файлами реализована в пакете `os`.
+Любая программа рано или поздно должна что-то сохранить на диск или прочитать оттуда: конфиги, логи, данные пользователей, результаты работы. В Go работа с файлами реализована в пакете `os` и его помощниках.
 
 ## Чтение файла целиком
 
-Если файл небольшой (конфиг, ключи), проще всего прочитать его сразу в память одной командой.
+Самый простой способ. Подходит для небольших файлов (конфиги, ключи, шаблоны).
 
 ```go
 import (
@@ -21,66 +21,124 @@ import (
 )
 
 func main() {
-    // ReadFile возвращает срез байтов []byte и ошибку
-    data, err := os.ReadFile("config.txt")
+    // ReadFile возвращает []byte (срез байтов) и ошибку
+    data, err := os.ReadFile("config.json")
     if err != nil {
-        // Если файла нет или нет прав доступа
-        fmt.Println("Ошибка чтения:", err)
+        fmt.Println("Ошибка:", err)
         return
     }
 
-    // Превращаем байты в строку, чтобы прочитать текст
+    // Превращаем байты в строку
     content := string(data)
     fmt.Println(content)
 }
 ```
 
-**Важно**: `os.ReadFile` загружает ВЕСЬ файл в оперативную память. Если файл весит 5 ГБ, ваша программа тоже займет 5 ГБ памяти. Для больших файлов это не подходит.
+**Когда НЕ использовать**: Если файл большой (логи, дампы, видео). `os.ReadFile` загружает **ВЕСЬ** файл в оперативную память. Файл на 5 ГБ = 5 ГБ памяти. Для больших файлов используйте потоковое чтение (следующий урок).
 
 ## Запись в файл
 
-Чтобы записать данные, используем `os.WriteFile`.
+### Перезапись (WriteFile)
+
+Создает файл (или перезаписывает, если существует).
 
 ```go
-message := []byte("Hello, Go!")
+content := []byte("Hello, Go!\nВторая строка")
 
-// Имя файла, данные, права доступа (0644 - стандарт: я читаю/пишу, другие только читают)
-err := os.WriteFile("output.txt", message, 0644)
+// 0644 — права доступа (я читаю/пишу, остальные только читают)
+err := os.WriteFile("output.txt", content, 0644)
 if err != nil {
     fmt.Println("Ошибка записи:", err)
 }
 ```
 
-Если файл уже был, он **перезапишется** полностью.
+### Дописать в конец файла (Append)
+
+Если нужно добавить строку, а не перезаписать весь файл (например, в лог):
+
+```go
+// Открываем файл с флагами: Append + Create (если нет) + WriteOnly
+f, err := os.OpenFile("app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+if err != nil {
+    panic(err)
+}
+defer f.Close() // Закроем файл, когда функция завершится
+
+f.WriteString("2025-01-28 Событие произошло\n")
+```
+
+## Проверка существования файла
+
+```go
+_, err := os.Stat("config.json")
+
+if os.IsNotExist(err) {
+    fmt.Println("Файл не существует")
+} else if err != nil {
+    fmt.Println("Ошибка:", err)
+} else {
+    fmt.Println("Файл найден")
+}
+```
+
+## Создание и удаление
+
+```go
+// Создать директорию (с вложенными)
+os.MkdirAll("data/uploads/images", 0755)
+
+// Удалить файл
+os.Remove("temp.txt")
+
+// Удалить директорию со всем содержимым
+os.RemoveAll("data/uploads")
+```
 
 ## Работа с путями (filepath)
 
-В Windows пути выглядят так: `C:\Project\file.txt` (обратный слэш).
-В Linux и macOS так: `/home/user/file.txt` (прямой слэш).
+В Windows пути пишутся через обратный слэш: `C:\Users\file.txt`.
+В Linux/macOS — через прямой: `/home/user/file.txt`.
 
-Чтобы ваша программа работала везде и не ломалась из-за разницы в слэшах, **никогда не собирайте пути руками через `+`**. Используйте пакет `path/filepath`.
+Чтобы программа работала на любой ОС, **никогда не склеивайте пути через `+` или конкатенацию строк**. Используйте пакет `path/filepath`.
 
 ```go
-import (
-    "fmt"
-    "path/filepath"
-)
+import "path/filepath"
 
-func main() {
-    // Join сама поставит правильный разделитель (/ или \)
-    path := filepath.Join("data", "uploads", "image.png")
-    fmt.Println(path)
-    // Linux: data/uploads/image.png
-    // Windows: data\uploads\image.png
+// Склеить путь (автоматически выберет правильный разделитель)
+path := filepath.Join("data", "uploads", "image.png")
+// Linux: data/uploads/image.png
+// Windows: data\uploads\image.png
 
-    // Получить расширение файла
-    ext := filepath.Ext(path) // .png
-    fmt.Println(ext)
-}
+// Получить расширение
+ext := filepath.Ext("photo.jpg") // ".jpg"
+
+// Получить имя файла без пути
+name := filepath.Base("/home/user/photo.jpg") // "photo.jpg"
+
+// Получить директорию
+dir := filepath.Dir("/home/user/photo.jpg") // "/home/user"
+```
+
+### Обход директории (Walk)
+
+Чтобы найти все файлы в папке (рекурсивно):
+
+```go
+filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+    if err != nil {
+        return err
+    }
+    if !info.IsDir() {
+        fmt.Println("Файл:", path)
+    }
+    return nil
+})
 ```
 
 ## Итог
 
-1. `os.ReadFile` — быстро прочитать мелкий файл.
-2. `os.WriteFile` — быстро записать/перезаписать файл.
-3. `filepath.Join` — безопасный способ склеивать пути, работающий на любой OS.
+1. `os.ReadFile` — быстро прочитать маленький файл.
+2. `os.WriteFile` — записать/перезаписать файл.
+3. `os.OpenFile` с `O_APPEND` — дописать в конец (для логов).
+4. `filepath.Join` — безопасно склеивать пути на любой ОС.
+5. Не забывайте `defer f.Close()` при работе с открытыми файлами.
