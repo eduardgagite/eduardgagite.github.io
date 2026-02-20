@@ -2,21 +2,23 @@ import { useTranslation } from 'react-i18next';
 import { LanguageSwitch } from './language-switch';
 import { Link, useLocation } from 'react-router-dom';
 import { readLastMaterialsPath } from '../utils/materials-location';
+import { normalizeLang, withLang } from '../i18n/url';
 
 export function Header() {
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const initials = 'EG';
-  const lang = (i18n.resolvedLanguage || 'ru') === 'ru' ? 'ru' : 'en';
-  const materialsTo = readLastMaterialsPath({ lang }) || '/materials';
+  const lang = normalizeLang(i18n.resolvedLanguage || 'ru');
+  const materialsTo = withLang(readLastMaterialsPath({ lang }) || '/materials', lang);
+  const homeTo = withLang('/', lang);
   const navLinks = [
-    { to: '/', label: t('nav.home') },
+    { to: homeTo, label: t('nav.home'), activeBase: '/' },
     { to: materialsTo, label: t('nav.materials'), activeBase: '/materials' },
   ];
 
   const isActive = ({ to, activeBase }: { to: string; activeBase?: string }) => {
-    if (to === '/') return location.pathname === '/';
     const base = activeBase || to;
+    if (base === '/') return location.pathname === '/';
     return location.pathname === base || location.pathname.startsWith(`${base}/`);
   };
 
@@ -31,7 +33,7 @@ export function Header() {
           }}
         />
         <div className="mx-auto max-w-5xl px-4 h-16 grid grid-cols-[1fr_auto_1fr] items-center gap-4 relative">
-          <Link to="/" className="flex items-center gap-3 group" aria-label="Home">
+          <Link to={homeTo} className="flex items-center gap-3 group" aria-label={t('nav.home')}>
             <div 
                 className="relative size-9 rounded-full grid place-items-center text-xs font-semibold ring-1 ring-white/20 transition-all duration-300 group-hover:ring-white/40"
                 style={{
@@ -84,7 +86,5 @@ export function Header() {
     </header>
   );
 }
-
-
 
 

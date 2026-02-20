@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Highlight, themes } from 'prism-react-renderer';
 
 export interface CodeBlockProps {
@@ -8,6 +9,7 @@ export interface CodeBlockProps {
 }
 
 export function CodeBlock({ code, language }: CodeBlockProps) {
+  const { t } = useTranslation();
   const lang = (language || 'text').toLowerCase();
   const [copied, setCopied] = useState(false);
 
@@ -49,12 +51,12 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
           {copied ? (
             <>
               <CheckIcon className="size-3.5" />
-              <span>Скопировано</span>
+              <span>{t('codeBlock.copied')}</span>
             </>
           ) : (
             <>
               <CopyIcon className="size-3.5" />
-              <span>Копировать</span>
+              <span>{t('codeBlock.copy')}</span>
             </>
           )}
         </button>
