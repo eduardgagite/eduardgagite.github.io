@@ -29,6 +29,9 @@
     "tagsFilter": "Tags",
     "filtersReset": "Reset filters",
     "noMatches": "No materials match the filters.",
+    "emptyState": "No materials yet.",
+    "loadingMaterial": "Loading material...",
+    "loadError": "Failed to load material.",
     "tocTitle": "Contents",
     "copyLink": "Copy link",
     "copyLinkSuccess": "Link copied",
@@ -43,7 +46,8 @@
   },
   "lang": {
     "ru": "Рус",
-    "en": "Eng"
+    "en": "Eng",
+    "switch": "Language switch"
   },
   "hero": {
     "name": "Eduard Gagite Stanislavovich",
@@ -63,6 +67,13 @@
   "footer": {
     "copyright": "© {{year}} Eduard Gagite"
   },
+  "common": {
+    "loading": "Loading..."
+  },
+  "codeBlock": {
+    "copy": "Copy",
+    "copied": "Copied"
+  },
   "notFound": {
     "title": "Page not found — Eduard Gagite",
     "description": "The link looks wrong or the page has been moved.",
@@ -72,5 +83,4 @@
     "goMaterials": "Go to materials"
   }
 }
-
 

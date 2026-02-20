@@ -1,6 +1,8 @@
 export interface MaterialFrontmatter {
   title: string;
   subtitle?: string;
+  datePublished?: string;
+  dateModified?: string;
   level?: string;
   category: string;
   categoryTitle: string;
@@ -21,6 +23,7 @@ export interface MaterialId {
 export interface MaterialMeta extends MaterialFrontmatter {
   id: MaterialId;
   path: string;
+  contentPath: string;
 }
 
 export interface MaterialWithContent extends MaterialMeta {
@@ -42,30 +45,59 @@ export interface MaterialsCategory {
 
 export interface MaterialsTree {
   categories: MaterialsCategory[];
-  byId: Record<string, MaterialWithContent>;
+  byId: Record<string, MaterialMeta>;
   availableLanguages: Record<string, Array<'ru' | 'en'>>; // Maps canonical key to available languages
 }
 
-import generated from './generated-materials.json';
-
 interface GeneratedMaterialsFile {
-  entries: MaterialWithContent[];
+  entries: MaterialMeta[];
 }
 
-export function loadMaterialsTree(preferredLang: 'ru' | 'en'): MaterialsTree {
-  const file = generated as GeneratedMaterialsFile;
-  const entries = file.entries;
+const MATERIALS_INDEX_PATH = '/materials-index.json';
+let materialsIndexPromise: Promise<GeneratedMaterialsFile> | null = null;
+const materialsTreeCache = new Map<'ru' | 'en', Promise<MaterialsTree>>();
+
+function resolvePublicAssetPath(path: string): string {
+  const base = import.meta.env.BASE_URL || '/';
+  const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+  const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+  return `${normalizedBase}${normalizedPath}`;
+}
+
+async function loadMaterialsIndex(): Promise<GeneratedMaterialsFile> {
+  if (materialsIndexPromise) return materialsIndexPromise;
+
+  materialsIndexPromise = fetch(resolvePublicAssetPath(MATERIALS_INDEX_PATH), { cache: 'no-cache' })
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load materials index: ${response.status}`);
+      }
+      const payload = (await response.json()) as { entries?: unknown };
+      if (!payload || !Array.isArray(payload.entries)) {
+        throw new Error('Invalid materials index payload');
+      }
+      return payload as GeneratedMaterialsFile;
+    })
+    .catch((error) => {
+      materialsIndexPromise = null;
+      throw error;
+    });
+
+  return materialsIndexPromise;
+}
+
+function buildMaterialsTree(entries: MaterialMeta[], preferredLang: 'ru' | 'en'): MaterialsTree {
 
   // Group by canonical id (category/section/slug) and choose best lang
-  const byCanonical: Record<string, MaterialWithContent[]> = {};
+  const byCanonical: Record<string, MaterialMeta[]> = {};
   for (const entry of entries) {
     const key = `${entry.id.category}/${entry.id.section}/${entry.id.slug}`;
     if (!byCanonical[key]) byCanonical[key] = [];
     byCanonical[key].push(entry);
   }
 
-  const picked: MaterialWithContent[] = [];
-  const byId: Record<string, MaterialWithContent> = {};
+  const picked: MaterialMeta[] = [];
+  const byId: Record<string, MaterialMeta> = {};
   const availableLanguages: Record<string, Array<'ru' | 'en'>> = {};
 
   Object.entries(byCanonical).forEach(([canonicalKey, variants]) => {
@@ -128,7 +160,51 @@ export function loadMaterialsTree(preferredLang: 'ru' | 'en'): MaterialsTree {
   return { categories, byId, availableLanguages };
 }
 
+export async function loadMaterialsTree(preferredLang: 'ru' | 'en'): Promise<MaterialsTree> {
+  const cached = materialsTreeCache.get(preferredLang);
+  if (cached) return cached;
+
+  const pending = loadMaterialsIndex()
+    .then((file) => buildMaterialsTree(file.entries, preferredLang))
+    .catch((error) => {
+      materialsTreeCache.delete(preferredLang);
+      throw error;
+    });
+
+  materialsTreeCache.set(preferredLang, pending);
+  return pending;
+}
+
 export function materialKey(id: MaterialId): string {
   return `${id.category}/${id.section}/${id.slug}`;
 }
 
+const materialContentCache = new Map<string, Promise<MaterialWithContent>>();
+
+export async function loadMaterialContent(material: MaterialMeta): Promise<MaterialWithContent> {
+  const cacheKey = `${materialKey(material.id)}:${material.id.lang}`;
+  const cached = materialContentCache.get(cacheKey);
+  if (cached) return cached;
+
+  const pending = fetch(resolvePublicAssetPath(material.contentPath), { cache: 'no-cache' })
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load material content: ${response.status}`);
+      }
+      const payload = (await response.json()) as { content?: unknown };
+      if (typeof payload.content !== 'string') {
+        throw new Error('Invalid material content payload');
+      }
+      return {
+        ...material,
+        content: payload.content,
+      };
+    })
+    .catch((error) => {
+      materialContentCache.delete(cacheKey);
+      throw error;
+    });
+
+  materialContentCache.set(cacheKey, pending);
+  return pending;
+}

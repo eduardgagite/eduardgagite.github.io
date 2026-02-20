@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync, createReadStream } from 'fs';
-import { join } from 'path';
+import { extname, join, relative, resolve } from 'path';
 import type { Plugin } from 'vite';
 
 // For a user site (eduardgagite.github.io), base should be '/'
@@ -43,23 +43,67 @@ export default defineConfig({
     {
       name: 'serve-content-assets',
       configureServer(server) {
+        const contentRoot = resolve(process.cwd(), 'content/materials');
+        const prefix = '/content/materials/';
+        const allowedImageExt = new Set(['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp']);
+
         server.middlewares.use((req, res, next) => {
-          if (req.url?.startsWith('/content/materials/')) {
-            const filePath = join(process.cwd(), req.url);
-            if (existsSync(filePath) && statSync(filePath).isFile()) {
-              const ext = filePath.split('.').pop()?.toLowerCase();
-              const contentType = 
-                ext === 'png' ? 'image/png' :
-                ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' :
-                ext === 'gif' ? 'image/gif' :
-                ext === 'svg' ? 'image/svg+xml' :
-                ext === 'webp' ? 'image/webp' :
-                'application/octet-stream';
-              res.setHeader('Content-Type', contentType);
-              createReadStream(filePath).pipe(res);
-              return;
-            }
+          if (!req.url) {
+            next();
+            return;
           }
+
+          const pathname = (() => {
+            try {
+              return new URL(req.url, 'http://localhost').pathname;
+            } catch {
+              return null;
+            }
+          })();
+
+          if (!pathname?.startsWith(prefix)) {
+            next();
+            return;
+          }
+
+          let decodedPathname: string;
+          try {
+            decodedPathname = decodeURIComponent(pathname);
+          } catch {
+            res.statusCode = 400;
+            res.end('Bad Request');
+            return;
+          }
+
+          const rawRelativePath = decodedPathname.slice(prefix.length);
+          const safeRelativePath = rawRelativePath.replace(/^\/+/, '');
+          const filePath = resolve(contentRoot, safeRelativePath);
+          const relativePath = relative(contentRoot, filePath);
+          if (relativePath.startsWith('..') || relativePath.includes('/..') || relativePath.includes('\\..')) {
+            res.statusCode = 403;
+            res.end('Forbidden');
+            return;
+          }
+
+          const ext = extname(filePath).toLowerCase();
+          if (!allowedImageExt.has(ext)) {
+            next();
+            return;
+          }
+
+          if (existsSync(filePath) && statSync(filePath).isFile()) {
+            const contentType = 
+              ext === '.png' ? 'image/png' :
+              ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' :
+              ext === '.gif' ? 'image/gif' :
+              ext === '.svg' ? 'image/svg+xml' :
+              ext === '.webp' ? 'image/webp' :
+              'application/octet-stream';
+            res.setHeader('Content-Type', contentType);
+            createReadStream(filePath).pipe(res);
+            return;
+          }
+
           next();
         });
       },
@@ -67,5 +111,4 @@ export default defineConfig({
   ],
   base: '/',
 });
-
 

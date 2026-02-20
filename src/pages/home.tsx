@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { profileContent } from '../content/profile';
 import { GithubIcon, MailIcon, TelegramIcon } from '../components/icons';
 import { NetworkBackground } from '../components/background/network-canvas';
-import { resetSEO, updateSEO } from '../utils/seo';
+import { resetSEO, updateSEO, buildPageSeoUrl } from '../utils/seo';
+import { withLang } from '../i18n/url';
 
 export function Home() {
   const { t, i18n } = useTranslation();
@@ -19,7 +20,7 @@ export function Home() {
   useEffect(() => {
     const title = t('meta.homeTitle') || 'Eduard Gagite — Backend Developer';
     const description = t('meta.homeDescription') || '';
-    const url = `https://eduardgagite.github.io${location.pathname}${location.search}`;
+    const url = buildPageSeoUrl({ path: location.pathname, lang });
     updateSEO({
       title,
       description,
@@ -33,7 +34,7 @@ export function Home() {
     return () => {
       resetSEO();
     };
-  }, [lang, location.pathname, location.search, t]);
+  }, [lang, location.pathname, t]);
 
   return (
     <section className="relative h-full w-full overflow-y-auto overflow-x-hidden">
@@ -74,15 +75,15 @@ export function Home() {
               {/* Contact buttons */}
               <div className="space-y-2">
                 <ContactLink href={telegramHref} external icon={<TelegramIcon />}>
-                  <span className="text-theme-text-secondary">Telegram</span>
+                  <span className="text-theme-text-secondary">{t('hero.telegram')}</span>
                   <span className="text-theme-text-muted">@{profileContent.contact.telegramHandle}</span>
                 </ContactLink>
                 <ContactLink href={emailHref} icon={<MailIcon />}>
-                  <span className="text-theme-text-secondary">Email</span>
+                  <span className="text-theme-text-secondary">{t('hero.email')}</span>
                   <span className="text-theme-text-muted">{profileContent.contact.email}</span>
                 </ContactLink>
                 <ContactLink href={githubHref} external icon={<GithubIcon />}>
-                  <span className="text-theme-text-secondary">GitHub</span>
+                  <span className="text-theme-text-secondary">{t('hero.github')}</span>
                   <span className="text-theme-text-muted">/eduardgagite</span>
                 </ContactLink>
               </div>
@@ -127,15 +128,15 @@ export function Home() {
 {`// materials
 // ${t('materials.note')} [${t('materials.topicsShort')}]`}
                 </pre>
-                  <a
-                    href="/materials"
+                  <Link
+                    to={withLang('/materials', lang)}
                     className="inline-flex items-center gap-2 shrink-0 px-4 py-2 text-xs font-medium rounded-lg bg-white/[0.05] border border-white/10 text-white/90 transition-all hover:bg-white/[0.1] hover:border-white/20 self-start sm:self-auto"
                   >
                   {t('materials.cta')}
                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

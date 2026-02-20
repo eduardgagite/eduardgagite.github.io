@@ -1,3 +1,5 @@
+import { absoluteWithLang, normalizeLang } from '../i18n/url';
+
 interface SEOData {
   title?: string;
   description?: string;
@@ -21,14 +23,12 @@ const DEFAULT_DESCRIPTION = 'Backend-разработчик. Пишу на Go, �
 const DEFAULT_OG_IMAGE = 'https://eduardgagite.github.io/images/og-image.png';
 const BASE_URL = 'https://eduardgagite.github.io';
 
-function normalizeLang(value: string): 'ru' | 'en' {
-  return value === 'ru' ? 'ru' : 'en';
+function buildUrlWithLang({ path, lang }: { path: string; lang: 'ru' | 'en' }): string {
+  return absoluteWithLang(path, lang);
 }
 
-function buildUrlWithLang({ path, lang }: { path: string; lang: 'ru' | 'en' }): string {
-  const url = new URL(`${BASE_URL}${path}`);
-  url.searchParams.set('lang', lang);
-  return url.toString();
+export function buildPageSeoUrl({ path, lang }: { path: string; lang: 'ru' | 'en' }): string {
+  return buildUrlWithLang({ path, lang });
 }
 
 function getOrCreateMetaTag(property: string, attribute: 'name' | 'property' = 'name'): HTMLMetaElement {
@@ -182,6 +182,8 @@ export function generateMaterialSEO(
   material: {
     title: string;
     subtitle?: string;
+    datePublished?: string;
+    dateModified?: string;
     categoryTitle: string;
     sectionTitle: string;
     id: {
@@ -221,6 +223,8 @@ export function generateMaterialSEO(
   }
 
   // Generate JSON-LD structured data for article
+  const datePublished = material.datePublished;
+  const dateModified = material.dateModified ?? material.datePublished;
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -236,8 +240,8 @@ export function generateMaterialSEO(
       name: 'Eduard Gagite',
       url: 'https://eduardgagite.github.io'
     },
-    datePublished: new Date().toISOString().split('T')[0], // Can be enhanced with actual dates from frontmatter
-    dateModified: new Date().toISOString().split('T')[0],
+    ...(datePublished ? { datePublished } : {}),
+    ...(dateModified ? { dateModified } : {}),
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': url
@@ -259,10 +263,9 @@ export function generateMaterialSEO(
     ogLocale,
     canonical: url,
     articleAuthor: 'Eduard Gagite',
-    articlePublishedTime: new Date().toISOString().split('T')[0],
+    articlePublishedTime: datePublished,
     articleSection: material.sectionTitle,
     hreflangLinks,
     structuredData
   };
 }
-
