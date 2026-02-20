@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { isSupportedLang, normalizeLang, withLang } from './url'
 
 export function LanguageUrlSync() {
   const { i18n } = useTranslation()
@@ -9,12 +10,12 @@ export function LanguageUrlSync() {
 
   const appLang = normalizeLang(i18n.resolvedLanguage || 'ru')
 
-  const urlLang = useMemo(() => {
+  const rawUrlLang = useMemo(() => {
     const params = new URLSearchParams(location.search)
-    const raw = params.get('lang')
-    if (!raw) return null
-    return normalizeLang(raw)
+    return params.get('lang')
   }, [location.search])
+  const hasLangParam = rawUrlLang !== null
+  const urlLang = isSupportedLang(rawUrlLang) ? rawUrlLang : null
 
   useEffect(() => {
     if (!urlLang) return
@@ -23,20 +24,14 @@ export function LanguageUrlSync() {
   }, [appLang, i18n, urlLang])
 
   useEffect(() => {
-    if (urlLang) return
-    const params = new URLSearchParams(location.search)
-    params.set('lang', appLang)
-    const nextSearch = `?${params.toString()}`
-    navigate({ pathname: location.pathname, search: nextSearch, hash: location.hash }, { replace: true })
-  }, [appLang, location.hash, location.pathname, location.search, navigate, urlLang])
+    if (hasLangParam && urlLang) return
+    const currentPath = `${location.pathname}${location.search}${location.hash}`
+    const nextPath = withLang(currentPath, appLang)
+    if (nextPath === currentPath) return
+    navigate(nextPath, { replace: true })
+  }, [appLang, hasLangParam, location.hash, location.pathname, location.search, navigate, urlLang])
 
   return null
 }
-
-function normalizeLang(value: string): 'ru' | 'en' {
-  return value === 'ru' ? 'ru' : 'en'
-}
-
-
 
 

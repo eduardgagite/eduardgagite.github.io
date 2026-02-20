@@ -1,18 +1,90 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { ReactNode, SVGProps } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
   loadMaterialsTree,
   materialKey,
   type MaterialMeta,
   type MaterialsCategory,
   type MaterialsSection,
-  type MaterialWithContent,
+  type MaterialsTree,
 } from '../materials/loader';
-import { MarkdownArticle } from '../components/markdown/markdown-article';
-import { updateSEO, resetSEO, generateMaterialSEO } from '../utils/seo';
+import { buildPageSeoUrl, resetSEO, updateSEO } from '../utils/seo';
 import { readLastMaterialsPath, writeLastMaterialsPath } from '../utils/materials-location';
+import { withLang } from '../i18n/url';
+import { ArticleView } from '../features/materials/article-view';
+import { deriveFilterOptions, filterCategoriesTree } from '../features/materials/filters';
+import { EmptyState, MaterialsIntro } from '../features/materials/intro';
+import { readSidebarState, writeSidebarState } from '../features/materials/sidebar-state';
+import { CloseIcon, MaterialsSidebar, MenuIcon } from '../features/materials/sidebar';
+import type { SidebarCopy, SidebarState } from '../features/materials/types';
+import { NotFound } from './not-found';
+
+type MaterialsRouteState =
+  | { type: 'root' }
+  | { type: 'redirect'; path: string }
+  | { type: 'article'; category: MaterialsCategory; section: MaterialsSection; material: MaterialMeta }
+  | { type: 'not-found' };
+
+type MaterialsTreeState =
+  | { status: 'loading'; tree: null }
+  | { status: 'ready'; tree: MaterialsTree }
+  | { status: 'error'; tree: null };
+
+const EMPTY_TREE: MaterialsTree = {
+  categories: [],
+  byId: {},
+  availableLanguages: {},
+};
+
+function resolveMaterialsRoute(segments: string[], tree: MaterialsTree): MaterialsRouteState {
+  if (segments.length === 0) return { type: 'root' };
+  if (segments.length > 3) return { type: 'not-found' };
+
+  const [categoryId, sectionId, slug] = segments;
+  const category = tree.categories.find((item) => item.id === categoryId);
+  if (!category) return { type: 'not-found' };
+
+  if (segments.length === 1) {
+    const firstSection = category.sections[0];
+    const firstMaterial = firstSection?.materials[0];
+    if (!firstSection || !firstMaterial) return { type: 'not-found' };
+    return {
+      type: 'redirect',
+      path: `/materials/${category.id}/${firstSection.id}/${firstMaterial.id.slug}`,
+    };
+  }
+
+  const section = category.sections.find((item) => item.id === sectionId);
+  if (!section) return { type: 'not-found' };
+
+  if (segments.length === 2) {
+    const firstMaterial = section.materials[0];
+    if (!firstMaterial) return { type: 'not-found' };
+    return {
+      type: 'redirect',
+      path: `/materials/${category.id}/${section.id}/${firstMaterial.id.slug}`,
+    };
+  }
+
+  const material = section.materials.find((item) => item.id.slug === slug);
+  if (!material) return { type: 'not-found' };
+
+  return { type: 'article', category, section, material };
+}
+
+function parseStoredMaterialsPath(path: string): string[] | null {
+  try {
+    const url = new URL(path, 'https://eduardgagite.github.io');
+    if (!url.pathname.startsWith('/materials')) return null;
+    return url.pathname
+      .slice('/materials'.length)
+      .split('/')
+      .filter(Boolean);
+  } catch {
+    return null;
+  }
+}
 
 export function Materials() {
   const { i18n, t } = useTranslation();
@@ -20,8 +92,31 @@ export function Materials() {
   const location = useLocation();
   const params = useParams<{ '*': string }>();
   const lang = (i18n.resolvedLanguage || 'ru') === 'ru' ? 'ru' : 'en';
+  const [treeState, setTreeState] = useState<MaterialsTreeState>({ status: 'loading', tree: null });
 
-  const tree = useMemo(() => loadMaterialsTree(lang), [lang]);
+  useEffect(() => {
+    let cancelled = false;
+    setTreeState({ status: 'loading', tree: null });
+
+    loadMaterialsTree(lang)
+      .then((nextTree) => {
+        if (cancelled) return;
+        setTreeState({ status: 'ready', tree: nextTree });
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setTreeState({ status: 'error', tree: null });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [lang]);
+
+  const tree = treeState.tree ?? EMPTY_TREE;
+  const isTreeReady = treeState.status === 'ready';
+  const isTreeLoading = treeState.status === 'loading';
+  const isTreeError = treeState.status === 'error';
   const sidebarState = useMemo<SidebarState>(() => readSidebarState(), []);
 
   const [categoryOpen, setCategoryOpen] = useState<Record<string, boolean>>(sidebarState.categories);
@@ -72,100 +167,99 @@ export function Materials() {
   const hasActiveFilters = searchQuery.trim().length > 0 || !!selectedTag || !!selectedLevel;
   const sidebarCategories = filteredCategories;
 
-  const segments = (params['*'] || '').split('/').filter(Boolean);
-  const [activeCategoryId, activeSectionId, activeSlug] = segments;
-  const isRoot = segments.length === 0;
+  const segments = useMemo(() => (params['*'] || '').split('/').filter(Boolean), [params['*']]);
+  const routeState = useMemo(
+    () => (isTreeReady ? resolveMaterialsRoute(segments, tree) : null),
+    [isTreeReady, segments, tree],
+  );
+  const isRoot = routeState?.type === 'root';
+  const isArticle = routeState?.type === 'article';
+  const isNotFound = routeState?.type === 'not-found';
 
   useEffect(() => {
+    if (!isTreeReady) return;
     if (!isRoot) return;
     const lastPath = readLastMaterialsPath({ lang });
     if (!lastPath) return;
     if (lastPath === '/materials') return;
-    navigate(lastPath, { replace: true });
-  }, [isRoot, lang, navigate]);
-
-  const firstCategory = tree.categories[0];
-  const effectiveCategoryId = activeCategoryId || firstCategory?.id;
-  const activeCategory = tree.categories.find((c) => c.id === effectiveCategoryId) || firstCategory;
-  const firstSection = activeCategory?.sections[0];
-  const effectiveSectionId = activeSectionId || firstSection?.id;
-  const activeSection = activeCategory?.sections.find((s) => s.id === effectiveSectionId) || firstSection;
-
-  const fallbackMaterialSlug = activeSection?.materials[0]?.id.slug;
-  const activeMaterialSlug = activeSlug || (isRoot ? undefined : fallbackMaterialSlug);
-
-  const activeMaterial = activeCategory && activeSection && activeMaterialSlug
-    ? findMaterial(tree, activeCategory.id, activeSection.id, activeMaterialSlug)
-    : undefined;
+    const lastSegments = parseStoredMaterialsPath(lastPath);
+    if (!lastSegments) return;
+    const resolved = resolveMaterialsRoute(lastSegments, tree);
+    if (resolved.type !== 'article') return;
+    const canonicalPath = `/materials/${resolved.category.id}/${resolved.section.id}/${resolved.material.id.slug}`;
+    navigate(withLang(canonicalPath, lang), { replace: true });
+  }, [isRoot, isTreeReady, lang, navigate, tree]);
 
   useEffect(() => {
-    if (isRoot) return;
-    if (!activeCategory || !activeSection || !activeMaterialSlug) return;
+    if (!isTreeReady) return;
+    if (!routeState || routeState.type !== 'redirect') return;
+    navigate(withLang(routeState.path, lang), { replace: true });
+  }, [isTreeReady, lang, navigate, routeState]);
+
+  const activeCategory = routeState?.type === 'article' ? routeState.category : undefined;
+  const activeSection = routeState?.type === 'article' ? routeState.section : undefined;
+  const activeMaterial = routeState?.type === 'article' ? routeState.material : undefined;
+
+  useEffect(() => {
+    if (!isArticle || !activeCategory || !activeSection || !activeMaterial) return;
     writeLastMaterialsPath({
       lang,
-      path: `/materials/${activeCategory.id}/${activeSection.id}/${activeMaterialSlug}`,
+      path: `/materials/${activeCategory.id}/${activeSection.id}/${activeMaterial.id.slug}`,
     });
-  }, [activeCategory, activeMaterialSlug, activeSection, isRoot, lang]);
+  }, [activeCategory, activeMaterial, activeSection, isArticle, lang]);
 
   const activeMaterialKey = activeMaterial ? materialKey(activeMaterial.id) : null;
-  const displayActiveCategoryId = isRoot ? undefined : activeCategory?.id;
-  const displayActiveSectionId = isRoot ? undefined : activeSection?.id;
-  const displayActiveMaterialKey = isRoot ? null : activeMaterialKey;
+  const displayActiveCategoryId = isArticle ? activeCategory?.id : undefined;
+  const displayActiveSectionId = isArticle ? activeSection?.id : undefined;
+  const displayActiveMaterialKey = isArticle ? activeMaterialKey : null;
 
   useEffect(() => {
-    if (isRoot) return;
-    if (activeSlug) return;
-    if (!activeCategory || !activeSection || !fallbackMaterialSlug) return;
-    navigate(`/materials/${activeCategory.id}/${activeSection.id}/${fallbackMaterialSlug}`, { replace: true });
-  }, [isRoot, activeSlug, activeCategory, activeSection, fallbackMaterialSlug, navigate]);
-
-  useEffect(() => {
-    if (isRoot) {
-      const title = t('meta.materialsTitle') || 'Материалы — Eduard Gagite';
-      const description =
-        t('meta.materialsDescription') ||
-        'Курсы и материалы по Redis, Docker и другим технологиям для backend-разработчиков.';
-      const url = `https://eduardgagite.github.io${location.pathname}${location.search}`;
-      updateSEO({
-        title,
-        description,
-        ogTitle: title,
-        ogDescription: description,
-        ogUrl: url,
-        ogType: 'website',
-        ogLocale: lang === 'ru' ? 'ru_RU' : 'en_US',
-        canonical: url,
-      });
-      return () => {
-        resetSEO();
-      };
-    }
-  }, [isRoot, lang, location.pathname, location.search, t]);
+    if (!isTreeReady) return;
+    if (!isRoot) return;
+    const title = t('meta.materialsTitle') || 'Материалы — Eduard Gagite';
+    const description =
+      t('meta.materialsDescription') ||
+      'Курсы и материалы по Redis, Docker и другим технологиям для backend-разработчиков.';
+    const url = buildPageSeoUrl({ path: location.pathname, lang });
+    updateSEO({
+      title,
+      description,
+      ogTitle: title,
+      ogDescription: description,
+      ogUrl: url,
+      ogType: 'website',
+      ogLocale: lang === 'ru' ? 'ru_RU' : 'en_US',
+      canonical: url,
+    });
+    return () => {
+      resetSEO();
+    };
+  }, [isRoot, isTreeReady, lang, location.pathname, t]);
 
   const handleSelectMaterial = (category: MaterialsCategory, section: MaterialsSection, slug: string) => {
-    navigate(`/materials/${category.id}/${section.id}/${slug}`);
+    navigate(withLang(`/materials/${category.id}/${section.id}/${slug}`, lang));
     setSidebarOpen(false);
   };
 
   useEffect(() => {
-    if (isRoot) return;
+    if (!isArticle) return;
     const targetCategoryId = activeCategory?.id;
     if (!targetCategoryId) return;
     setCategoryOpen((prev) => {
       if (prev[targetCategoryId]) return prev;
       return { ...prev, [targetCategoryId]: true };
     });
-  }, [activeCategory?.id, firstCategory?.id, isRoot]);
+  }, [activeCategory?.id, isArticle]);
 
   useEffect(() => {
-    if (isRoot) return;
+    if (!isArticle) return;
     const targetSectionId = activeSection?.id;
     if (!targetSectionId) return;
     setSectionOpen((prev) => {
       if (prev[targetSectionId]) return prev;
       return { ...prev, [targetSectionId]: true };
     });
-  }, [activeSection?.id]);
+  }, [activeSection?.id, isArticle]);
 
   useEffect(() => {
     writeSidebarState({ categories: categoryOpen, sections: sectionOpen });
@@ -191,11 +285,29 @@ export function Materials() {
     }));
   };
 
+  if (isNotFound) {
+    return <NotFound />;
+  }
+
+  if (isTreeLoading) {
+    return (
+      <section className="h-full w-full flex items-center justify-center overflow-y-auto overflow-x-hidden">
+        <p className="text-sm text-theme-text-muted">{t('common.loading')}</p>
+      </section>
+    );
+  }
+
+  if (isTreeError) {
+    return (
+      <section className="h-full w-full flex items-center justify-center overflow-y-auto overflow-x-hidden">
+        <p className="text-sm text-theme-text-muted">{t('materials.loadError')}</p>
+      </section>
+    );
+  }
+
   return (
     <section className="h-full w-full overflow-y-auto overflow-x-hidden">
       <div className="flex h-full w-full flex-col gap-4 px-3 py-4 sm:px-4 sm:py-5 lg:gap-6 lg:flex-row">
-        
-        {/* Mobile sidebar toggle */}
         <button
           type="button"
           onClick={() => setSidebarOpen(true)}
@@ -205,36 +317,34 @@ export function Materials() {
           <span>{sidebarCopy.heading}</span>
         </button>
 
-        {/* Sidebar - Desktop */}
         <aside className="hidden lg:block relative w-[300px] xl:w-[340px] shrink-0">
           <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
-        <MaterialsSidebar
-          copy={sidebarCopy}
-          filterOptions={filterOptions}
-          searchQuery={searchQuery}
-          selectedLevel={selectedLevel}
-          selectedTag={selectedTag}
-          onSearchChange={setSearchQuery}
-          onSelectLevel={setSelectedLevel}
-          onSelectTag={setSelectedTag}
-          onResetFilters={resetFilters}
-          hasActiveFilters={hasActiveFilters}
-          categories={sidebarCategories}
-          categoryOpen={categoryOpen}
-          sectionOpen={sectionOpen}
-          activeCategoryId={displayActiveCategoryId}
-          activeSectionId={displayActiveSectionId}
-          activeMaterialKey={displayActiveMaterialKey}
-          onToggleCategory={toggleCategory}
-          onToggleSection={toggleSection}
-          onSelectMaterial={handleSelectMaterial}
-        />
+          <MaterialsSidebar
+            copy={sidebarCopy}
+            filterOptions={filterOptions}
+            searchQuery={searchQuery}
+            selectedLevel={selectedLevel}
+            selectedTag={selectedTag}
+            onSearchChange={setSearchQuery}
+            onSelectLevel={setSelectedLevel}
+            onSelectTag={setSelectedTag}
+            onResetFilters={resetFilters}
+            hasActiveFilters={hasActiveFilters}
+            categories={sidebarCategories}
+            categoryOpen={categoryOpen}
+            sectionOpen={sectionOpen}
+            activeCategoryId={displayActiveCategoryId}
+            activeSectionId={displayActiveSectionId}
+            activeMaterialKey={displayActiveMaterialKey}
+            onToggleCategory={toggleCategory}
+            onToggleSection={toggleSection}
+            onSelectMaterial={handleSelectMaterial}
+          />
         </aside>
 
-        {/* Sidebar - Mobile Drawer */}
         {sidebarOpen && (
           <>
-            <div 
+            <div
               className="lg:hidden fixed inset-0 bg-theme-background/60 backdrop-blur-sm z-40"
               onClick={() => setSidebarOpen(false)}
             />
@@ -273,630 +383,26 @@ export function Materials() {
           </>
         )}
 
-        {/* Main content */}
         <main className="relative flex-1 min-w-0">
           <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
           <div className="relative h-full rounded-[28px] border border-theme-border bg-theme-surface shadow-[0_28px_70px_-40px_rgba(0,0,0,0.85)] backdrop-blur overflow-hidden">
             <div className="h-full overflow-hidden p-4 sm:p-5 lg:p-6">
-          {isRoot ? (
-            <MaterialsIntro />
-          ) : !activeCategory || !activeSection || !activeMaterial ? (
-            <EmptyState />
-          ) : (
-            <ArticleView
-              category={activeCategory}
-              section={activeSection}
-              material={activeMaterial}
-              tree={tree}
-            />
-          )}
+              {isRoot ? (
+                <MaterialsIntro />
+              ) : !isArticle || !activeCategory || !activeSection || !activeMaterial ? (
+                <EmptyState />
+              ) : (
+                <ArticleView
+                  category={activeCategory}
+                  section={activeSection}
+                  material={activeMaterial}
+                  tree={tree}
+                />
+              )}
             </div>
           </div>
         </main>
       </div>
     </section>
-  );
-}
-
-interface SidebarState {
-  categories: Record<string, boolean>;
-  sections: Record<string, boolean>;
-}
-
-interface SidebarCopy {
-  heading: string;
-  intro: string;
-  searchLabel: string;
-  searchPlaceholder: string;
-  levelLabel: string;
-  tagsLabel: string;
-  resetLabel: string;
-  emptyLabel: string;
-  filtersTitle: string;
-  structureTitle: string;
-}
-
-const SIDEBAR_STATE_KEY = 'materials.sidebarState';
-const EMPTY_SIDEBAR_STATE: SidebarState = {
-  categories: {},
-  sections: {},
-};
-
-function readSidebarState(): SidebarState {
-  if (typeof window === 'undefined') return EMPTY_SIDEBAR_STATE;
-  try {
-    const raw = window.localStorage.getItem(SIDEBAR_STATE_KEY);
-    if (!raw) return EMPTY_SIDEBAR_STATE;
-    const parsed = JSON.parse(raw) as Partial<SidebarState> | null;
-    return {
-      categories: parsed?.categories ?? {},
-      sections: parsed?.sections ?? {},
-    };
-  } catch {
-    return EMPTY_SIDEBAR_STATE;
-  }
-}
-
-function writeSidebarState(state: SidebarState) {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.setItem(SIDEBAR_STATE_KEY, JSON.stringify(state));
-  } catch {
-    // noop
-  }
-}
-
-interface FilterCriteria {
-  query: string;
-  tag: string | null;
-  level: string | null;
-}
-
-interface FilterCategoriesArgs {
-  categories: MaterialsCategory[];
-  criteria: FilterCriteria;
-}
-
-interface FilterOptions {
-  tags: string[];
-  levels: string[];
-}
-
-interface FilterOptionsArgs {
-  categories: MaterialsCategory[];
-}
-
-interface MaterialMatchArgs {
-  material: MaterialMeta;
-  criteria: FilterCriteria;
-}
-
-function filterCategoriesTree({ categories, criteria }: FilterCategoriesArgs): MaterialsCategory[] {
-  const normalizedQuery = criteria.query.trim().toLowerCase();
-  const hasFilters = !!normalizedQuery || !!criteria.tag || !!criteria.level;
-  if (!hasFilters) return categories;
-
-  const normalizedCriteria: FilterCriteria = {
-    query: normalizedQuery,
-    tag: criteria.tag,
-    level: criteria.level,
-  };
-
-  return categories
-    .map((category) => {
-      const sections = category.sections
-        .map((section) => {
-          const materials = section.materials.filter((material) =>
-            materialMatches({ material, criteria: normalizedCriteria }),
-          );
-          if (!materials.length) return null;
-          return { ...section, materials };
-        })
-        .filter((section): section is MaterialsSection => !!section);
-      if (!sections.length) return null;
-      return { ...category, sections };
-    })
-    .filter((category): category is MaterialsCategory => !!category);
-}
-
-function deriveFilterOptions({ categories }: FilterOptionsArgs): FilterOptions {
-  const tags = new Set<string>();
-  const levels = new Set<string>();
-
-  categories.forEach((category) => {
-    category.sections.forEach((section) => {
-      section.materials.forEach((material) => {
-        material.tags?.forEach((tag) => {
-          if (tag) tags.add(tag);
-        });
-        if (material.level) levels.add(material.level);
-      });
-    });
-  });
-
-  return {
-    tags: Array.from(tags).sort((a, b) => a.localeCompare(b)),
-    levels: Array.from(levels).sort((a, b) => a.localeCompare(b)),
-  };
-}
-
-function materialMatches({ material, criteria }: MaterialMatchArgs): boolean {
-  if (criteria.level && material.level !== criteria.level) return false;
-  if (criteria.tag && !material.tags?.includes(criteria.tag)) return false;
-  if (!criteria.query) return true;
-  const haystack = `${material.title} ${material.subtitle || ''}`.toLowerCase();
-  return haystack.includes(criteria.query);
-}
-
-function findMaterial(tree: ReturnType<typeof loadMaterialsTree>, categoryId: string, sectionId: string, slug: string) {
-  const key = materialKey({ category: categoryId, section: sectionId, slug, lang: 'ru' });
-  return tree.byId[key];
-}
-
-interface MaterialsSidebarProps {
-  copy: SidebarCopy;
-  filterOptions: FilterOptions;
-  searchQuery: string;
-  selectedLevel: string | null;
-  selectedTag: string | null;
-  onSearchChange: (value: string) => void;
-  onSelectLevel: (value: string | null) => void;
-  onSelectTag: (value: string | null) => void;
-  onResetFilters: () => void;
-  hasActiveFilters: boolean;
-  categories: MaterialsCategory[];
-  categoryOpen: Record<string, boolean>;
-  sectionOpen: Record<string, boolean>;
-  activeCategoryId?: string;
-  activeSectionId?: string;
-  activeMaterialKey?: string | null;
-  onToggleCategory: (categoryId: string) => void;
-  onToggleSection: (sectionId: string) => void;
-  onSelectMaterial: (category: MaterialsCategory, section: MaterialsSection, slug: string) => void;
-}
-
-function MaterialsSidebar({
-  copy,
-  filterOptions,
-  searchQuery,
-  selectedLevel,
-  selectedTag,
-  onSearchChange,
-  onSelectLevel,
-  onSelectTag,
-  onResetFilters,
-  hasActiveFilters,
-  categories,
-  categoryOpen,
-  sectionOpen,
-  activeCategoryId,
-  activeSectionId,
-  activeMaterialKey,
-  onToggleCategory,
-  onToggleSection,
-  onSelectMaterial,
-}: MaterialsSidebarProps) {
-  return (
-    <div className="relative h-full rounded-[28px] border border-theme-border bg-theme-surface shadow-[0_28px_70px_-40px_rgba(0,0,0,0.85)] backdrop-blur overflow-hidden flex flex-col">
-      {/* Header */}
-      <div className="p-4 border-b border-theme-border">
-        <p className="text-xs uppercase tracking-widest text-theme-text-muted font-medium">{copy.heading}</p>
-        <p className="mt-2 text-sm leading-relaxed text-theme-text-subtle">{copy.intro}</p>
-      </div>
-
-      {/* Filters */}
-      <div className="p-4 border-b border-theme-border space-y-3">
-        <div className="flex items-center justify-between">
-          <p className="text-[10px] uppercase tracking-widest text-theme-text-muted">{copy.filtersTitle}</p>
-        {hasActiveFilters && (
-          <button
-            type="button"
-            onClick={onResetFilters}
-              className="text-[11px] font-medium text-theme-accent hover:text-theme-accent-secondary transition-colors"
-          >
-            {copy.resetLabel}
-          </button>
-        )}
-      </div>
-
-        {/* Search */}
-        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-theme-surface-elevated border border-theme-border focus-within:border-theme-accent/50 focus-within:bg-theme-card transition-all">
-          <SearchIcon className="w-4 h-4 text-theme-text-muted" />
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder={copy.searchPlaceholder}
-            className="flex-1 bg-transparent text-sm text-theme-text placeholder:text-theme-text-faint focus:outline-none"
-          />
-        </div>
-
-        {/* Level filters */}
-        {filterOptions.levels.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {filterOptions.levels.map((level) => (
-              <FilterChip
-                key={level}
-                label={level}
-                isActive={selectedLevel === level}
-                onClick={() => onSelectLevel(selectedLevel === level ? null : level)}
-              />
-            ))}
-        </div>
-      )}
-
-        {/* Tag filters */}
-        {filterOptions.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto scroll-elegant">
-            {filterOptions.tags.map((tag) => (
-              <FilterChip
-                key={tag}
-                label={tag}
-                isActive={selectedTag === tag}
-                onClick={() => onSelectTag(selectedTag === tag ? null : tag)}
-              />
-            ))}
-        </div>
-      )}
-      </div>
-
-      {/* Tree */}
-      <div className="flex-1 overflow-y-auto p-4 scroll-elegant">
-        <p className="text-[10px] uppercase tracking-widest text-theme-text-muted mb-3">{copy.structureTitle}</p>
-        {categories.length === 0 ? (
-          <p className="text-sm text-theme-text-muted">{copy.emptyLabel}</p>
-        ) : (
-          <ul className="space-y-2">
-            {categories.map((category) => {
-              const isCategoryOpen = !!categoryOpen[category.id];
-              const isCategoryActive = category.id === activeCategoryId;
-              return (
-                <li key={category.id}>
-                  <button
-                    type="button"
-                    onClick={() => onToggleCategory(category.id)}
-                    className={`flex w-full items-center justify-between gap-2 px-3 py-2 rounded-xl border transition-all text-left relative overflow-hidden ${
-                      isCategoryActive
-                        ? 'text-theme-text shadow-[0_0_16px_rgba(31,111,235,0.2)]'
-                        : 'bg-theme-card border-theme-border hover:bg-theme-card hover:border-theme-border-hover'
-                    }`}
-                    style={isCategoryActive ? {
-                      background: 'linear-gradient(135deg, rgba(31, 111, 235, 0.25) 0%, rgba(31, 111, 235, 0.15) 50%, rgba(31, 111, 235, 0.08) 100%)',
-                      border: '1px solid rgba(31, 111, 235, 0.2)'
-                    } : undefined}
-                  >
-                    {isCategoryActive && (
-                      <span 
-                        className="absolute inset-0 opacity-30"
-                        style={{
-                          background: 'radial-gradient(circle at left center, rgba(31, 111, 235, 0.4), transparent 70%)'
-                        }}
-                      />
-                    )}
-                    <span className={`text-sm truncate relative z-10 ${isCategoryActive ? 'font-semibold' : 'font-medium'}`}>
-                      {category.title}
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0 relative z-10">
-                      <ChevronIcon className={`w-4 h-4 text-theme-text-muted transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} />
-                    </div>
-                  </button>
-                  
-                  {isCategoryOpen && (
-                    <ul className="mt-2 ml-3 space-y-1.5 border-l border-theme-border pl-3">
-                      {category.sections.map((section, sectionIdx) => {
-                        const isSectionActive = category.id === activeCategoryId && section.id === activeSectionId;
-                          const isSectionOpen = !!sectionOpen[section.id];
-                        
-                          return (
-                            <li key={section.id}>
-                              <button
-                                type="button"
-                                onClick={() => onToggleSection(section.id)}
-                                className={`flex w-full items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg text-left transition-all relative overflow-hidden ${
-                                  isSectionActive
-                                    ? 'text-theme-text shadow-[0_0_16px_rgba(31,111,235,0.2)]'
-                                    : 'hover:bg-theme-surface-elevated text-theme-text-secondary hover:text-theme-text'
-                                }`}
-                                style={isSectionActive ? {
-                                  background: 'linear-gradient(135deg, rgba(31, 111, 235, 0.25) 0%, rgba(31, 111, 235, 0.15) 50%, rgba(31, 111, 235, 0.08) 100%)',
-                                  border: '1px solid rgba(31, 111, 235, 0.2)'
-                                } : undefined}
-                              >
-                                {isSectionActive && (
-                                  <span 
-                                    className="absolute inset-0 opacity-30"
-                                    style={{
-                                      background: 'radial-gradient(circle at left center, rgba(31, 111, 235, 0.4), transparent 70%)'
-                                    }}
-                                  />
-                                )}
-                                <span className="flex items-center gap-2 min-w-0 relative z-10">
-                                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                                    isSectionActive
-                                      ? 'text-theme-primary bg-theme-primary/20 font-semibold'
-                                      : 'text-theme-text-muted bg-theme-card'
-                                  }`}>
-                                    {sectionIdx + 1}
-                                  </span>
-                                  <span className={`text-[13px] truncate ${isSectionActive ? 'font-semibold' : ''}`}>
-                                    {section.title}
-                                  </span>
-                                </span>
-                                <ChevronIcon className={`w-3.5 h-3.5 text-theme-text-muted shrink-0 transition-transform ${isSectionOpen ? 'rotate-180' : ''}`} />
-                              </button>
-                            
-                              {isSectionOpen && section.materials.length > 0 && (
-                              <ul className="mt-1.5 ml-2 space-y-0.5">
-                                {section.materials.map((material, matIdx) => {
-                                    const key = materialKey(material.id);
-                                  const isActive = activeMaterialKey === key;
-                                  
-                                    return (
-                                      <li key={key}>
-                                        <button
-                                          type="button"
-                                          onClick={() => onSelectMaterial(category, section, material.id.slug)}
-                                          className={`w-full px-2.5 py-1.5 rounded-lg text-left text-[12px] transition-all relative overflow-hidden ${
-                                            isActive
-                                              ? 'text-theme-text shadow-[0_0_12px_rgba(31,111,235,0.15)]'
-                                              : 'text-theme-text-subtle hover:bg-theme-surface-elevated hover:text-theme-text'
-                                          }`}
-                                          style={isActive ? {
-                                            background: 'linear-gradient(135deg, rgba(31, 111, 235, 0.25) 0%, rgba(31, 111, 235, 0.15) 50%, rgba(31, 111, 235, 0.08) 100%)',
-                                            border: '1px solid rgba(31, 111, 235, 0.2)'
-                                          } : undefined}
-                                        >
-                                          {isActive && (
-                                            <span 
-                                              className="absolute inset-0 opacity-30"
-                                              style={{
-                                                background: 'radial-gradient(circle at left center, rgba(31, 111, 235, 0.4), transparent 70%)'
-                                              }}
-                                            />
-                                          )}
-                                          <span className="flex items-center gap-2 relative z-10">
-                                            <span className={`text-[10px] font-mono ${
-                                              isActive
-                                                ? 'text-theme-primary font-semibold'
-                                                : 'text-theme-text-faint'
-                                            }`}>
-                                              {sectionIdx + 1}.{matIdx + 1}
-                                            </span>
-                                            <span className={`truncate relative z-10 ${isActive ? 'font-semibold' : ''}`}>
-                                              {material.title}
-                                            </span>
-                                          </span>
-                                        </button>
-                                      </li>
-                                    );
-                                  })}
-                                </ul>
-                              )}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </div>
-    </div>
-  );
-}
-
-interface FilterChipProps {
-  label: string;
-  isActive: boolean;
-  onClick: () => void;
-}
-
-function FilterChip({ label, isActive, onClick }: FilterChipProps) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
-        isActive
-          ? 'bg-theme-accent/25 text-theme-accent border border-theme-accent/40'
-          : 'bg-theme-surface-elevated text-theme-text-subtle border border-theme-border hover:bg-theme-card hover:text-theme-text'
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
-
-function SearchIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" {...props}>
-      <circle cx="9" cy="9" r="5.5" strokeWidth="1.5" />
-      <path d="m14.5 14.5 3 3" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function ChevronIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" {...props}>
-      <path d="m5 8 5 5 5-5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function MenuIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function CloseIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-      <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function EmptyState() {
-  return (
-    <div className="flex h-full items-center justify-center">
-      <p className="text-sm text-theme-text-muted">Материалы пока не найдены.</p>
-    </div>
-  );
-}
-
-function MaterialsIntro() {
-  const { t } = useTranslation();
-
-  return (
-    <div className="h-full overflow-y-auto scroll-elegant">
-      <h1 className="text-2xl font-bold text-theme-text">{t('materials.introTitle')}</h1>
-      <div className="mt-4 space-y-3 text-[15px] leading-7 text-theme-text-secondary">
-        <p>{t('materials.introP1')}</p>
-        <p>{t('materials.introP2')}</p>
-        <p>{t('materials.introP3')}</p>
-      </div>
-      
-      <div className="mt-6 p-4 rounded-xl bg-theme-surface-elevated border border-theme-border">
-        <p className="text-[10px] uppercase tracking-widest text-theme-text-muted mb-3">{t('materials.philosophyTitle')}</p>
-        <ul className="space-y-2 font-mono text-[13px] text-theme-text-subtle">
-          <li className="flex items-start gap-2">
-            <span className="text-theme-accent">//</span>
-            <span>{t('materials.philosophy1')}</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-theme-accent">//</span>
-            <span>{t('materials.philosophy2')}</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="text-theme-accent">//</span>
-            <span>{t('materials.philosophy3')}</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-  );
-}
-
-interface ArticleViewProps {
-  category: MaterialsCategory;
-  section: MaterialsSection;
-  material: MaterialWithContent;
-  tree: ReturnType<typeof loadMaterialsTree>;
-}
-
-function ArticleView({ category, section, material, tree }: ArticleViewProps) {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const siblings = section.materials;
-  const currentKey = materialKey(material.id);
-  const index = siblings.findIndex((m) => materialKey(m.id) === currentKey);
-  const prev = index > 0 ? siblings[index - 1] : undefined;
-  const next = index >= 0 && index < siblings.length - 1 ? siblings[index + 1] : undefined;
-  
-  useEffect(() => {
-    const path = `/materials/${material.id.category}/${material.id.section}/${material.id.slug}`;
-    const canonicalKey = `${material.id.category}/${material.id.section}/${material.id.slug}`;
-    const availableLangs = tree.availableLanguages[canonicalKey] || [material.id.lang];
-    const seoData = generateMaterialSEO(material, path, availableLangs);
-    updateSEO(seoData);
-    return () => {
-      resetSEO();
-    };
-  }, [material, tree]);
-
-  const goToMaterial = useCallback(
-    (target?: MaterialMeta) => {
-      if (!target) return;
-      navigate(`/materials/${target.id.category}/${target.id.section}/${target.id.slug}`);
-    },
-    [navigate],
-  );
-
-  const handlePrev = useCallback(() => goToMaterial(prev), [goToMaterial, prev]);
-  const handleNext = useCallback(() => goToMaterial(next), [goToMaterial, next]);
-
-  useEffect(() => {
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.metaKey || event.ctrlKey || event.altKey) return;
-      const target = event.target as HTMLElement | null;
-      const tagName = target?.tagName?.toLowerCase();
-      if (tagName === 'input' || tagName === 'textarea' || target?.isContentEditable) return;
-
-      if (event.key === 'ArrowLeft' && prev) {
-        event.preventDefault();
-        handlePrev();
-      } else if (event.key === 'ArrowRight' && next) {
-        event.preventDefault();
-        handleNext();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeydown);
-    return () => window.removeEventListener('keydown', handleKeydown);
-  }, [handleNext, handlePrev, next, prev]);
-
-  return (
-    <article className="h-full flex flex-col overflow-hidden">
-      {/* Header */}
-      <header className="shrink-0 pb-4 border-b border-theme-border">
-        <p className="text-[11px] uppercase tracking-widest text-theme-text-muted">
-          {category.title} → {section.title}
-        </p>
-        <h1 className="mt-2 text-xl sm:text-2xl font-bold text-theme-text leading-tight">{material.title}</h1>
-        {material.subtitle && (
-          <p className="mt-2 text-sm text-theme-text-subtle">{material.subtitle}</p>
-        )}
-      </header>
-
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto py-4 scroll-elegant">
-        <MarkdownArticle content={material.content} materialPath={material.path} />
-      </div>
-
-      {/* Footer navigation */}
-      <footer className="shrink-0 pt-4 border-t border-theme-border">
-        <div className="flex items-center justify-between gap-3">
-          <NavButton onClick={handlePrev} disabled={!prev} direction="prev">
-            {prev?.title || t('materials.prevArticle')}
-          </NavButton>
-          <NavButton onClick={handleNext} disabled={!next} direction="next">
-            {next?.title || t('materials.nextArticle')}
-          </NavButton>
-        </div>
-      </footer>
-    </article>
-  );
-}
-
-interface NavButtonProps {
-  onClick: () => void;
-  disabled: boolean;
-  direction: 'prev' | 'next';
-  children: ReactNode;
-}
-
-function NavButton({ onClick, disabled, direction, children }: NavButtonProps) {
-  return (
-          <button
-            type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={`group flex items-center gap-2 px-3 py-2 rounded-xl text-[12px] transition-all max-w-[45%] ${
-        disabled
-          ? 'text-theme-text-disabled cursor-not-allowed'
-          : 'text-theme-text-secondary bg-theme-surface-elevated border border-theme-border hover:bg-theme-card hover:border-theme-border-hover hover:text-theme-text'
-              }`}
-            >
-      {direction === 'prev' && <span className="shrink-0">←</span>}
-      <span className="truncate">{children}</span>
-      {direction === 'next' && <span className="shrink-0">→</span>}
-            </button>
   );
 }
