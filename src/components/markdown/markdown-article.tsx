@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Components } from 'react-markdown';
@@ -9,38 +10,27 @@ export interface MarkdownArticleProps {
 }
 
 export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps) {
-  // Resolve image paths relative to the material file
-  const resolveImagePath = (src: string): string => {
-    if (!src) return src;
-    // If it's already an absolute URL, return as is
-    if (src.startsWith('http://') || src.startsWith('https://')) {
-      return src;
-    }
-    // If it's already an absolute path from root, return as is
-    if (src.startsWith('/')) {
-      return src;
-    }
-    // If materialPath is provided, resolve relative to it
-    if (materialPath) {
-      // materialPath is like: /content/materials/redis/intro/01-what-is-redis.ru.md
-      // Extract category/section from path: redis/intro
-      const pathParts = materialPath.split('/');
-      const materialsIndex = pathParts.indexOf('materials');
-      if (materialsIndex !== -1 && pathParts.length > materialsIndex + 2) {
-        const category = pathParts[materialsIndex + 1];
-        const section = pathParts[materialsIndex + 2];
-        // Remove ./ prefix if present
-        const cleanSrc = src.startsWith('./') ? src.substring(2) : src;
-        // Support images/ subfolder: images/image.png -> category/section/images/image.png
-        // Or direct: image.png -> category/section/image.png
-        // Build absolute path: /content/materials/category/section/[images/]image.png
-        return `/content/materials/${category}/${section}/${cleanSrc}`;
+  const components = useMemo<Components>(() => {
+    const headingCounts: Record<string, number> = {};
+
+    const resolveImagePath = (src: string): string => {
+      if (!src) return src;
+      if (src.startsWith('http://') || src.startsWith('https://')) return src;
+      if (src.startsWith('/')) return src;
+      if (materialPath) {
+        const pathParts = materialPath.split('/');
+        const materialsIndex = pathParts.indexOf('materials');
+        if (materialsIndex !== -1 && pathParts.length > materialsIndex + 2) {
+          const category = pathParts[materialsIndex + 1];
+          const section = pathParts[materialsIndex + 2];
+          const cleanSrc = src.startsWith('./') ? src.substring(2) : src;
+          return `/content/materials/${category}/${section}/${cleanSrc}`;
+        }
       }
-    }
-    return src;
-  };
-  const headingCounts: Record<string, number> = {};
-  const components: Components = {
+      return src;
+    };
+
+    return {
     h1: (props: any) => {
       const { node, children, ...rest } = props;
       const headingId = resolveHeadingId(node, headingCounts);
@@ -143,7 +133,8 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
         </figure>
       );
     },
-  };
+    };
+  }, [materialPath]);
 
   return (
     <div className="prose-article">

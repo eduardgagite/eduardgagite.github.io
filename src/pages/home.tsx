@@ -155,7 +155,7 @@ interface ContactLinkProps {
 }
 
 function ContactLink({ href, icon, children, external }: ContactLinkProps) {
-  const props = external ? { target: '_blank', rel: 'noreferrer' } : {};
+  const props = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
   return (
     <a
       href={href}

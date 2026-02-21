@@ -25,7 +25,7 @@ export function ButtonLink({
     subtle:
       'bg-white/5 hover:bg-white/10 ring-1 ring-white/10 backdrop-blur',
   };
-  const props = external ? { target: '_blank', rel: 'noreferrer' } : {};
+  const props = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
   return (
     <a href={href} {...props} className={`${base} ${styles[variant]} ${className}`}>
       {children}

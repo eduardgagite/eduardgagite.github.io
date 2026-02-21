@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import { useTheme } from '../../theme';
 
 interface NetworkBackgroundProps {
   density?: 'low' | 'medium' | 'high';
@@ -67,8 +68,13 @@ function usePrefersReducedMotion(): boolean {
 }
 
 export function NetworkBackground({ density = 'medium', color, interactive = false }: NetworkBackgroundProps) {
-  // Use CSS variable if no color provided
-  const effectiveColor = color ?? (getComputedStyle(document.documentElement).getPropertyValue('--theme-network-color').trim() || '#e9eef4');
+  const { themeName } = useTheme();
+  const effectiveColor = useMemo(() => {
+    if (color) return color;
+    if (typeof document === 'undefined') return '#e9eef4';
+    const value = getComputedStyle(document.documentElement).getPropertyValue('--theme-network-color').trim();
+    return value || '#e9eef4';
+  }, [color, themeName]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 

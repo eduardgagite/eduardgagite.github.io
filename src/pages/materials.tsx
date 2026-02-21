@@ -262,7 +262,10 @@ export function Materials() {
   }, [activeSection?.id, isArticle]);
 
   useEffect(() => {
-    writeSidebarState({ categories: categoryOpen, sections: sectionOpen });
+    const id = setTimeout(() => {
+      writeSidebarState({ categories: categoryOpen, sections: sectionOpen });
+    }, 250);
+    return () => clearTimeout(id);
   }, [categoryOpen, sectionOpen]);
 
   const resetFilters = () => {
