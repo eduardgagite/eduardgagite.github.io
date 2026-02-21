@@ -16,29 +16,25 @@ order: 4
 
 Представьте, что вы хотите запускать программу так:
 
-```bash
+```
 ./myapp -port=8080 -env=production -debug
 ```
 
-Пакет `flag` из стандартной библиотеки разбирает такие аргументы.
+Пакет **flag** из стандартной библиотеки разбирает такие аргументы.
 
-```go
+```
 import (
     "flag"
     "fmt"
 )
 
 func main() {
-    // Определяем флаги: имя, значение по умолчанию, описание
     port := flag.Int("port", 3000, "Port to run server on")
     env := flag.String("env", "dev", "Environment (dev/staging/prod)")
     debug := flag.Bool("debug", false, "Enable debug mode")
 
-    // ОБЯЗАТЕЛЬНО вызываем Parse!
-    // Без этого флаги останутся со значениями по умолчанию
     flag.Parse()
 
-    // flag.Int/String/Bool возвращают УКАЗАТЕЛЬ, поэтому разыменовываем через *
     fmt.Printf("Порт: %d\n", *port)
     fmt.Printf("Окружение: %s\n", *env)
 
@@ -50,9 +46,9 @@ func main() {
 
 ### Автоматическая справка
 
-Если пользователь запустит программу с флагом `-help` или `-h`, Go автоматически покажет описание всех флагов:
+Если пользователь запустит программу с флагом **-help** или **-h**, Go автоматически покажет описание всех флагов:
 
-```bash
+```
 ./myapp -help
 # Usage of ./myapp:
 #   -debug
@@ -67,14 +63,13 @@ func main() {
 
 В мире Docker и Kubernetes настройки чаще передают через переменные окружения. Это стандарт для облачных приложений.
 
-```bash
-# Запуск с переменными окружения
+```
 DB_HOST=localhost DB_PORT=5432 DB_PASSWORD=secret ./myapp
 ```
 
-В Go их читают через `os.Getenv`.
+В Go их читают через **os.Getenv**.
 
-```go
+```
 import (
     "os"
     "fmt"
@@ -86,7 +81,7 @@ func main() {
     dbPass := os.Getenv("DB_PASSWORD")
 
     if dbHost == "" {
-        dbHost = "localhost" // Значение по умолчанию
+        dbHost = "localhost"
     }
 
     fmt.Printf("Подключение к %s:%s\n", dbHost, dbPort)
@@ -95,11 +90,11 @@ func main() {
 
 ### Проблема: os.Getenv не отличает "пусто" от "не задано"
 
-`os.Getenv("MISSING")` вернет пустую строку `""`. Но что если переменная специально задана как пустая?
+**os.Getenv("MISSING")** вернет пустую строку **""**. Но что если переменная специально задана как пустая?
 
-Используйте `os.LookupEnv`, чтобы различить эти случаи:
+Используйте **os.LookupEnv**, чтобы различить эти случаи:
 
-```go
+```
 value, exists := os.LookupEnv("DB_PASSWORD")
 if !exists {
     fmt.Println("Переменная DB_PASSWORD не задана!")
@@ -117,9 +112,8 @@ if !exists {
 2. Переменная окружения.
 3. Значение по умолчанию.
 
-```go
+```
 func getConfig() string {
-    // 1. Сначала смотрим флаг
     port := flag.Int("port", 0, "Server port")
     flag.Parse()
 
@@ -127,12 +121,10 @@ func getConfig() string {
         return fmt.Sprintf(":%d", *port)
     }
 
-    // 2. Потом переменную окружения
     if envPort := os.Getenv("PORT"); envPort != "" {
         return ":" + envPort
     }
 
-    // 3. Значение по умолчанию
     return ":3000"
 }
 ```
@@ -141,7 +133,7 @@ func getConfig() string {
 
 Для сложных конфигураций (десятки параметров) удобнее использовать файл. Go умеет читать JSON "из коробки":
 
-```go
+```
 type Config struct {
     Port     int    `json:"port"`
     Database string `json:"database_url"`
@@ -164,7 +156,7 @@ func LoadConfig(path string) (*Config, error) {
 
 ## Итог
 
-1. `flag` — для параметров, которые удобно менять при ручном запуске (`-port`, `-verbose`).
-2. `os.Getenv` — для секретов и настроек в Docker/Kubernetes.
+1. **flag** — для параметров, которые удобно менять при ручном запуске (**-port**, **-verbose**).
+2. **os.Getenv** — для секретов и настроек в Docker/Kubernetes.
 3. Комбинируйте: флаг > переменная окружения > значение по умолчанию.
 4. Для сложных конфигов — читайте JSON/YAML файл.

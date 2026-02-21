@@ -10,17 +10,17 @@ order: 3
 
 Серверы не живут в изоляции. Они ходят в другие сервисы: платежные системы, сторонние API, микросервисы внутри компании. Для этого нужен HTTP-клиент.
 
-В Go он встроен в стандартную библиотеку — пакет `net/http`.
+В Go он встроен в стандартную библиотеку — пакет **net/http**.
 
 ## Простой GET-запрос
 
-```go
+```
 resp, err := http.Get("https://api.example.com/users")
 if err != nil {
     fmt.Println("Ошибка запроса:", err)
     return
 }
-defer resp.Body.Close() // Всегда закрывайте Body!
+defer resp.Body.Close()
 
 body, err := io.ReadAll(resp.Body)
 if err != nil {
@@ -32,11 +32,11 @@ fmt.Println("Статус:", resp.StatusCode)
 fmt.Println("Тело:", string(body))
 ```
 
-**Важно**: Всегда вызывайте `defer resp.Body.Close()`. Если забудете, соединение не вернется в пул и произойдет утечка ресурсов.
+**Важно**: Всегда вызывайте **defer resp.Body.Close()**. Если забудете, соединение не вернется в пул и произойдет утечка ресурсов.
 
 ## POST-запрос с JSON
 
-```go
+```
 type CreateOrderRequest struct {
     ProductID int `json:"product_id"`
     Quantity  int `json:"quantity"`
@@ -45,7 +45,6 @@ type CreateOrderRequest struct {
 func createOrder() error {
     order := CreateOrderRequest{ProductID: 42, Quantity: 3}
 
-    // Сериализуем структуру в JSON
     jsonData, err := json.Marshal(order)
     if err != nil {
         return err
@@ -71,13 +70,13 @@ func createOrder() error {
 
 ## Настройка клиента
 
-`http.Get` и `http.Post` используют глобальный клиент по умолчанию. Проблема: у него **нет таймаута**. Если сервер зависнет, ваша программа будет ждать вечно.
+**http.Get** и **http.Post** используют глобальный клиент по умолчанию. Проблема: у него **нет таймаута**. Если сервер зависнет, ваша программа будет ждать вечно.
 
 Создавайте **свой клиент** с настройками.
 
-```go
+```
 client := &http.Client{
-    Timeout: 10 * time.Second, // Максимум 10 секунд на весь запрос
+    Timeout: 10 * time.Second,
 }
 
 resp, err := client.Get("https://api.example.com/data")
@@ -85,15 +84,14 @@ resp, err := client.Get("https://api.example.com/data")
 
 ### Запрос с заголовками
 
-Для полного контроля используйте `http.NewRequest`.
+Для полного контроля используйте **http.NewRequest**.
 
-```go
+```
 req, err := http.NewRequest("GET", "https://api.example.com/users", nil)
 if err != nil {
     return err
 }
 
-// Добавляем заголовки
 req.Header.Set("Authorization", "Bearer my-token-123")
 req.Header.Set("Accept", "application/json")
 
@@ -103,7 +101,7 @@ resp, err := client.Do(req)
 
 ### Запрос с контекстом (отмена и таймаут)
 
-```go
+```
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 defer cancel()
 
@@ -111,7 +109,6 @@ req, _ := http.NewRequestWithContext(ctx, "GET", "https://api.example.com/slow",
 
 resp, err := http.DefaultClient.Do(req)
 if err != nil {
-    // Если контекст истек — получим ошибку context deadline exceeded
     fmt.Println("Запрос не успел:", err)
     return
 }
@@ -122,7 +119,7 @@ defer resp.Body.Close()
 
 Сеть ненадежна. Запросы могут падать из-за временных проблем (перегрузка, таймаут, сетевой сбой). Простая стратегия повторов:
 
-```go
+```
 func doWithRetry(client *http.Client, req *http.Request, maxRetries int) (*http.Response, error) {
     var resp *http.Response
     var err error
@@ -130,14 +127,13 @@ func doWithRetry(client *http.Client, req *http.Request, maxRetries int) (*http.
     for i := 0; i <= maxRetries; i++ {
         resp, err = client.Do(req)
         if err == nil && resp.StatusCode < 500 {
-            return resp, nil // Успех
+            return resp, nil
         }
 
         if resp != nil {
             resp.Body.Close()
         }
 
-        // Ждем перед повтором (экспоненциальная задержка)
         wait := time.Duration(i+1) * time.Second
         fmt.Printf("Попытка %d не удалась, жду %v...\n", i+1, wait)
         time.Sleep(wait)
@@ -149,7 +145,7 @@ func doWithRetry(client *http.Client, req *http.Request, maxRetries int) (*http.
 
 ## Итог
 
-1. Всегда вызывайте `defer resp.Body.Close()`.
-2. **Всегда задавайте таймаут** (`http.Client{Timeout: 10 * time.Second}`).
-3. Используйте `http.NewRequest`, когда нужны заголовки или контекст.
+1. Всегда вызывайте **defer resp.Body.Close()**.
+2. **Всегда задавайте таймаут** (**http.Client{Timeout: 10 \* time.Second}**).
+3. Используйте **http.NewRequest**, когда нужны заголовки или контекст.
 4. Для ненадежных внешних API реализуйте повторные попытки с задержкой.

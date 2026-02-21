@@ -8,7 +8,7 @@ sectionOrder: 6
 order: 4
 ---
 
-Пакет `context` — это "нервная система" Go-приложений. Он связывает все процессы воедино и позволяет управлять ими.
+Пакет **context** — это "нервная система" Go-приложений. Он связывает все процессы воедино и позволяет управлять ими.
 
 Представьте ситуацию:
 1. Пользователь делает HTTP запрос к вашему серверу.
@@ -20,9 +20,9 @@ order: 4
 
 ## Как это работает
 
-Контекст — это объект, который передается первым аргументом (`ctx`) во все функции.
+Контекст — это объект, который передается первым аргументом (**ctx**) во все функции.
 
-```go
+```
 func DoWork(ctx context.Context) {
     // ...
 }
@@ -35,13 +35,13 @@ func DoWork(ctx context.Context) {
 
 ## Пример 1: Ручная отмена (WithCancel)
 
-```go
+```
 func worker(ctx context.Context) {
     for {
         select {
-        case <-ctx.Done(): // Слушаем сигнал отмены
+        case <-ctx.Done():
             fmt.Println("Воркер: Меня остановили!")
-            return // Выходим из функции
+            return
         default:
             fmt.Println("Воркер: Работаю...")
             time.Sleep(500 * time.Millisecond)
@@ -50,16 +50,15 @@ func worker(ctx context.Context) {
 }
 
 func main() {
-    // Создаем контекст с функцией отмены
     ctx, cancel := context.WithCancel(context.Background())
 
     go worker(ctx)
 
     time.Sleep(2 * time.Second)
     fmt.Println("Main: Хватит работать!")
-    cancel() // <-- Нажимаем кнопку СТОП
+    cancel()
     
-    time.Sleep(1 * time.Second) // Даем время на выход
+    time.Sleep(1 * time.Second)
 }
 ```
 
@@ -67,20 +66,19 @@ func main() {
 
 Самый популярный кейс. Мы даем задаче 2 секунды. Если не успела — убиваем.
 
-```go
+```
 func longOperation(ctx context.Context) {
     select {
-    case <-time.After(5 * time.Second): // Работа на 5 секунд
+    case <-time.After(5 * time.Second):
         fmt.Println("Успех!")
-    case <-ctx.Done(): // Но контекст умрет раньше
+    case <-ctx.Done():
         fmt.Println("Ошибка:", ctx.Err()) // context deadline exceeded
     }
 }
 
 func main() {
-    // Контекст проживет ровно 2 секунды
     ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-    defer cancel() // Всегда вызывайте cancel, чтобы не было утечек памяти!
+    defer cancel()
 
     longOperation(ctx)
 }
@@ -88,14 +86,12 @@ func main() {
 
 ## Контекст в HTTP
 
-В стандартном веб-сервере Go у каждого запроса (`http.Request`) уже есть контекст. Если клиент разорвет соединение, этот контекст автоматически отменится.
+В стандартном веб-сервере Go у каждого запроса (**http.Request**) уже есть контекст. Если клиент разорвет соединение, этот контекст автоматически отменится.
 
-```go
+```
 func handler(w http.ResponseWriter, r *http.Request) {
-    ctx := r.Context() // Получаем контекст запроса
+    ctx := r.Context()
 
-    // Передаем этот контекст в базу данных
-    // Если пользователь уйдет, запрос к БД тоже отменится!
     rows, err := db.QueryContext(ctx, "SELECT * FROM huge_table")
     if err != nil {
         fmt.Println("Запрос прерван:", err)

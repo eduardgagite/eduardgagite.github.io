@@ -8,7 +8,7 @@ sectionOrder: 9
 order: 1
 ---
 
-Большинство бэкендов работают с реляционными базами данных (PostgreSQL, MySQL, SQLite). В Go для этого есть стандартный пакет `database/sql`.
+Большинство бэкендов работают с реляционными базами данных (PostgreSQL, MySQL, SQLite). В Go для этого есть стандартный пакет **database/sql**.
 
 Он не привязан к конкретной БД — это абстракция. Конкретную БД подключает **драйвер** (отдельная библиотека).
 
@@ -16,37 +16,34 @@ order: 1
 
 Для PostgreSQL:
 
-```bash
+```
 go get github.com/lib/pq
 ```
 
 Для MySQL:
 
-```bash
+```
 go get github.com/go-sql-driver/mysql
 ```
 
 ## Подключение
 
-```go
+```
 import (
     "database/sql"
     "fmt"
-    _ "github.com/lib/pq" // Импорт через _ — регистрирует драйвер
+    _ "github.com/lib/pq"
 )
 
 func main() {
-    // Строка подключения
     connStr := "host=localhost port=5432 user=myuser password=secret dbname=mydb sslmode=disable"
 
-    // Открываем пул соединений (это НЕ одно соединение!)
     db, err := sql.Open("postgres", connStr)
     if err != nil {
         panic(err)
     }
     defer db.Close()
 
-    // Проверяем, что соединение работает
     if err := db.Ping(); err != nil {
         panic(fmt.Sprintf("БД недоступна: %v", err))
     }
@@ -57,16 +54,16 @@ func main() {
 
 ### Важно: sql.Open НЕ подключается к БД
 
-`sql.Open` только создает объект `*sql.DB` — это **пул соединений**. Реальное подключение произойдет при первом запросе (или при вызове `db.Ping()`).
+**sql.Open** только создает объект **\*sql.DB** — это **пул соединений**. Реальное подключение произойдет при первом запросе (или при вызове **db.Ping()**).
 
 ### Настройка пула
 
 Пул соединений управляет тем, сколько подключений к БД открыто одновременно.
 
-```go
-db.SetMaxOpenConns(25)              // Макс. соединений к БД
-db.SetMaxIdleConns(10)              // Макс. простаивающих соединений
-db.SetConnMaxLifetime(5 * time.Minute) // Время жизни соединения
+```
+db.SetMaxOpenConns(25)
+db.SetMaxIdleConns(10)
+db.SetConnMaxLifetime(5 * time.Minute)
 ```
 
 Без этих настроек Go будет открывать соединения бесконтрольно, что может перегрузить базу данных.
@@ -75,7 +72,7 @@ db.SetConnMaxLifetime(5 * time.Minute) // Время жизни соединен
 
 ### SELECT (одна строка)
 
-```go
+```
 var name string
 var age int
 
@@ -90,16 +87,16 @@ if err == sql.ErrNoRows {
 }
 ```
 
-`$1` — это placeholder (заполнитель). Go автоматически экранирует значения, защищая от SQL-инъекций. **Никогда** не склеивайте запросы через `fmt.Sprintf`!
+**$1** — это placeholder (заполнитель). Go автоматически экранирует значения, защищая от SQL-инъекций. **Никогда** не склеивайте запросы через **fmt.Sprintf**!
 
 ### SELECT (несколько строк)
 
-```go
+```
 rows, err := db.Query("SELECT id, name FROM users WHERE age > $1", 18)
 if err != nil {
     panic(err)
 }
-defer rows.Close() // Обязательно!
+defer rows.Close()
 
 for rows.Next() {
     var id int
@@ -110,7 +107,6 @@ for rows.Next() {
     fmt.Printf("ID: %d, Имя: %s\n", id, name)
 }
 
-// Проверяем, не было ли ошибки во время итерации
 if err := rows.Err(); err != nil {
     panic(err)
 }
@@ -118,19 +114,17 @@ if err := rows.Err(); err != nil {
 
 ### INSERT / UPDATE / DELETE
 
-Для запросов, которые не возвращают строки, используйте `Exec`.
+Для запросов, которые не возвращают строки, используйте **Exec**.
 
-```go
+```
 result, err := db.Exec("INSERT INTO users (name, age) VALUES ($1, $2)", "Alice", 30)
 if err != nil {
     panic(err)
 }
 
-// Количество затронутых строк
 rowsAffected, _ := result.RowsAffected()
 fmt.Printf("Добавлено строк: %d\n", rowsAffected)
 
-// ID последней вставленной строки (работает не во всех БД)
 lastID, _ := result.LastInsertId()
 fmt.Printf("ID: %d\n", lastID)
 ```
@@ -139,7 +133,7 @@ fmt.Printf("ID: %d\n", lastID)
 
 В продакшене всегда передавайте контекст, чтобы запрос можно было отменить.
 
-```go
+```
 ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 defer cancel()
 
@@ -150,8 +144,8 @@ row := db.QueryRowContext(ctx, "SELECT name FROM users WHERE id = $1", 42)
 
 ## Итог
 
-1. `sql.Open` создает **пул соединений**, а не одно соединение.
-2. Настройте пул: `SetMaxOpenConns`, `SetMaxIdleConns`.
-3. Используйте **placeholders** (`$1`, `$2`) для защиты от SQL-инъекций.
-4. Не забывайте `defer rows.Close()` и `defer db.Close()`.
-5. В продакшене передавайте `context` через `QueryContext` / `ExecContext`.
+1. **sql.Open** создает **пул соединений**, а не одно соединение.
+2. Настройте пул: **SetMaxOpenConns**, **SetMaxIdleConns**.
+3. Используйте **placeholders** (**$1**, **$2**) для защиты от SQL-инъекций.
+4. Не забывайте **defer rows.Close()** и **defer db.Close()**.
+5. В продакшене передавайте **context** через **QueryContext** / **ExecContext**.

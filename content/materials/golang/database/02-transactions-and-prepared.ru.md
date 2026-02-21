@@ -16,29 +16,25 @@ order: 2
 
 Транзакция гарантирует: если что-то пошло не так, все изменения откатятся назад, как будто ничего не было.
 
-```go
+```
 func transferMoney(db *sql.DB, from, to int, amount int) error {
-    // Начинаем транзакцию
     tx, err := db.Begin()
     if err != nil {
         return err
     }
 
-    // Списываем деньги
     _, err = tx.Exec("UPDATE accounts SET balance = balance - $1 WHERE id = $2", amount, from)
     if err != nil {
-        tx.Rollback() // Откатываем все изменения
+        tx.Rollback()
         return err
     }
 
-    // Зачисляем деньги
     _, err = tx.Exec("UPDATE accounts SET balance = balance + $1 WHERE id = $2", amount, to)
     if err != nil {
-        tx.Rollback() // Откатываем все изменения
+        tx.Rollback()
         return err
     }
 
-    // Всё прошло хорошо — фиксируем
     return tx.Commit()
 }
 ```
@@ -47,13 +43,12 @@ func transferMoney(db *sql.DB, from, to int, amount int) error {
 
 Чтобы не забыть откатить транзакцию при ошибке:
 
-```go
+```
 func transferMoney(db *sql.DB, from, to int, amount int) error {
     tx, err := db.Begin()
     if err != nil {
         return err
     }
-    // Если мы не дойдем до Commit, откатим всё
     defer tx.Rollback()
 
     if _, err := tx.Exec("UPDATE accounts SET balance = balance - $1 WHERE id = $2", amount, from); err != nil {
@@ -64,8 +59,7 @@ func transferMoney(db *sql.DB, from, to int, amount int) error {
         return err
     }
 
-    // Если дошли сюда, значит ошибок нет
-    return tx.Commit() // Rollback после Commit — безопасен (ничего не сделает)
+    return tx.Commit()
 }
 ```
 
@@ -73,15 +67,13 @@ func transferMoney(db *sql.DB, from, to int, amount int) error {
 
 Если вы выполняете один и тот же запрос много раз (например, вставка 1000 строк), выгоднее "подготовить" его один раз, а потом многократно выполнять с разными параметрами.
 
-```go
-// Подготавливаем запрос один раз
+```
 stmt, err := db.Prepare("INSERT INTO users (name, email) VALUES ($1, $2)")
 if err != nil {
     panic(err)
 }
 defer stmt.Close()
 
-// Выполняем много раз с разными данными
 users := []struct{ Name, Email string }{
     {"Alice", "alice@mail.com"},
     {"Bob", "bob@mail.com"},
@@ -105,7 +97,7 @@ for _, u := range users {
 
 На практике результаты запросов часто сканируют в структуры.
 
-```go
+```
 type User struct {
     ID    int
     Name  string
@@ -119,7 +111,7 @@ func getUserByID(db *sql.DB, id int) (*User, error) {
     ).Scan(&u.ID, &u.Name, &u.Email)
 
     if err == sql.ErrNoRows {
-        return nil, nil // Не найден
+        return nil, nil
     }
     if err != nil {
         return nil, err
@@ -131,6 +123,6 @@ func getUserByID(db *sql.DB, id int) (*User, error) {
 ## Итог
 
 1. **Транзакции** гарантируют атомарность: либо все запросы выполнились, либо ни один.
-2. Используйте `defer tx.Rollback()` сразу после `Begin()`.
+2. Используйте **defer tx.Rollback()** сразу после **Begin()**.
 3. **Prepared Statements** ускоряют массовые операции.
-4. Порядок полей в `Scan()` должен совпадать с порядком столбцов в `SELECT`.
+4. Порядок полей в **Scan()** должен совпадать с порядком столбцов в **SELECT**.

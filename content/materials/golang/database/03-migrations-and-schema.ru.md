@@ -29,7 +29,7 @@ migrations/
 
 ### Пример файлов
 
-```sql
+```
 -- 001_create_users.up.sql
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -38,17 +38,17 @@ CREATE TABLE users (
 );
 ```
 
-```sql
+```
 -- 001_create_users.down.sql
 DROP TABLE IF EXISTS users;
 ```
 
-```sql
+```
 -- 002_add_email_to_users.up.sql
 ALTER TABLE users ADD COLUMN email VARCHAR(255);
 ```
 
-```sql
+```
 -- 002_add_email_to_users.down.sql
 ALTER TABLE users DROP COLUMN email;
 ```
@@ -59,28 +59,25 @@ ALTER TABLE users DROP COLUMN email;
 
 ### Установка
 
-```bash
+```
 go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 ```
 
 ### Создание миграции
 
-```bash
+```
 migrate create -ext sql -dir migrations -seq add_orders_table
 ```
 
-Создаст два файла: `000003_add_orders_table.up.sql` и `000003_add_orders_table.down.sql`.
+Создаст два файла: **000003_add_orders_table.up.sql** и **000003_add_orders_table.down.sql**.
 
 ### Применение
 
-```bash
-# Применить все новые миграции
+```
 migrate -path migrations -database "postgres://user:pass@localhost:5432/mydb?sslmode=disable" up
 
-# Откатить последнюю миграцию
 migrate -path migrations -database "..." down 1
 
-# Посмотреть текущую версию
 migrate -path migrations -database "..." version
 ```
 
@@ -88,7 +85,7 @@ migrate -path migrations -database "..." version
 
 Можно запускать миграции при старте приложения (удобно для Docker).
 
-```go
+```
 import (
     "github.com/golang-migrate/migrate/v4"
     _ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -121,5 +118,5 @@ func runMigrations(dbURL string) error {
 
 1. Миграции — это версионирование структуры БД.
 2. Каждое изменение — отдельный файл (up + down).
-3. Используйте `golang-migrate` для управления миграциями.
+3. Используйте **golang-migrate** для управления миграциями.
 4. Никогда не меняйте таблицы руками на продакшене — только через миграции.

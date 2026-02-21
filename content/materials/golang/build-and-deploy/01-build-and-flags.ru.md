@@ -12,13 +12,13 @@ order: 1
 
 ## Базовая сборка
 
-```bash
+```
 go build
 ```
 
 Создаст бинарник с именем модуля в текущей папке. Чтобы задать имя:
 
-```bash
+```
 go build -o myapp
 ```
 
@@ -30,12 +30,11 @@ go build -o myapp
 
 ### Шаг 1: Объявляем переменные
 
-```go
+```
 package main
 
 import "fmt"
 
-// Эти переменные будут заполнены при сборке
 var (
     Version   = "dev"
     BuildTime = "unknown"
@@ -51,11 +50,11 @@ func main() {
 
 ### Шаг 2: Передаем значения при сборке
 
-```bash
+```
 go build -ldflags "-X main.Version=1.2.3 -X main.BuildTime=$(date -u '+%Y-%m-%d_%H:%M:%S') -X main.GitCommit=$(git rev-parse --short HEAD)" -o myapp
 ```
 
-Теперь при запуске `./myapp` вы увидите:
+Теперь при запуске **./myapp** вы увидите:
 ```
 Версия: 1.2.3
 Время сборки: 2025-01-28_14:30:00
@@ -66,20 +65,20 @@ go build -ldflags "-X main.Version=1.2.3 -X main.BuildTime=$(date -u '+%Y-%m-%d_
 
 По умолчанию бинарник содержит отладочную информацию. Её можно убрать:
 
-```bash
+```
 go build -ldflags "-s -w" -o myapp
 ```
 
-- `-s` — убирает таблицу символов.
-- `-w` — убирает DWARF отладочную информацию.
+- **-s** — убирает таблицу символов.
+- **-w** — убирает DWARF отладочную информацию.
 
 Это может сократить размер бинарника на 20-30%.
 
 ## Makefile
 
-Чтобы не запоминать длинные команды, используйте `Makefile`:
+Чтобы не запоминать длинные команды, используйте **Makefile**:
 
-```makefile
+```
 VERSION := $(shell git describe --tags --always)
 BUILD_TIME := $(shell date -u '+%Y-%m-%d_%H:%M:%S')
 COMMIT := $(shell git rev-parse --short HEAD)
@@ -96,15 +95,15 @@ run: build
 ```
 
 Теперь:
-```bash
-make build   # Собрать
-make test    # Тесты
-make run     # Собрать и запустить
+```
+make build
+make test
+make run
 ```
 
 ## Итог
 
-1. `go build -o name` — собирает один самодостаточный бинарник.
-2. `-ldflags "-X main.Version=..."` — встраивает версию, коммит, дату сборки.
-3. `-ldflags "-s -w"` — уменьшает размер бинарника.
-4. `Makefile` — автоматизация сборки.
+1. **go build -o name** — собирает один самодостаточный бинарник.
+2. **-ldflags "-X main.Version=..."** — встраивает версию, коммит, дату сборки.
+3. **-ldflags "-s -w"** — уменьшает размер бинарника.
+4. **Makefile** — автоматизация сборки.

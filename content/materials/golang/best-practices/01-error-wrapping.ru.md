@@ -8,27 +8,27 @@ sectionOrder: 11
 order: 1
 ---
 
-В разделе "Базовые конструкции" мы разобрали основы: `if err != nil`. Но в реальном проекте этого мало. Когда ошибка проходит через 5 слоев (HTTP -> Service -> Repository -> SQL), к моменту логирования нужно понимать, **где** она произошла и **почему**.
+В разделе "Базовые конструкции" мы разобрали основы: **if err != nil**. Но в реальном проекте этого мало. Когда ошибка проходит через 5 слоев (HTTP -> Service -> Repository -> SQL), к моменту логирования нужно понимать, **где** она произошла и **почему**.
 
 ## Проблема: Потеря контекста
 
-```go
+```
 func GetUser(id int) (*User, error) {
     user, err := db.FindUser(id)
     if err != nil {
-        return nil, err // Просто прокидываем ошибку вверх
+        return nil, err
     }
     return user, nil
 }
 ```
 
-Когда эта ошибка долетит до логов, вы увидите: `connection refused`. Но к какому сервису? В каком методе? С каким ID?
+Когда эта ошибка долетит до логов, вы увидите: **connection refused**. Но к какому сервису? В каком методе? С каким ID?
 
 ## Решение: fmt.Errorf с %w
 
-Оператор `%w` в `fmt.Errorf` **оборачивает** ошибку: добавляет контекст, но сохраняет оригинал внутри.
+Оператор **%w** в **fmt.Errorf** **оборачивает** ошибку: добавляет контекст, но сохраняет оригинал внутри.
 
-```go
+```
 func GetUser(id int) (*User, error) {
     user, err := db.FindUser(id)
     if err != nil {
@@ -38,14 +38,13 @@ func GetUser(id int) (*User, error) {
 }
 ```
 
-Теперь в логах: `GetUser(id=42): connection refused`. Сразу понятно, что случилось и где.
+Теперь в логах: **GetUser(id=42): connection refused**. Сразу понятно, что случилось и где.
 
 ### Цепочка обёрток
 
 Каждый слой добавляет свой контекст:
 
-```go
-// Repository
+```
 func (r *Repo) FindUser(id int) (*User, error) {
     err := r.db.QueryRow(...)
     if err != nil {
@@ -53,7 +52,6 @@ func (r *Repo) FindUser(id int) (*User, error) {
     }
 }
 
-// Service
 func (s *Service) GetUser(id int) (*User, error) {
     user, err := s.repo.FindUser(id)
     if err != nil {
@@ -61,12 +59,10 @@ func (s *Service) GetUser(id int) (*User, error) {
     }
 }
 
-// Handler
 func handleGetUser(w http.ResponseWriter, r *http.Request) {
     user, err := service.GetUser(42)
     if err != nil {
         log.Printf("handleGetUser: %v", err)
-        // Лог: handleGetUser: GetUser(id=42): FindUser query: connection refused
     }
 }
 ```
@@ -77,24 +73,22 @@ func handleGetUser(w http.ResponseWriter, r *http.Request) {
 
 ### errors.Is — проверка на конкретную ошибку
 
-```go
+```
 import "errors"
 
 if errors.Is(err, sql.ErrNoRows) {
-    // Пользователь не найден — это не критическая ошибка
     http.Error(w, "Not Found", 404)
 } else {
-    // Что-то серьезное — логируем
     log.Printf("Ошибка: %v", err)
     http.Error(w, "Internal Error", 500)
 }
 ```
 
-`errors.Is` "разворачивает" всю цепочку обёрток и проверяет, есть ли внутри `sql.ErrNoRows`.
+**errors.Is** "разворачивает" всю цепочку обёрток и проверяет, есть ли внутри **sql.ErrNoRows**.
 
 ### errors.As — извлечение типизированной ошибки
 
-```go
+```
 var pgErr *pgconn.PgError
 if errors.As(err, &pgErr) {
     fmt.Println("Код ошибки PostgreSQL:", pgErr.Code)
@@ -105,7 +99,7 @@ if errors.As(err, &pgErr) {
 
 Для сложных проектов полезно создать свои типы ошибок.
 
-```go
+```
 type NotFoundError struct {
     Entity string
     ID     int
@@ -115,7 +109,6 @@ func (e *NotFoundError) Error() string {
     return fmt.Sprintf("%s с ID %d не найден", e.Entity, e.ID)
 }
 
-// Использование
 func GetUser(id int) (*User, error) {
     user, err := repo.Find(id)
     if err != nil {
@@ -124,7 +117,6 @@ func GetUser(id int) (*User, error) {
     return user, nil
 }
 
-// Проверка
 var nfErr *NotFoundError
 if errors.As(err, &nfErr) {
     fmt.Printf("%s не найден\n", nfErr.Entity)
@@ -133,8 +125,8 @@ if errors.As(err, &nfErr) {
 
 ## Итог
 
-1. **Оборачивайте** ошибки через `fmt.Errorf("контекст: %w", err)`.
+1. **Оборачивайте** ошибки через **fmt.Errorf("контекст: %w", err)**.
 2. Каждый слой добавляет свой контекст (имя функции, параметры).
-3. `errors.Is` — проверка на конкретную ошибку (через цепочку обёрток).
-4. `errors.As` — извлечение типизированной ошибки.
+3. **errors.Is** — проверка на конкретную ошибку (через цепочку обёрток).
+4. **errors.As** — извлечение типизированной ошибки.
 5. Не оборачивайте ошибки, которые вы обрабатываете на месте (только те, что прокидываете вверх).

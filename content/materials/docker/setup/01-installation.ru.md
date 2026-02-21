@@ -21,8 +21,8 @@ order: 1
   - [Инструкция для Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
   - [Инструкция для CentOS](https://docs.docker.com/engine/install/centos/)
 
-> **Важно для Linux**: После установки не забудьте добавить своего пользователя в группу docker, чтобы не писать `sudo` перед каждой командой:
-> ```bash
+> **Важно для Linux**: После установки не забудьте добавить своего пользователя в группу docker, чтобы не писать **sudo** перед каждой командой:
+> ```
 > sudo usermod -aG docker $USER
 > ```
 
@@ -30,12 +30,12 @@ order: 1
 
 Откройте терминал (PowerShell, Terminal, iTerm) и введите команду:
 
-```bash
+```
 docker version
 ```
 
 Если вы видите вывод с информацией о **Client** и **Server** — поздравляем, Docker работает!
-Если вы видите ошибку `Cannot connect to the Docker daemon`, значит сам движок Docker не запущен. На Windows/Mac запустите приложение Docker Desktop.
+Если вы видите ошибку **Cannot connect to the Docker daemon**, значит сам движок Docker не запущен. На Windows/Mac запустите приложение Docker Desktop.
 
 ## Hello World
 
@@ -43,18 +43,17 @@ docker version
 
 Выполните команду:
 
-```bash
+```
 docker run hello-world
 ```
 
 Что должно произойти:
-1. Docker скажет: `Unable to find image 'hello-world:latest' locally` (Не нашел образ локально).
-2. `Pulling from library/hello-world` (Скачивает из интернета).
-3. Выведет приветственное сообщение: `Hello from Docker!`.
+1. Docker скажет: **Unable to find image 'hello-world:latest' locally** (Не нашел образ локально).
+2. **Pulling from library/hello-world** (Скачивает из интернета).
+3. Выведет приветственное сообщение: **Hello from Docker!**.
 
 Если вы видите этот текст — ваша среда полностью готова к работе.
 
 ## Итого
 
 Мы установили Docker и проверили его работоспособность тестовым образом. Теперь мы готовы запускать настоящие приложения.
-

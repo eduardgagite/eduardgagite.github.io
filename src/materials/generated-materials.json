@@ -732,6 +732,57 @@
       "contentPath": "/materials-content/golang/basics/04-error-handling-basics.ru.json"
     },
     {
+      "title": "Указатели",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "basics",
+      "sectionTitle": "Базовые конструкции",
+      "order": 5,
+      "sectionOrder": 2,
+      "id": {
+        "category": "golang",
+        "section": "basics",
+        "slug": "05-pointers",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/basics/05-pointers.ru.md",
+      "contentPath": "/materials-content/golang/basics/05-pointers.ru.json"
+    },
+    {
+      "title": "Строки, руны и Unicode",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "basics",
+      "sectionTitle": "Базовые конструкции",
+      "order": 6,
+      "sectionOrder": 2,
+      "id": {
+        "category": "golang",
+        "section": "basics",
+        "slug": "06-strings-and-runes",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/basics/06-strings-and-runes.ru.md",
+      "contentPath": "/materials-content/golang/basics/06-strings-and-runes.ru.json"
+    },
+    {
+      "title": "Defer, panic и recover",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "basics",
+      "sectionTitle": "Базовые конструкции",
+      "order": 7,
+      "sectionOrder": 2,
+      "id": {
+        "category": "golang",
+        "section": "basics",
+        "slug": "07-defer-panic-recover",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/basics/07-defer-panic-recover.ru.md",
+      "contentPath": "/materials-content/golang/basics/07-defer-panic-recover.ru.json"
+    },
+    {
       "title": "Обёртки ошибок и контекст",
       "category": "golang",
       "categoryTitle": "Go",
@@ -764,6 +815,57 @@
       },
       "path": "/content/materials/golang/best-practices/02-logging-and-observability.ru.md",
       "contentPath": "/materials-content/golang/best-practices/02-logging-and-observability.ru.json"
+    },
+    {
+      "title": "Линтеры и статический анализ",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "best-practices",
+      "sectionTitle": "Практики и качество",
+      "order": 3,
+      "sectionOrder": 11,
+      "id": {
+        "category": "golang",
+        "section": "best-practices",
+        "slug": "03-linting-and-vet",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/best-practices/03-linting-and-vet.ru.md",
+      "contentPath": "/materials-content/golang/best-practices/03-linting-and-vet.ru.json"
+    },
+    {
+      "title": "Профилирование и pprof",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "best-practices",
+      "sectionTitle": "Практики и качество",
+      "order": 4,
+      "sectionOrder": 11,
+      "id": {
+        "category": "golang",
+        "section": "best-practices",
+        "slug": "04-profiling",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/best-practices/04-profiling.ru.md",
+      "contentPath": "/materials-content/golang/best-practices/04-profiling.ru.json"
+    },
+    {
+      "title": "Паттерны проектирования в Go",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "best-practices",
+      "sectionTitle": "Практики и качество",
+      "order": 5,
+      "sectionOrder": 11,
+      "id": {
+        "category": "golang",
+        "section": "best-practices",
+        "slug": "05-project-patterns",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/best-practices/05-project-patterns.ru.md",
+      "contentPath": "/materials-content/golang/best-practices/05-project-patterns.ru.json"
     },
     {
       "title": "Сборка, флаги и версии",
@@ -868,6 +970,23 @@
       "contentPath": "/materials-content/golang/concurrency/04-context-cancellation.ru.json"
     },
     {
+      "title": "Паттерны конкурентности",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "concurrency",
+      "sectionTitle": "Конкурентность",
+      "order": 5,
+      "sectionOrder": 6,
+      "id": {
+        "category": "golang",
+        "section": "concurrency",
+        "slug": "05-patterns",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/concurrency/05-patterns.ru.md",
+      "contentPath": "/materials-content/golang/concurrency/05-patterns.ru.json"
+    },
+    {
       "title": "Массивы и срезы",
       "category": "golang",
       "categoryTitle": "Go",
@@ -934,6 +1053,23 @@
       },
       "path": "/content/materials/golang/data-structures/04-interfaces-and-embedding.ru.md",
       "contentPath": "/materials-content/golang/data-structures/04-interfaces-and-embedding.ru.json"
+    },
+    {
+      "title": "Дженерики",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "data-structures",
+      "sectionTitle": "Структуры данных",
+      "order": 5,
+      "sectionOrder": 3,
+      "id": {
+        "category": "golang",
+        "section": "data-structures",
+        "slug": "05-generics",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/data-structures/05-generics.ru.md",
+      "contentPath": "/materials-content/golang/data-structures/05-generics.ru.json"
     },
     {
       "title": "database/sql и подключение",
@@ -1208,6 +1344,23 @@
       "contentPath": "/materials-content/golang/testing/03-benchmarks.ru.json"
     },
     {
+      "title": "Интеграционные тесты",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "testing",
+      "sectionTitle": "Тестирование",
+      "order": 4,
+      "sectionOrder": 7,
+      "id": {
+        "category": "golang",
+        "section": "testing",
+        "slug": "04-integration-tests",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/testing/04-integration-tests.ru.md",
+      "contentPath": "/materials-content/golang/testing/04-integration-tests.ru.json"
+    },
+    {
       "title": "HTTP-сервер на стандартной библиотеке",
       "category": "golang",
       "categoryTitle": "Go",
@@ -1257,6 +1410,23 @@
       },
       "path": "/content/materials/golang/web-and-api/03-http-client.ru.md",
       "contentPath": "/materials-content/golang/web-and-api/03-http-client.ru.json"
+    },
+    {
+      "title": "gRPC и Protocol Buffers",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "web-and-api",
+      "sectionTitle": "Веб и API",
+      "order": 4,
+      "sectionOrder": 8,
+      "id": {
+        "category": "golang",
+        "section": "web-and-api",
+        "slug": "04-grpc",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/web-and-api/04-grpc.ru.md",
+      "contentPath": "/materials-content/golang/web-and-api/04-grpc.ru.json"
     },
     {
       "title": "Lua-скрипты",
