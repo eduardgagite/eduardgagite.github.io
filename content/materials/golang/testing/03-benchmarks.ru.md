@@ -13,13 +13,12 @@ order: 3
 ## Как написать бенчмарк
 
 Правила похожи на тесты:
-1. Файл заканчивается на `_test.go`.
-2. Функция начинается с `Benchmark` (а не `Test`).
-3. Принимает `*testing.B` (а не `*testing.T`).
+1. Файл заканчивается на **_test.go**.
+2. Функция начинается с **Benchmark** (а не **Test**).
+3. Принимает **\*testing.B** (а не **\*testing.T**).
 
-```go
+```
 func BenchmarkAdd(b *testing.B) {
-    // b.N — количество итераций (Go подбирает автоматически)
     for i := 0; i < b.N; i++ {
         Add(2, 3)
     }
@@ -30,7 +29,7 @@ Go сам определит, сколько раз нужно вызвать ф
 
 ### Запуск
 
-```bash
+```
 go test -bench=. ./...
 ```
 
@@ -49,8 +48,7 @@ BenchmarkAdd-8    1000000000    0.3187 ns/op
 
 Бенчмарки идеально подходят, чтобы сравнить два способа решения одной задачи.
 
-```go
-// Способ 1: Конкатенация строк через +
+```
 func ConcatPlus(parts []string) string {
     result := ""
     for _, p := range parts {
@@ -59,7 +57,6 @@ func ConcatPlus(parts []string) string {
     return result
 }
 
-// Способ 2: Через strings.Builder
 func ConcatBuilder(parts []string) string {
     var b strings.Builder
     for _, p := range parts {
@@ -69,7 +66,7 @@ func ConcatBuilder(parts []string) string {
 }
 ```
 
-```go
+```
 var parts = []string{"Hello", " ", "World", "!", " ", "Go", " ", "is", " ", "awesome"}
 
 func BenchmarkConcatPlus(b *testing.B) {
@@ -85,13 +82,13 @@ func BenchmarkConcatBuilder(b *testing.B) {
 }
 ```
 
-Результат покажет, что `strings.Builder` в разы быстрее для большого количества строк, потому что не создает новую строку при каждой итерации.
+Результат покажет, что **strings.Builder** в разы быстрее для большого количества строк, потому что не создает новую строку при каждой итерации.
 
 ## Измерение памяти
 
-Добавьте флаг `-benchmem`, чтобы увидеть, сколько памяти выделяет ваш код.
+Добавьте флаг **-benchmem**, чтобы увидеть, сколько памяти выделяет ваш код.
 
-```bash
+```
 go test -bench=. -benchmem ./...
 ```
 
@@ -105,6 +102,6 @@ BenchmarkConcatBuilder-8   5000000     280 ns/op     128 B/op     2 allocs/op
 
 ## Итог
 
-1. Бенчмарки начинаются с `Benchmark` и принимают `*testing.B`.
-2. Запуск: `go test -bench=. -benchmem ./...`.
+1. Бенчмарки начинаются с **Benchmark** и принимают **\*testing.B**.
+2. Запуск: **go test -bench=. -benchmem ./...**.
 3. Используйте бенчмарки, чтобы **доказать**, что оптимизация действительно помогла, а не просто "кажется, что стало быстрее".

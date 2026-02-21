@@ -18,23 +18,23 @@ order: 4
 
 Интерфейс — это контракт. Он описывает **набор методов**, но не реализует их.
 
-Ключевая особенность Go: **интерфейсы реализуются неявно**. Вам не нужно писать `implements MyInterface`. Если структура имеет все методы интерфейса — она его реализует автоматически.
+Ключевая особенность Go: **интерфейсы реализуются неявно**. Вам не нужно писать **implements MyInterface**. Если структура имеет все методы интерфейса — она его реализует автоматически.
 
 Это называется **утиная типизация** (Duck Typing): "Если оно ходит как утка и крякает как утка — это утка".
 
 ### Пример
 
-Создаем интерфейс `Speaker` — "тот, кто умеет говорить".
+Создаем интерфейс **Speaker** — "тот, кто умеет говорить".
 
-```go
+```
 type Speaker interface {
     Speak() string
 }
 ```
 
-Любой тип, у которого есть метод `Speak() string`, автоматически является `Speaker`.
+Любой тип, у которого есть метод **Speak() string**, автоматически является **Speaker**.
 
-```go
+```
 type Dog struct {
     Name string
 }
@@ -54,7 +54,7 @@ func (h Human) Speak() string {
 
 Теперь мы можем написать функцию, которая работает с **любым** Speaker.
 
-```go
+```
 func announce(s Speaker) {
     fmt.Println(s.Speak())
 }
@@ -74,18 +74,17 @@ func main() {
 
 Представьте: у вас есть сервис, который отправляет уведомления. Сегодня — по email, завтра — через Telegram, послезавтра — через SMS.
 
-```go
+```
 type Notifier interface {
     Send(message string) error
 }
 
 type EmailNotifier struct { /* ... */ }
-func (e EmailNotifier) Send(message string) error { /* отправляем email */ }
+func (e EmailNotifier) Send(message string) error { /* ... */ }
 
 type TelegramNotifier struct { /* ... */ }
-func (t TelegramNotifier) Send(message string) error { /* отправляем в Telegram */ }
+func (t TelegramNotifier) Send(message string) error { /* ... */ }
 
-// Сервис не знает, КАК отправляется уведомление. Он просто вызывает Send.
 func NotifyUser(n Notifier, msg string) {
     n.Send(msg)
 }
@@ -97,17 +96,17 @@ func NotifyUser(n Notifier, msg string) {
 
 В Go принято делать интерфейсы **маленькими** (1-2 метода). Стандартная библиотека полна таких примеров:
 
-- `io.Reader` — у кого есть метод `Read()`.
-- `io.Writer` — у кого есть метод `Write()`.
-- `fmt.Stringer` — у кого есть метод `String()`.
-- `error` — у кого есть метод `Error()`.
+- **io.Reader** — у кого есть метод **Read()**.
+- **io.Writer** — у кого есть метод **Write()**.
+- **fmt.Stringer** — у кого есть метод **String()**.
+- **error** — у кого есть метод **Error()**.
 
 ### Пустой интерфейс (any)
 
 Интерфейс без методов. Ему удовлетворяет **любой** тип.
 
-```go
-var x any // Раньше писали interface{}
+```
+var x any
 
 x = 42
 x = "строка"
@@ -115,13 +114,13 @@ x = true
 x = User{Name: "Alice"}
 ```
 
-Используется в функциях, которые принимают "что угодно" (например, `fmt.Println`). Но злоупотреблять не стоит — вы теряете проверку типов на этапе компиляции.
+Используется в функциях, которые принимают "что угодно" (например, **fmt.Println**). Но злоупотреблять не стоит — вы теряете проверку типов на этапе компиляции.
 
 ## Встраивание (Embedding)
 
 Как переиспользовать код без наследования? Через встраивание одной структуры в другую.
 
-```go
+```
 type User struct {
     Name  string
     Email string
@@ -134,27 +133,25 @@ func (u *User) Greet() string {
 
 Хотим создать Admin, который умеет всё то же, что и User, плюс имеет уровень доступа.
 
-```go
+```
 type Admin struct {
-    User  // Встраиваем User (без имени поля!)
+    User
     Level int
 }
 ```
 
 Теперь Admin "наследует" поля и методы User.
 
-```go
+```
 func main() {
     admin := Admin{
         User:  User{Name: "Иван", Email: "ivan@admin.com"},
         Level: 100,
     }
 
-    // Обращаемся к полям User напрямую
-    fmt.Println(admin.Name)  // "Иван" (а не admin.User.Name)
+    fmt.Println(admin.Name)  // "Иван"
     fmt.Println(admin.Email) // "ivan@admin.com"
 
-    // Вызываем методы User
     fmt.Println(admin.Greet()) // "Привет, Иван"
 }
 ```
@@ -170,4 +167,4 @@ func main() {
 1. **Интерфейсы** определяют поведение. Реализуются **неявно** — просто добавьте нужные методы.
 2. Делайте интерфейсы **маленькими** (1-2 метода).
 3. **Встраивание** заменяет наследование через композицию.
-4. `any` (пустой интерфейс) принимает что угодно, но лишает вас проверки типов.
+4. **any** (пустой интерфейс) принимает что угодно, но лишает вас проверки типов.

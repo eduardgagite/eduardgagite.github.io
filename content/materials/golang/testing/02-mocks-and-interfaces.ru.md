@@ -14,17 +14,15 @@ order: 2
 
 ## Проблема
 
-```go
+```
 type UserService struct{}
 
 func (s *UserService) GetUser(id int) (*User, error) {
-    // Реальный запрос в PostgreSQL
     row := db.QueryRow("SELECT name FROM users WHERE id = $1", id)
-    // ...
 }
 ```
 
-Чтобы протестировать `GetUser`, нам нужна работающая БД с данными. Это сложно, медленно и хрупко.
+Чтобы протестировать **GetUser**, нам нужна работающая БД с данными. Это сложно, медленно и хрупко.
 
 ## Решение: Интерфейс + Подмена
 
@@ -32,14 +30,13 @@ func (s *UserService) GetUser(id int) (*User, error) {
 
 Вместо прямого обращения к БД, сервис работает через **интерфейс**.
 
-```go
-// Контракт: "кто-то, кто умеет доставать пользователей"
+```
 type UserRepository interface {
     FindByID(id int) (*User, error)
 }
 
 type UserService struct {
-    repo UserRepository // Зависимость через интерфейс
+    repo UserRepository
 }
 
 func NewUserService(repo UserRepository) *UserService {
@@ -57,13 +54,12 @@ func (s *UserService) GetUser(id int) (*User, error) {
 
 ### Шаг 2: Реальная реализация (для продакшена)
 
-```go
+```
 type PostgresUserRepo struct {
     db *sql.DB
 }
 
 func (r *PostgresUserRepo) FindByID(id int) (*User, error) {
-    // Реальный запрос к PostgreSQL
     row := r.db.QueryRow("SELECT name, email FROM users WHERE id = $1", id)
     var u User
     err := row.Scan(&u.Name, &u.Email)
@@ -73,8 +69,7 @@ func (r *PostgresUserRepo) FindByID(id int) (*User, error) {
 
 ### Шаг 3: Фейковая реализация (для тестов)
 
-```go
-// В файле user_service_test.go
+```
 type FakeUserRepo struct {
     users map[int]*User
 }
@@ -90,19 +85,16 @@ func (r *FakeUserRepo) FindByID(id int) (*User, error) {
 
 ### Шаг 4: Тест
 
-```go
+```
 func TestGetUser(t *testing.T) {
-    // Создаем фейковый репозиторий с данными
     fakeRepo := &FakeUserRepo{
         users: map[int]*User{
             1: {Name: "Alice", Email: "alice@mail.com"},
         },
     }
 
-    // Подставляем фейк вместо реальной БД
     service := NewUserService(fakeRepo)
 
-    // Тестируем
     user, err := service.GetUser(1)
     if err != nil {
         t.Fatalf("неожиданная ошибка: %v", err)
@@ -127,20 +119,15 @@ func TestGetUser_NotFound(t *testing.T) {
 
 ## Тестирование HTTP-обработчиков
 
-Стандартная библиотека Go предоставляет пакет `httptest` для тестирования HTTP без реального сервера.
+Стандартная библиотека Go предоставляет пакет **httptest** для тестирования HTTP без реального сервера.
 
-```go
+```
 func TestHealthHandler(t *testing.T) {
-    // Создаем "фейковый" запрос
     req := httptest.NewRequest("GET", "/health", nil)
-    
-    // Создаем "фейковый" ResponseWriter
     w := httptest.NewRecorder()
 
-    // Вызываем обработчик напрямую
     HealthHandler(w, req)
 
-    // Проверяем результат
     if w.Code != http.StatusOK {
         t.Errorf("статус = %d; хотели 200", w.Code)
     }
@@ -155,5 +142,5 @@ func TestHealthHandler(t *testing.T) {
 
 1. Зависимости (БД, API, файлы) прячьте за **интерфейсами**.
 2. В тестах подставляйте **фейковые** реализации.
-3. Для HTTP-тестов используйте `httptest.NewRecorder`.
+3. Для HTTP-тестов используйте **httptest.NewRecorder**.
 4. Тесты должны быть быстрыми и не зависеть от внешних сервисов.

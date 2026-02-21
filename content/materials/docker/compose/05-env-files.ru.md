@@ -8,45 +8,44 @@ sectionOrder: 7
 order: 5
 ---
 
-Хардкодить пароли в `docker-compose.yml` — плохая идея. Файл попадет в git, и пароли утекут.
-Docker Compose нативно поддерживает файлы `.env`.
+Хардкодить пароли в **docker-compose.yml** — плохая идея. Файл попадет в git, и пароли утекут.
+Docker Compose нативно поддерживает файлы **.env**.
 
 ## Как это работает
 
-1. Создайте файл `.env` рядом с `docker-compose.yml`:
+1. Создайте файл **.env** рядом с **docker-compose.yml**:
 
-```env
+```
 DB_USER=admin
 DB_PASS=super_secret_password_123
 DB_PORT=5432
 ```
 
-2. Используйте переменные в `docker-compose.yml`:
+2. Используйте переменные в **docker-compose.yml**:
 
-```yaml
+```
 services:
   db:
     image: postgres
     environment:
-      POSTGRES_USER: ${DB_USER}       # Подставится admin
-      POSTGRES_PASSWORD: ${DB_PASS}   # Подставится пароль
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
     ports:
-      - "${DB_PORT}:5432"             # Можно даже в портах
+      - "${DB_PORT}:5432"
 ```
 
-Теперь вы можете коммитить `docker-compose.yml` в репозиторий, а `.env` добавить в `.gitignore`.
-У каждого разработчика будет свой `.env` со своими настройками.
+Теперь вы можете коммитить **docker-compose.yml** в репозиторий, а **.env** добавить в **.gitignore**.
+У каждого разработчика будет свой **.env** со своими настройками.
 
 ## Значения по умолчанию
 
 Можно задавать дефолтные значения прямо в YAML, если переменная не найдена:
 
-```yaml
+```
 ports:
-  - "${PORT:-8080}:80" # Если PORT не задан, используем 8080
+  - "${PORT:-8080}:80"
 ```
 
 ## Итого
 
-Никогда не храните секреты в чистом виде в `docker-compose.yml`. Используйте `.env` файл — это стандарт индустрии для конфигурации 12-factor приложений.
-
+Никогда не храните секреты в чистом виде в **docker-compose.yml**. Используйте **.env** файл — это стандарт индустрии для конфигурации 12-factor приложений.
