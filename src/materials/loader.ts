@@ -67,7 +67,7 @@ function resolvePublicAssetPath(path: string): string {
 async function loadMaterialsIndex(): Promise<GeneratedMaterialsFile> {
   if (materialsIndexPromise) return materialsIndexPromise;
 
-  materialsIndexPromise = fetch(resolvePublicAssetPath(MATERIALS_INDEX_PATH), { cache: 'no-cache' })
+  materialsIndexPromise = fetch(resolvePublicAssetPath(MATERIALS_INDEX_PATH), { cache: 'default' })
     .then(async (response) => {
       if (!response.ok) {
         throw new Error(`Failed to load materials index: ${response.status}`);
@@ -186,7 +186,7 @@ export async function loadMaterialContent(material: MaterialMeta): Promise<Mater
   const cached = materialContentCache.get(cacheKey);
   if (cached) return cached;
 
-  const pending = fetch(resolvePublicAssetPath(material.contentPath), { cache: 'no-cache' })
+  const pending = fetch(resolvePublicAssetPath(material.contentPath), { cache: 'default' })
     .then(async (response) => {
       if (!response.ok) {
         throw new Error(`Failed to load material content: ${response.status}`);
