@@ -109,11 +109,8 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
       const { inline, className, children } = props;
       const match = /language-(\w+)/.exec(className || '');
       const content = String(children ?? '').trim();
-      const isMultiLine = content.includes('\n');
 
-      // Если это inline-код или короткий однострочный блок без языка (например, команда)
-      // рендерим как inline-код, чтобы не создавать громоздкое окно
-      if (inline || (!match && !isMultiLine && content.length < 60)) {
+      if (inline) {
         return <InlineCode>{children}</InlineCode>;
       }
 
