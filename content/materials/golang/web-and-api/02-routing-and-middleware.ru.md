@@ -18,7 +18,7 @@ order: 2
 
 Начиная с Go 1.22, стандартный маршрутизатор поддерживает методы и параметры в URL.
 
-```go
+```
 mux := http.NewServeMux()
 
 mux.HandleFunc("GET /api/users", listUsers)
@@ -43,17 +43,15 @@ Middleware — это функция-обертка вокруг обработ�
 
 ### Как это выглядит
 
-Middleware — это функция, которая принимает `http.Handler` и возвращает новый `http.Handler`.
+Middleware — это функция, которая принимает **http.Handler** и возвращает новый **http.Handler**.
 
-```go
+```
 func loggingMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         start := time.Now()
 
-        // Передаем управление следующему обработчику
         next.ServeHTTP(w, r)
 
-        // После выполнения
         duration := time.Since(start)
         fmt.Printf("%s %s — %v\n", r.Method, r.URL.Path, duration)
     })
@@ -62,30 +60,28 @@ func loggingMiddleware(next http.Handler) http.Handler {
 
 ### Применение
 
-```go
+```
 func main() {
     mux := http.NewServeMux()
     mux.HandleFunc("GET /api/users", listUsers)
 
-    // Оборачиваем все маршруты в middleware
     handler := loggingMiddleware(mux)
 
     http.ListenAndServe(":8080", handler)
 }
 ```
 
-Теперь каждый запрос будет логироваться: `GET /api/users — 2.3ms`.
+Теперь каждый запрос будет логироваться: **GET /api/users — 2.3ms**.
 
 ### Цепочка middleware
 
 Middleware можно вкладывать друг в друга. Запрос проходит через них как через слои луковицы.
 
-```go
+```
 func main() {
     mux := http.NewServeMux()
     mux.HandleFunc("GET /api/users", listUsers)
 
-    // Порядок: сначала recovery, потом logging, потом CORS
     handler := recoveryMiddleware(loggingMiddleware(corsMiddleware(mux)))
 
     http.ListenAndServe(":8080", handler)
@@ -96,7 +92,7 @@ func main() {
 
 Если обработчик запаниковал, весь сервер упадет. Этот middleware ловит панику и возвращает 500 вместо краша.
 
-```go
+```
 func recoveryMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         defer func() {
@@ -112,7 +108,7 @@ func recoveryMiddleware(next http.Handler) http.Handler {
 
 ## Итог
 
-1. Стандартный `ServeMux` (Go 1.22+) поддерживает методы и параметры URL — этого хватает для большинства API.
+1. Стандартный **ServeMux** (Go 1.22+) поддерживает методы и параметры URL — этого хватает для большинства API.
 2. **Middleware** — обертка вокруг обработчика для общей логики (логирование, авторизация).
-3. Middleware вкладываются друг в друга: `recovery(logging(cors(handler)))`.
+3. Middleware вкладываются друг в друга: **recovery(logging(cors(handler)))**.
 4. Recovery middleware — обязателен в продакшене, чтобы сервер не падал от паники.
