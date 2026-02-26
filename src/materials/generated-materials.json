@@ -664,6 +664,74 @@
       "contentPath": "/materials-content/docker/troubleshooting/04-platform-specifics.ru.json"
     },
     {
+      "title": "Рефлексия (reflect)",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "advanced",
+      "sectionTitle": "Продвинутые возможности",
+      "order": 1,
+      "sectionOrder": 13,
+      "id": {
+        "category": "golang",
+        "section": "advanced",
+        "slug": "01-reflection",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/advanced/01-reflection.ru.md",
+      "contentPath": "/materials-content/golang/advanced/01-reflection.ru.json"
+    },
+    {
+      "title": "Директива go:embed",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "advanced",
+      "sectionTitle": "Продвинутые возможности",
+      "order": 2,
+      "sectionOrder": 13,
+      "id": {
+        "category": "golang",
+        "section": "advanced",
+        "slug": "02-embed",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/advanced/02-embed.ru.md",
+      "contentPath": "/materials-content/golang/advanced/02-embed.ru.json"
+    },
+    {
+      "title": "Пакет unsafe",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "advanced",
+      "sectionTitle": "Продвинутые возможности",
+      "order": 3,
+      "sectionOrder": 13,
+      "id": {
+        "category": "golang",
+        "section": "advanced",
+        "slug": "03-unsafe",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/advanced/03-unsafe.ru.md",
+      "contentPath": "/materials-content/golang/advanced/03-unsafe.ru.json"
+    },
+    {
+      "title": "go generate и кодогенерация",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "advanced",
+      "sectionTitle": "Продвинутые возможности",
+      "order": 4,
+      "sectionOrder": 13,
+      "id": {
+        "category": "golang",
+        "section": "advanced",
+        "slug": "04-go-generate",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/advanced/04-go-generate.ru.md",
+      "contentPath": "/materials-content/golang/advanced/04-go-generate.ru.json"
+    },
+    {
       "title": "Переменные и типы",
       "category": "golang",
       "categoryTitle": "Go",
@@ -783,6 +851,40 @@
       "contentPath": "/materials-content/golang/basics/07-defer-panic-recover.ru.json"
     },
     {
+      "title": "Замыкания и анонимные функции",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "basics",
+      "sectionTitle": "Базовые конструкции",
+      "order": 8,
+      "sectionOrder": 2,
+      "id": {
+        "category": "golang",
+        "section": "basics",
+        "slug": "08-closures",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/basics/08-closures.ru.md",
+      "contentPath": "/materials-content/golang/basics/08-closures.ru.json"
+    },
+    {
+      "title": "Iota и перечисления",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "basics",
+      "sectionTitle": "Базовые конструкции",
+      "order": 9,
+      "sectionOrder": 2,
+      "id": {
+        "category": "golang",
+        "section": "basics",
+        "slug": "09-iota-and-enums",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/basics/09-iota-and-enums.ru.md",
+      "contentPath": "/materials-content/golang/basics/09-iota-and-enums.ru.json"
+    },
+    {
       "title": "Обёртки ошибок и контекст",
       "category": "golang",
       "categoryTitle": "Go",
@@ -868,6 +970,23 @@
       "contentPath": "/materials-content/golang/best-practices/05-project-patterns.ru.json"
     },
     {
+      "title": "Проектирование интерфейсов",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "best-practices",
+      "sectionTitle": "Практики и качество",
+      "order": 6,
+      "sectionOrder": 11,
+      "id": {
+        "category": "golang",
+        "section": "best-practices",
+        "slug": "06-interface-design",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/best-practices/06-interface-design.ru.md",
+      "contentPath": "/materials-content/golang/best-practices/06-interface-design.ru.json"
+    },
+    {
       "title": "Сборка, флаги и версии",
       "category": "golang",
       "categoryTitle": "Go",
@@ -900,6 +1019,57 @@
       },
       "path": "/content/materials/golang/build-and-deploy/02-cross-compile-and-release.ru.md",
       "contentPath": "/materials-content/golang/build-and-deploy/02-cross-compile-and-release.ru.json"
+    },
+    {
+      "title": "Пакет flag",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "cli",
+      "sectionTitle": "CLI-разработка",
+      "order": 1,
+      "sectionOrder": 14,
+      "id": {
+        "category": "golang",
+        "section": "cli",
+        "slug": "01-flag-package",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/cli/01-flag-package.ru.md",
+      "contentPath": "/materials-content/golang/cli/01-flag-package.ru.json"
+    },
+    {
+      "title": "Cobra — фреймворк для CLI",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "cli",
+      "sectionTitle": "CLI-разработка",
+      "order": 2,
+      "sectionOrder": 14,
+      "id": {
+        "category": "golang",
+        "section": "cli",
+        "slug": "02-cobra",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/cli/02-cobra.ru.md",
+      "contentPath": "/materials-content/golang/cli/02-cobra.ru.json"
+    },
+    {
+      "title": "Паттерны CLI-инструментов",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "cli",
+      "sectionTitle": "CLI-разработка",
+      "order": 3,
+      "sectionOrder": 14,
+      "id": {
+        "category": "golang",
+        "section": "cli",
+        "slug": "03-cli-patterns",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/cli/03-cli-patterns.ru.md",
+      "contentPath": "/materials-content/golang/cli/03-cli-patterns.ru.json"
     },
     {
       "title": "Горутины и каналы",
@@ -987,6 +1157,23 @@
       "contentPath": "/materials-content/golang/concurrency/05-patterns.ru.json"
     },
     {
+      "title": "Атомарные операции и race detector",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "concurrency",
+      "sectionTitle": "Конкурентность",
+      "order": 6,
+      "sectionOrder": 6,
+      "id": {
+        "category": "golang",
+        "section": "concurrency",
+        "slug": "06-atomic-and-race",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/concurrency/06-atomic-and-race.ru.md",
+      "contentPath": "/materials-content/golang/concurrency/06-atomic-and-race.ru.json"
+    },
+    {
       "title": "Массивы и срезы",
       "category": "golang",
       "categoryTitle": "Go",
@@ -1070,6 +1257,23 @@
       },
       "path": "/content/materials/golang/data-structures/05-generics.ru.md",
       "contentPath": "/materials-content/golang/data-structures/05-generics.ru.json"
+    },
+    {
+      "title": "Type assertions и type switch",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "data-structures",
+      "sectionTitle": "Структуры данных",
+      "order": 6,
+      "sectionOrder": 3,
+      "id": {
+        "category": "golang",
+        "section": "data-structures",
+        "slug": "06-type-assertions",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/data-structures/06-type-assertions.ru.md",
+      "contentPath": "/materials-content/golang/data-structures/06-type-assertions.ru.json"
     },
     {
       "title": "database/sql и подключение",
@@ -1293,6 +1497,125 @@
       "contentPath": "/materials-content/golang/packages-modules/03-project-layout.ru.json"
     },
     {
+      "title": "Пакет fmt",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "stdlib",
+      "sectionTitle": "Стандартная библиотека",
+      "order": 1,
+      "sectionOrder": 12,
+      "id": {
+        "category": "golang",
+        "section": "stdlib",
+        "slug": "01-fmt",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/stdlib/01-fmt.ru.md",
+      "contentPath": "/materials-content/golang/stdlib/01-fmt.ru.json"
+    },
+    {
+      "title": "Пакеты strings и bytes",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "stdlib",
+      "sectionTitle": "Стандартная библиотека",
+      "order": 2,
+      "sectionOrder": 12,
+      "id": {
+        "category": "golang",
+        "section": "stdlib",
+        "slug": "02-strings-and-bytes",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/stdlib/02-strings-and-bytes.ru.md",
+      "contentPath": "/materials-content/golang/stdlib/02-strings-and-bytes.ru.json"
+    },
+    {
+      "title": "Пакет strconv",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "stdlib",
+      "sectionTitle": "Стандартная библиотека",
+      "order": 3,
+      "sectionOrder": 12,
+      "id": {
+        "category": "golang",
+        "section": "stdlib",
+        "slug": "03-strconv",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/stdlib/03-strconv.ru.md",
+      "contentPath": "/materials-content/golang/stdlib/03-strconv.ru.json"
+    },
+    {
+      "title": "Пакет time",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "stdlib",
+      "sectionTitle": "Стандартная библиотека",
+      "order": 4,
+      "sectionOrder": 12,
+      "id": {
+        "category": "golang",
+        "section": "stdlib",
+        "slug": "04-time",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/stdlib/04-time.ru.md",
+      "contentPath": "/materials-content/golang/stdlib/04-time.ru.json"
+    },
+    {
+      "title": "Пакеты sort и slices",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "stdlib",
+      "sectionTitle": "Стандартная библиотека",
+      "order": 5,
+      "sectionOrder": 12,
+      "id": {
+        "category": "golang",
+        "section": "stdlib",
+        "slug": "05-sort-and-slices",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/stdlib/05-sort-and-slices.ru.md",
+      "contentPath": "/materials-content/golang/stdlib/05-sort-and-slices.ru.json"
+    },
+    {
+      "title": "Пакет regexp",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "stdlib",
+      "sectionTitle": "Стандартная библиотека",
+      "order": 6,
+      "sectionOrder": 12,
+      "id": {
+        "category": "golang",
+        "section": "stdlib",
+        "slug": "06-regexp",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/stdlib/06-regexp.ru.md",
+      "contentPath": "/materials-content/golang/stdlib/06-regexp.ru.json"
+    },
+    {
+      "title": "Пакеты os и os/exec",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "stdlib",
+      "sectionTitle": "Стандартная библиотека",
+      "order": 7,
+      "sectionOrder": 12,
+      "id": {
+        "category": "golang",
+        "section": "stdlib",
+        "slug": "07-os-and-exec",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/stdlib/07-os-and-exec.ru.md",
+      "contentPath": "/materials-content/golang/stdlib/07-os-and-exec.ru.json"
+    },
+    {
       "title": "Юнит-тесты и табличные кейсы",
       "category": "golang",
       "categoryTitle": "Go",
@@ -1427,6 +1750,40 @@
       },
       "path": "/content/materials/golang/web-and-api/04-grpc.ru.md",
       "contentPath": "/materials-content/golang/web-and-api/04-grpc.ru.json"
+    },
+    {
+      "title": "WebSockets",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "web-and-api",
+      "sectionTitle": "Web и API",
+      "order": 5,
+      "sectionOrder": 8,
+      "id": {
+        "category": "golang",
+        "section": "web-and-api",
+        "slug": "05-websockets",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/web-and-api/05-websockets.ru.md",
+      "contentPath": "/materials-content/golang/web-and-api/05-websockets.ru.json"
+    },
+    {
+      "title": "Аутентификация и авторизация",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "web-and-api",
+      "sectionTitle": "Web и API",
+      "order": 6,
+      "sectionOrder": 8,
+      "id": {
+        "category": "golang",
+        "section": "web-and-api",
+        "slug": "06-auth-middleware",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/web-and-api/06-auth-middleware.ru.md",
+      "contentPath": "/materials-content/golang/web-and-api/06-auth-middleware.ru.json"
     },
     {
       "title": "Lua-скрипты",
