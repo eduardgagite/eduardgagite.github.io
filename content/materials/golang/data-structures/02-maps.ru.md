@@ -18,7 +18,7 @@ order: 2
 
 ### Через make (пустая карта)
 
-```
+```go
 prices := make(map[string]int)
 
 prices["apple"] = 100
@@ -29,7 +29,7 @@ fmt.Println(prices) // map[apple:100 banana:200]
 
 ### Через литерал (сразу с данными)
 
-```
+```go
 roles := map[string]string{
     "admin":  "Super User",
     "editor": "Content Manager",
@@ -41,7 +41,7 @@ roles := map[string]string{
 
 Если объявить карту без **make**, она будет **nil**. Читать из неё можно (вернутся нулевые значения), но **запись вызовет панику**.
 
-```
+```go
 var m map[string]int
 fmt.Println(m["key"]) // 0
 
@@ -54,7 +54,7 @@ m["key"] = 1 // PANIC: assignment to entry in nil map
 
 ### Запись и чтение
 
-```
+```go
 users := make(map[int]string)
 
 users[1] = "Alice"
@@ -69,7 +69,7 @@ name := users[1] // "Alice"
 
 Используйте вторую переменную **ok**.
 
-```
+```go
 prices := map[string]int{
     "apple":  100,
     "banana": 0,
@@ -84,7 +84,7 @@ fmt.Println(val, ok) // 0, false
 
 Частый паттерн:
 
-```
+```go
 if price, ok := prices["apple"]; ok {
     fmt.Println("Цена яблока:", price)
 } else {
@@ -96,20 +96,20 @@ if price, ok := prices["apple"]; ok {
 
 Встроенная функция **delete**. Безопасна: если ключа нет, ничего не произойдет.
 
-```
+```go
 delete(prices, "apple")
 delete(prices, "nonexistent")
 ```
 
 ### Количество элементов
 
-```
+```go
 fmt.Println(len(prices))
 ```
 
 ## Перебор карты
 
-```
+```go
 for key, value := range prices {
     fmt.Printf("%s: %d руб.\n", key, value)
 }
@@ -117,7 +117,7 @@ for key, value := range prices {
 
 **Важно**: Порядок перебора — **случайный**. Каждый раз он может быть разным. Это сделано специально, чтобы вы не зависели от порядка. Если нужна сортировка — сначала соберите ключи в срез и отсортируйте.
 
-```
+```go
 keys := make([]string, 0, len(prices))
 for k := range prices {
     keys = append(keys, k)
@@ -133,7 +133,7 @@ for _, k := range keys {
 
 В Go нет встроенного типа "множество" (Set). Но его легко сымитировать картой с **bool** значениями.
 
-```
+```go
 tags := map[string]bool{
     "go":     true,
     "docker": true,
@@ -163,3 +163,13 @@ tags["kubernetes"] = true
 2. Проверяйте наличие ключа через **val, ok := m[key]**.
 3. Порядок перебора — случайный. Если нужна сортировка — сортируйте ключи отдельно.
 4. **map[string]bool** — простой способ сделать множество (Set).
+
+## Практика
+
+1. Напишите программу «Подсчёт слов»: принимает строку текста и возвращает `map[string]int` с количеством вхождений каждого слова.
+2. Реализуйте простой телефонный справочник: функции `Add(name, phone string)`, `Lookup(name string) (string, bool)`, `Delete(name string)`.
+3. Напишите функцию `Invert(m map[string]int) map[int][]string`, которая меняет ключи и значения местами (один int может соответствовать нескольким строкам).
+
+## Смотрите также
+
+- **Конкурентный доступ к картам** — карты не потокобезопасны; для параллельного доступа используйте `sync.Mutex` или `sync.Map` (раздел «Конкурентность → Примитивы синхронизации»).

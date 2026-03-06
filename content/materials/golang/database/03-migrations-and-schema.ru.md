@@ -19,7 +19,7 @@ order: 3
 2. **Up** — что делать при применении (добавить таблицу, колонку).
 3. **Down** — что делать при откате (удалить таблицу, колонку).
 
-```
+```text
 migrations/
 ├── 001_create_users.up.sql
 ├── 001_create_users.down.sql
@@ -29,7 +29,7 @@ migrations/
 
 ### Пример файлов
 
-```
+```sql
 -- 001_create_users.up.sql
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -38,17 +38,17 @@ CREATE TABLE users (
 );
 ```
 
-```
+```sql
 -- 001_create_users.down.sql
 DROP TABLE IF EXISTS users;
 ```
 
-```
+```sql
 -- 002_add_email_to_users.up.sql
 ALTER TABLE users ADD COLUMN email VARCHAR(255);
 ```
 
-```
+```sql
 -- 002_add_email_to_users.down.sql
 ALTER TABLE users DROP COLUMN email;
 ```
@@ -59,13 +59,13 @@ ALTER TABLE users DROP COLUMN email;
 
 ### Установка
 
-```
+```bash
 go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 ```
 
 ### Создание миграции
 
-```
+```text
 migrate create -ext sql -dir migrations -seq add_orders_table
 ```
 
@@ -73,7 +73,7 @@ migrate create -ext sql -dir migrations -seq add_orders_table
 
 ### Применение
 
-```
+```text
 migrate -path migrations -database "postgres://user:pass@localhost:5432/mydb?sslmode=disable" up
 
 migrate -path migrations -database "..." down 1
@@ -85,7 +85,7 @@ migrate -path migrations -database "..." version
 
 Можно запускать миграции при старте приложения (удобно для Docker).
 
-```
+```go
 import (
     "github.com/golang-migrate/migrate/v4"
     _ "github.com/golang-migrate/migrate/v4/database/postgres"

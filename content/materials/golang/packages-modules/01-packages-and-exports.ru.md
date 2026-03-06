@@ -16,7 +16,7 @@ order: 1
 
 В начале каждого файла **обязательно** стоит строка **package имя_пакета**.
 
-```
+```go
 package math
 
 func Add(a, b int) int {
@@ -38,7 +38,7 @@ func Multiply(a, b int) int {
 
 Функции, типы и переменные, начинающиеся с большой буквы, **видны** из других пакетов.
 
-```
+```go
 package user
 
 func CreateUser(name string) { ... }
@@ -54,7 +54,7 @@ type User struct {
 
 Имена с маленькой буквы доступны **только внутри своего пакета**.
 
-```
+```go
 package user
 
 func helperFunc() { ... }
@@ -64,7 +64,7 @@ func validateEmail(email string) bool { ... }
 
 ### Практический пример
 
-```
+```go
 package store
 
 type Store struct {
@@ -84,7 +84,7 @@ func (s *Store) Count() int {
 }
 ```
 
-```
+```go
 package main
 
 import (
@@ -103,7 +103,7 @@ func main() {
 
 ## Импорт пакетов
 
-```
+```go
 import (
     "fmt"
     "strings"
@@ -116,7 +116,7 @@ import (
 
 Если два пакета имеют одинаковое имя, можно задать алиас.
 
-```
+```go
 import (
     "math/rand"
     crand "crypto/rand"
@@ -127,7 +127,7 @@ import (
 
 Иногда пакет нужно импортировать только ради его побочных эффектов (регистрация драйвера БД, например).
 
-```
+```go
 import _ "github.com/lib/pq"
 ```
 
@@ -143,3 +143,8 @@ import _ "github.com/lib/pq"
 2. **Заглавная буква** = Видно всем (**CreateUser**, **Store**).
 3. **Строчная буква** = Видно только внутри пакета (**helperFunc**, **items**).
 4. Используйте приватность, чтобы скрыть внутренности и показать только безопасный API.
+
+## Практика
+
+1. Создайте пакет `calculator` с экспортируемыми функциями `Add`, `Sub`, `Mul`, `Div` и приватной функцией-хелпером `validate`. Импортируйте пакет из `main` и убедитесь, что `validate` не видна.
+2. Создайте пакет `user` с типом `User` (экспортируемые поля `Name`, `Email` и приватное поле `passwordHash`). Напишите конструктор `NewUser` и метод `CheckPassword`.

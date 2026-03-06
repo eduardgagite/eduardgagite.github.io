@@ -14,7 +14,7 @@ order: 3
 
 По стандарту Unix: **0** — успех, ненулевой код — ошибка. Никогда не выходите с кодом 0 при ошибке.
 
-```
+```go
 func main() {
     if err := run(); err != nil {
         fmt.Fprintln(os.Stderr, err)
@@ -35,7 +35,7 @@ func run() error {
 
 ## Стандартные потоки вывода
 
-```
+```go
 // stdout — результат работы программы (можно перенаправить в файл)
 fmt.Println("user@example.com 30")
 
@@ -50,7 +50,7 @@ fmt.Fprintln(os.Stderr, "Обработано 150 записей")
 
 CLI-инструменты должны корректно завершаться по **Ctrl+C** (SIGINT) и **SIGTERM**:
 
-```
+```go
 func run() error {
     ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
     defer stop()
@@ -73,7 +73,7 @@ func run() error {
 
 Простой прогресс через **\r** (возврат каретки без новой строки):
 
-```
+```go
 func processWithProgress(items []string) {
     total := len(items)
     for i, item := range items {
@@ -86,7 +86,7 @@ func processWithProgress(items []string) {
 
 Для серьёзных инструментов используйте библиотеки вроде **github.com/schollz/progressbar/v3**:
 
-```
+```go
 bar := progressbar.Default(int64(len(items)))
 for _, item := range items {
     process(item)
@@ -98,7 +98,7 @@ for _, item := range items {
 
 Цвета полезны, но должны отключаться при выводе не в терминал:
 
-```
+```go
 import "github.com/fatih/color"
 
 // color автоматически отключает цвета, если stdout — не терминал (NO_COLOR, CI)
@@ -109,7 +109,7 @@ color.Yellow("⚠ Предупреждение")
 
 Или минималистично через ANSI-коды:
 
-```
+```go
 const (
     colorReset  = "\033[0m"
     colorRed    = "\033[31m"
@@ -130,7 +130,7 @@ func isTerminal() bool {
 
 Порядок приоритетов в стандартных инструментах:
 
-```
+```go
 type Config struct {
     Host     string
     Port     int
@@ -171,7 +171,7 @@ func loadConfig(flags *Flags) Config {
 
 Для вывода структурированных данных используйте выравнивание:
 
-```
+```go
 import "text/tabwriter"
 
 func printUsers(users []User) {
@@ -187,7 +187,7 @@ func printUsers(users []User) {
 
 Вывод:
 
-```
+```text
 ID  ИМЯ      EMAIL              СТАТУС
 --  ---      -----              ------
 1   Alice    alice@example.com  active

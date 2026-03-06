@@ -14,7 +14,7 @@ order: 7
 
 Ключевое слово **defer** говорит: "Выполни эту функцию, но не сейчас, а когда текущая функция завершится". Неважно, как она завершится — нормально или из-за ошибки.
 
-```
+```go
 func main() {
     fmt.Println("Начало")
     defer fmt.Println("Это выполнится последним")
@@ -24,7 +24,7 @@ func main() {
 
 Вывод:
 
-```
+```text
 Начало
 Конец
 Это выполнится последним
@@ -34,7 +34,7 @@ func main() {
 
 Открыли файл — нужно закрыть. Открыли соединение с базой — нужно закрыть. **defer** гарантирует, что ресурс будет освобождён, даже если в середине функции произойдёт ошибка.
 
-```
+```go
 func readConfig(path string) ([]byte, error) {
     f, err := os.Open(path)
     if err != nil {
@@ -56,7 +56,7 @@ func readConfig(path string) ([]byte, error) {
 
 Если в функции несколько **defer**, они выполняются в обратном порядке — последний отложенный вызов выполнится первым (стек).
 
-```
+```go
 func main() {
     defer fmt.Println("первый defer")
     defer fmt.Println("второй defer")
@@ -66,7 +66,7 @@ func main() {
 
 Вывод:
 
-```
+```text
 третий defer
 второй defer
 первый defer
@@ -78,7 +78,7 @@ func main() {
 
 Важный нюанс: аргументы отложенной функции вычисляются в момент вызова **defer**, а не в момент выполнения.
 
-```
+```go
 func main() {
     x := 10
     defer fmt.Println("x =", x)
@@ -88,7 +88,7 @@ func main() {
 
 Вывод: **x = 10**, а не 20. Если нужно захватить актуальное значение, используйте замыкание:
 
-```
+```go
 defer func() {
     fmt.Println("x =", x)
 }()
@@ -98,7 +98,7 @@ defer func() {
 
 **panic** — это аварийное завершение текущей горутины. Используется, когда произошло что-то, из чего невозможно восстановиться: нарушена внутренняя логика программы, обнаружен баг.
 
-```
+```go
 func divide(a, b int) int {
     if b == 0 {
         panic("деление на ноль")
@@ -121,7 +121,7 @@ func divide(a, b int) int {
 
 **Не используйте panic** для ожидаемых ошибок (файл не найден, сетевой сбой, неверный ввод пользователя). Для этого существует возврат **error**.
 
-```
+```go
 func mustParseURL(raw string) *url.URL {
     u, err := url.Parse(raw)
     if err != nil {
@@ -137,7 +137,7 @@ func mustParseURL(raw string) *url.URL {
 
 **recover** — это встроенная функция, которая "ловит" панику и позволяет программе продолжить работу. Она работает **только внутри defer**.
 
-```
+```go
 func safeDiv(a, b int) (result int, err error) {
     defer func() {
         if r := recover(); r != nil {
@@ -166,7 +166,7 @@ func main() {
 
 2. **Middleware для перехвата паник** — во фреймворках и библиотеках.
 
-```
+```go
 func recoveryMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         defer func() {

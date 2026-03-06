@@ -17,7 +17,7 @@ order: 3
 2. Функция начинается с **Benchmark** (а не **Test**).
 3. Принимает **\*testing.B** (а не **\*testing.T**).
 
-```
+```go
 func BenchmarkAdd(b *testing.B) {
     for i := 0; i < b.N; i++ {
         Add(2, 3)
@@ -29,13 +29,13 @@ Go сам определит, сколько раз нужно вызвать ф
 
 ### Запуск
 
-```
+```bash
 go test -bench=. ./...
 ```
 
 Вывод:
 
-```
+```text
 BenchmarkAdd-8    1000000000    0.3187 ns/op
 ```
 
@@ -48,7 +48,7 @@ BenchmarkAdd-8    1000000000    0.3187 ns/op
 
 Бенчмарки идеально подходят, чтобы сравнить два способа решения одной задачи.
 
-```
+```go
 func ConcatPlus(parts []string) string {
     result := ""
     for _, p := range parts {
@@ -66,7 +66,7 @@ func ConcatBuilder(parts []string) string {
 }
 ```
 
-```
+```go
 var parts = []string{"Hello", " ", "World", "!", " ", "Go", " ", "is", " ", "awesome"}
 
 func BenchmarkConcatPlus(b *testing.B) {
@@ -88,11 +88,11 @@ func BenchmarkConcatBuilder(b *testing.B) {
 
 Добавьте флаг **-benchmem**, чтобы увидеть, сколько памяти выделяет ваш код.
 
-```
+```bash
 go test -bench=. -benchmem ./...
 ```
 
-```
+```text
 BenchmarkConcatPlus-8       500000    3200 ns/op    1024 B/op    10 allocs/op
 BenchmarkConcatBuilder-8   5000000     280 ns/op     128 B/op     2 allocs/op
 ```

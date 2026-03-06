@@ -16,7 +16,7 @@ order: 2
 
 Пакет **bufio** (Buffered I/O) — главный инструмент для потокового чтения текста.
 
-```
+```go
 import (
     "bufio"
     "fmt"
@@ -51,7 +51,7 @@ func main() {
 
 По умолчанию **Scanner** читает строки до 64 КБ. Если строка длиннее (например, JSON на одну строку), нужно увеличить буфер:
 
-```
+```go
 scanner := bufio.NewScanner(file)
 scanner.Buffer(make([]byte, 1024*1024), 1024*1024)
 ```
@@ -60,7 +60,7 @@ scanner.Buffer(make([]byte, 1024*1024), 1024*1024)
 
 Запись по одному символу напрямую в файл — медленно (каждый раз системный вызов). **bufio.Writer** накапливает данные в буфере и пишет на диск большими порциями.
 
-```
+```go
 file, _ := os.Create("output.txt")
 defer file.Close()
 
@@ -77,7 +77,7 @@ writer.Flush()
 
 Это **фундамент** I/O в Go. Почти всё, что можно прочитать, реализует **io.Reader**. Почти всё, куда можно записать, реализует **io.Writer**.
 
-```
+```go
 type Reader interface {
     Read(p []byte) (n int, err error)
 }
@@ -89,7 +89,7 @@ type Writer interface {
 
 Почему это важно? Потому что вы можете написать **одну функцию**, которая работает с любым источником данных.
 
-```
+```go
 func countLines(r io.Reader) int {
     scanner := bufio.NewScanner(r)
     count := 0

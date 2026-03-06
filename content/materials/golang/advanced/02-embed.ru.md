@@ -14,7 +14,7 @@ order: 2
 
 ## Встраивание одного файла
 
-```
+```go
 package main
 
 import (
@@ -34,7 +34,7 @@ func main() {
 
 Для бинарных данных используйте **[]byte** вместо **string**:
 
-```
+```go
 //go:embed logo.png
 var logo []byte
 ```
@@ -43,7 +43,7 @@ var logo []byte
 
 Тип **embed.FS** позволяет встраивать целые директории:
 
-```
+```go
 import "embed"
 
 //go:embed templates/*
@@ -55,7 +55,7 @@ var static embed.FS
 
 **embed.FS** — это виртуальная файловая система только для чтения. Она реализует интерфейс **fs.FS**.
 
-```
+```go
 // Прочитать файл из встроенной FS
 data, err := templates.ReadFile("templates/index.html")
 if err != nil {
@@ -72,7 +72,7 @@ for _, e := range entries {
 
 ## Паттерны glob в директиве
 
-```
+```go
 //go:embed migrations/*.sql
 var migrations embed.FS
 
@@ -87,7 +87,7 @@ var assets embed.FS
 
 По умолчанию файлы с именем, начинающимся с точки или подчёркивания, **не встраиваются**. Для их включения используйте **all:**:
 
-```
+```text
 //go:embed all:data
 var data embed.FS
 ```
@@ -96,7 +96,7 @@ var data embed.FS
 
 Классический use-case — раздача статических файлов:
 
-```
+```go
 package main
 
 import (
@@ -125,7 +125,7 @@ func main() {
 
 ## HTML-шаблоны
 
-```
+```go
 import (
     "embed"
     "html/template"
@@ -145,7 +145,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 ## SQL-миграции из embed.FS
 
-```
+```go
 //go:embed migrations/*.sql
 var migrationsFS embed.FS
 

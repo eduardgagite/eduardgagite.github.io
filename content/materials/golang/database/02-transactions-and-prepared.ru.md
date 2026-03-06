@@ -16,7 +16,7 @@ order: 2
 
 Транзакция гарантирует: если что-то пошло не так, все изменения откатятся назад, как будто ничего не было.
 
-```
+```go
 func transferMoney(db *sql.DB, from, to int, amount int) error {
     tx, err := db.Begin()
     if err != nil {
@@ -43,7 +43,7 @@ func transferMoney(db *sql.DB, from, to int, amount int) error {
 
 Чтобы не забыть откатить транзакцию при ошибке:
 
-```
+```go
 func transferMoney(db *sql.DB, from, to int, amount int) error {
     tx, err := db.Begin()
     if err != nil {
@@ -67,7 +67,7 @@ func transferMoney(db *sql.DB, from, to int, amount int) error {
 
 Если вы выполняете один и тот же запрос много раз (например, вставка 1000 строк), выгоднее "подготовить" его один раз, а потом многократно выполнять с разными параметрами.
 
-```
+```sql
 stmt, err := db.Prepare("INSERT INTO users (name, email) VALUES ($1, $2)")
 if err != nil {
     panic(err)
@@ -97,7 +97,7 @@ for _, u := range users {
 
 На практике результаты запросов часто сканируют в структуры.
 
-```
+```go
 type User struct {
     ID    int
     Name  string

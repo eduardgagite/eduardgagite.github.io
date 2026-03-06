@@ -22,7 +22,7 @@ order: 4
 
 Контекст — это объект, который передается первым аргументом (**ctx**) во все функции.
 
-```
+```go
 func DoWork(ctx context.Context) {
     // ...
 }
@@ -35,7 +35,7 @@ func DoWork(ctx context.Context) {
 
 ## Пример 1: Ручная отмена (WithCancel)
 
-```
+```go
 func worker(ctx context.Context) {
     for {
         select {
@@ -66,7 +66,7 @@ func main() {
 
 Самый популярный кейс. Мы даем задаче 2 секунды. Если не успела — убиваем.
 
-```
+```go
 func longOperation(ctx context.Context) {
     select {
     case <-time.After(5 * time.Second):
@@ -88,7 +88,7 @@ func main() {
 
 В стандартном веб-сервере Go у каждого запроса (**http.Request**) уже есть контекст. Если клиент разорвет соединение, этот контекст автоматически отменится.
 
-```
+```go
 func handler(w http.ResponseWriter, r *http.Request) {
     ctx := r.Context()
 

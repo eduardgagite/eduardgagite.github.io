@@ -14,7 +14,7 @@ order: 6
 
 Одна из ключевых идей Go — маленькие интерфейсы. Стандартная библиотека демонстрирует это лучше всего:
 
-```
+```go
 type Reader interface {
     Read(p []byte) (n int, err error)
 }
@@ -30,7 +30,7 @@ type Closer interface {
 
 Один метод — один интерфейс. При необходимости их компонуют:
 
-```
+```go
 type ReadWriter interface {
     Reader
     Writer
@@ -49,7 +49,7 @@ type ReadWriteCloser interface {
 
 Частая ошибка — определить интерфейс в том же пакете, где реализация:
 
-```
+```go
 // Плохо: пакет storage сам определяет свой интерфейс
 package storage
 
@@ -66,7 +66,7 @@ func (r *PostgresUserRepo) CreateUser(u *User) error { ... }
 
 Правильно — интерфейс определяет тот, кто его использует:
 
-```
+```go
 // Хорошо: пакет service определяет нужный ему интерфейс
 package service
 
@@ -87,7 +87,7 @@ type UserService struct {
 
 Классический принцип Go: функции и методы принимают интерфейс, возвращают конкретный тип.
 
-```
+```go
 // Хорошо: принимаем io.Reader — работаем с любым источником данных
 func ParseConfig(r io.Reader) (*Config, error) {
     // ...
@@ -115,7 +115,7 @@ func ParseConfig(f *os.File) (*Config, error) {
 2. Это просто структура с данными.
 3. Вы создаёте интерфейс "на будущее".
 
-```
+```go
 // Лишний интерфейс — есть одна реализация, и она не меняется
 type ConfigLoader interface {
     Load() (*Config, error)
@@ -131,7 +131,7 @@ func LoadConfig(path string) (*Config, error) { ... }
 
 Добавьте эту строку, чтобы компилятор проверял реализацию:
 
-```
+```go
 // Убеждаемся, что *PostgresUserRepo реализует UserRepo
 var _ UserRepo = (*PostgresUserRepo)(nil)
 ```
@@ -142,7 +142,7 @@ var _ UserRepo = (*PostgresUserRepo)(nil)
 
 Интерфейс в Go содержит два поля: тип и указатель. Он равен **nil** только если оба поля **nil**:
 
-```
+```go
 func getError() error {
     var err *MyError = nil
     return err // НЕ nil! Интерфейс содержит тип *MyError
@@ -158,7 +158,7 @@ func main() {
 
 Правило: **никогда не возвращайте типизированный nil через интерфейс**. Возвращайте просто **nil**:
 
-```
+```go
 func getError() error {
     // ...
     return nil // Правильно: nil без типа

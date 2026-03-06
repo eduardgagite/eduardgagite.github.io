@@ -14,7 +14,7 @@ order: 5
 
 Для срезов базовых типов есть готовые функции:
 
-```
+```go
 ints := []int{5, 2, 8, 1, 9, 3}
 sort.Ints(ints)
 fmt.Println(ints) // [1 2 3 5 8 9]
@@ -30,7 +30,7 @@ fmt.Println(floats) // [1.41 2.71 3.14]
 
 Сортировка по убыванию — через **sort.Reverse**:
 
-```
+```go
 sort.Sort(sort.Reverse(sort.IntSlice(ints)))
 fmt.Println(ints) // [9 8 5 3 2 1]
 ```
@@ -39,7 +39,7 @@ fmt.Println(ints) // [9 8 5 3 2 1]
 
 Для структур и нестандартных критериев используйте **sort.Slice**:
 
-```
+```go
 type User struct {
     Name string
     Age  int
@@ -70,7 +70,7 @@ fmt.Println(users) // [{Alice 25} {Bob 35} {Charlie 30}]
 
 После сортировки можно использовать бинарный поиск — O(log n) вместо O(n):
 
-```
+```go
 ints := []int{1, 2, 3, 5, 8, 9}
 
 idx := sort.SearchInts(ints, 5)
@@ -90,7 +90,7 @@ fmt.Println(ints[idx])   // 8
 
 С Go 1.21 появился пакет **slices** с дженерик-функциями. Он удобнее и безопаснее:
 
-```
+```go
 import "slices"
 
 nums := []int{5, 2, 8, 1, 9, 3}
@@ -106,7 +106,7 @@ fmt.Println(nums) // [9 8 5 3 2 1]
 
 Сортировка структур:
 
-```
+```go
 users := []User{
     {"Charlie", 30},
     {"Alice", 25},
@@ -120,7 +120,7 @@ slices.SortFunc(users, func(a, b User) int {
 
 Бинарный поиск:
 
-```
+```go
 nums := []int{1, 2, 3, 5, 8, 9}
 idx, found := slices.BinarySearch(nums, 5)
 fmt.Println(idx, found) // 3 true
@@ -128,7 +128,7 @@ fmt.Println(idx, found) // 3 true
 
 ## Дополнительные операции в пакете slices
 
-```
+```go
 nums := []int{1, 2, 3, 4, 5}
 
 // Проверки
@@ -156,7 +156,7 @@ fmt.Println(nums) // [5 4 3 2 1]
 
 ## sort.IsSorted — проверить, отсортирован ли срез
 
-```
+```go
 sorted := []int{1, 2, 3, 5, 8}
 unsorted := []int{5, 2, 8, 1}
 
