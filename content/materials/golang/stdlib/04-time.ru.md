@@ -12,7 +12,7 @@ order: 4
 
 ## Текущее время и основные типы
 
-```
+```go
 now := time.Now()
 fmt.Println(now) // 2025-03-15 14:30:00.123456789 +0300 MSK
 ```
@@ -21,7 +21,7 @@ fmt.Println(now) // 2025-03-15 14:30:00.123456789 +0300 MSK
 
 **time.Duration** — промежуток времени. Это просто **int64**, представляющий наносекунды:
 
-```
+```go
 fmt.Println(time.Second)      // 1s
 fmt.Println(time.Minute)      // 1m0s
 fmt.Println(time.Hour)        // 1h0m0s
@@ -31,7 +31,7 @@ fmt.Println(time.Second / 2)  // 500ms
 
 ## Разбор компонентов времени
 
-```
+```go
 t := time.Now()
 
 fmt.Println(t.Year())        // 2025
@@ -50,7 +50,7 @@ fmt.Println(t.UnixMilli())   // 1742039400123 — миллисекунды
 
 Главная особенность Go: вместо шаблонов вроде **%Y-%m-%d** используется конкретная дата — **Mon Jan 2 15:04:05 MST 2006**. Это опорное время (reference time). Запоминайте так: **01/02 03:04:05PM '06 -0700**.
 
-```
+```go
 t := time.Now()
 
 fmt.Println(t.Format("2006-01-02"))                    // 2025-03-15
@@ -65,7 +65,7 @@ fmt.Println(t.Format(time.RFC3339Nano))                // 2025-03-15T14:30:00.12
 
 ## Парсинг строки в time.Time
 
-```
+```go
 s := "2025-03-15 14:30:00"
 t, err := time.Parse("2006-01-02 15:04:05", s)
 if err != nil {
@@ -76,14 +76,14 @@ fmt.Println(t.Year()) // 2025
 
 Для строк с часовым поясом используйте **time.ParseInLocation**:
 
-```
+```go
 loc, _ := time.LoadLocation("Europe/Moscow")
 t, err := time.ParseInLocation("2006-01-02 15:04:05", "2025-03-15 14:30:00", loc)
 ```
 
 ## Арифметика со временем
 
-```
+```go
 t := time.Now()
 
 // Добавить время
@@ -106,7 +106,7 @@ remaining := time.Until(t) // сколько осталось до t
 
 ## Сравнение времён
 
-```
+```go
 a := time.Now()
 b := a.Add(time.Hour)
 
@@ -119,7 +119,7 @@ fmt.Println(a.Equal(b))  // false
 
 ## Измерение времени выполнения
 
-```
+```go
 start := time.Now()
 
 // ... какой-то код ...
@@ -133,7 +133,7 @@ fmt.Printf("Выполнено за %v\n", elapsed) // Выполнено за 1
 
 **time.After** — одноразовый таймер, возвращает канал:
 
-```
+```go
 // Подождать 5 секунд
 <-time.After(5 * time.Second)
 
@@ -148,7 +148,7 @@ case <-time.After(3 * time.Second):
 
 **time.Ticker** — периодический таймер:
 
-```
+```go
 ticker := time.NewTicker(time.Second)
 defer ticker.Stop() // ВАЖНО: всегда останавливать тикер
 
@@ -160,7 +160,7 @@ for i := 0; i < 5; i++ {
 
 **time.Timer** — одноразовый таймер с возможностью остановки:
 
-```
+```go
 timer := time.NewTimer(5 * time.Second)
 
 go func() {
@@ -174,7 +174,7 @@ fmt.Println("Таймер сработал")
 
 ## Часовые пояса
 
-```
+```go
 utc := time.Now().UTC()
 moscow, _ := time.LoadLocation("Europe/Moscow")
 t := time.Now().In(moscow)

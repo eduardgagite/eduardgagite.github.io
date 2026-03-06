@@ -16,19 +16,19 @@ order: 1
 
 Для PostgreSQL:
 
-```
+```bash
 go get github.com/lib/pq
 ```
 
 Для MySQL:
 
-```
+```bash
 go get github.com/go-sql-driver/mysql
 ```
 
 ## Подключение
 
-```
+```go
 import (
     "database/sql"
     "fmt"
@@ -60,7 +60,7 @@ func main() {
 
 Пул соединений управляет тем, сколько подключений к БД открыто одновременно.
 
-```
+```go
 db.SetMaxOpenConns(25)
 db.SetMaxIdleConns(10)
 db.SetConnMaxLifetime(5 * time.Minute)
@@ -72,7 +72,7 @@ db.SetConnMaxLifetime(5 * time.Minute)
 
 ### SELECT (одна строка)
 
-```
+```go
 var name string
 var age int
 
@@ -91,7 +91,7 @@ if err == sql.ErrNoRows {
 
 ### SELECT (несколько строк)
 
-```
+```go
 rows, err := db.Query("SELECT id, name FROM users WHERE age > $1", 18)
 if err != nil {
     panic(err)
@@ -116,7 +116,7 @@ if err := rows.Err(); err != nil {
 
 Для запросов, которые не возвращают строки, используйте **Exec**.
 
-```
+```go
 result, err := db.Exec("INSERT INTO users (name, age) VALUES ($1, $2)", "Alice", 30)
 if err != nil {
     panic(err)
@@ -133,7 +133,7 @@ fmt.Printf("ID: %d\n", lastID)
 
 В продакшене всегда передавайте контекст, чтобы запрос можно было отменить.
 
-```
+```go
 ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 defer cancel()
 
@@ -149,3 +149,9 @@ row := db.QueryRowContext(ctx, "SELECT name FROM users WHERE id = $1", 42)
 3. Используйте **placeholders** (**$1**, **$2**) для защиты от SQL-инъекций.
 4. Не забывайте **defer rows.Close()** и **defer db.Close()**.
 5. В продакшене передавайте **context** через **QueryContext** / **ExecContext**.
+
+## Практика
+
+1. Подключитесь к SQLite (драйвер `modernc.org/sqlite`) и создайте таблицу `users(id, name, email)`. Напишите функции `CreateUser`, `GetUser`, `ListUsers`.
+2. Добавьте к каждому запросу контекст с таймаутом 3 секунды.
+3. Напишите функцию, которая безопасно обрабатывает `sql.ErrNoRows` — возвращает `nil, nil` для «не найдено» и `nil, err` для реальных ошибок.

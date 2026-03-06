@@ -12,7 +12,7 @@ order: 7
 
 ## Переменные окружения
 
-```
+```go
 // Получить значение переменной
 home := os.Getenv("HOME")
 fmt.Println(home) // /Users/username
@@ -37,7 +37,7 @@ for _, env := range os.Environ() {
 
 ## Аргументы командной строки
 
-```
+```go
 // os.Args[0] — путь к исполняемому файлу
 // os.Args[1:] — аргументы
 fmt.Println(os.Args)     // [./myapp arg1 arg2]
@@ -53,7 +53,7 @@ name := os.Args[1]
 
 ## Выход из программы
 
-```
+```go
 os.Exit(0)  // успешное завершение
 os.Exit(1)  // завершение с ошибкой
 ```
@@ -62,7 +62,7 @@ os.Exit(1)  // завершение с ошибкой
 
 ## Информация о системе
 
-```
+```go
 hostname, _ := os.Hostname()
 fmt.Println(hostname) // my-server
 
@@ -75,7 +75,7 @@ fmt.Println(pid) // 12345
 
 ## Временные файлы и директории
 
-```
+```go
 // Временный файл
 tmpFile, err := os.CreateTemp("", "myapp-*.txt")
 if err != nil {
@@ -96,7 +96,7 @@ defer os.RemoveAll(tmpDir)
 
 ## os/exec — запуск внешних команд
 
-```
+```go
 import "os/exec"
 
 // Простой запуск команды
@@ -112,7 +112,7 @@ fmt.Println(string(output))
 
 ## Захват stdout и stderr по отдельности
 
-```
+```go
 cmd := exec.Command("go", "build", "./...")
 
 var stdout, stderr bytes.Buffer
@@ -129,7 +129,7 @@ fmt.Println("Stdout:", stdout.String())
 
 ## Передача входных данных через stdin
 
-```
+```go
 cmd := exec.Command("wc", "-l")
 cmd.Stdin = strings.NewReader("строка1\nстрока2\nстрока3\n")
 
@@ -139,7 +139,7 @@ fmt.Println(strings.TrimSpace(string(output))) // 3
 
 ## Переменные окружения для дочернего процесса
 
-```
+```go
 cmd := exec.Command("printenv", "MY_VAR")
 cmd.Env = append(os.Environ(), "MY_VAR=hello_from_parent")
 
@@ -153,7 +153,7 @@ fmt.Println(string(output)) // hello_from_parent
 
 Иногда нужно читать вывод команды в реальном времени:
 
-```
+```go
 cmd := exec.Command("ping", "-c", "4", "8.8.8.8")
 cmd.Stdout = os.Stdout // пробрасываем напрямую в наш stdout
 cmd.Stderr = os.Stderr
@@ -165,7 +165,7 @@ if err := cmd.Run(); err != nil {
 
 ## Проверка существования программы
 
-```
+```go
 path, err := exec.LookPath("git")
 if err != nil {
     fmt.Println("git не найден в PATH")
@@ -176,7 +176,7 @@ if err != nil {
 
 ## Контекст с таймаутом для команды
 
-```
+```go
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 defer cancel()
 

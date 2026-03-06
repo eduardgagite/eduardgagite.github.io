@@ -14,7 +14,7 @@ order: 5
 
 Задача: обработать 10 000 задач, но запускать не более 5 горутин одновременно (чтобы не перегрузить базу данных или внешний API).
 
-```
+```go
 func worker(id int, jobs <-chan int, results chan<- int) {
     for job := range jobs {
         fmt.Printf("Воркер %d обрабатывает задачу %d\n", id, job)
@@ -50,7 +50,7 @@ func main() {
 
 **Fan-Out** — одна горутина раздаёт задачи нескольким воркерам. **Fan-In** — результаты из нескольких каналов собираются в один.
 
-```
+```go
 func producer(count int) <-chan int {
     out := make(chan int)
     go func() {
@@ -114,7 +114,7 @@ func main() {
 
 Конвейер — цепочка этапов, где выход одного этапа является входом следующего. Каждый этап — отдельная горутина.
 
-```
+```go
 func generate(nums ...int) <-chan int {
     out := make(chan int)
     go func() {
@@ -161,7 +161,7 @@ func main() {
 
 Пакет **golang.org/x/sync/errgroup** решает частую задачу: запустить N горутин, дождаться всех и вернуть первую ошибку.
 
-```
+```go
 import "golang.org/x/sync/errgroup"
 
 func fetchAll(urls []string) error {
@@ -194,7 +194,7 @@ func fetchAll(urls []string) error {
 
 ### errgroup с лимитом параллелизма
 
-```
+```go
 g, ctx := errgroup.WithContext(context.Background())
 g.SetLimit(5)
 
@@ -214,7 +214,7 @@ err := g.Wait()
 
 Если нужен простой лимит параллелизма без errgroup, буферизированный канал работает как семафор.
 
-```
+```go
 func processWithLimit(items []string, limit int) {
     sem := make(chan struct{}, limit)
     var wg sync.WaitGroup

@@ -14,7 +14,7 @@ Go — язык с минималистичной философией. Здес
 
 Задача: создать HTTP-сервер с множеством настроек (порт, таймаут, логгер, TLS), но не заставлять пользователя указывать все. Классические подходы (конструктор с 10 параметрами или struct с полями) неудобны.
 
-```
+```go
 type Server struct {
     port    int
     timeout time.Duration
@@ -56,7 +56,7 @@ func NewServer(opts ...Option) *Server {
 
 Можно создать сервер с настройками по умолчанию или указать только нужные параметры:
 
-```
+```go
 srv := NewServer()
 
 srv := NewServer(
@@ -71,7 +71,7 @@ srv := NewServer(
 
 В Go нет фреймворков для DI (Spring, Dagger). Зависимости передаются явно — через аргументы конструктора. Это проще, прозрачнее и легче тестировать.
 
-```
+```go
 type UserRepository interface {
     FindByID(ctx context.Context, id int64) (*User, error)
     Save(ctx context.Context, user *User) error
@@ -94,7 +94,7 @@ func NewUserService(repo UserRepository, cache Cache, logger *slog.Logger) *User
 
 В **main** собираем граф зависимостей:
 
-```
+```go
 func main() {
     db := connectDB()
     repo := postgres.NewUserRepo(db)
@@ -110,7 +110,7 @@ func main() {
 
 В тестах подставляем моки:
 
-```
+```go
 func TestUserService(t *testing.T) {
     repo := &mockRepo{users: map[int64]*User{1: {Name: "Alice"}}}
     cache := &mockCache{}
@@ -128,7 +128,7 @@ func TestUserService(t *testing.T) {
 
 Когда сервер получает сигнал остановки (Ctrl+C, SIGTERM от Kubernetes), он не должен обрывать текущие запросы. Нужно дождаться их завершения, закрыть соединения с базой и только потом выключиться.
 
-```
+```go
 func main() {
     srv := &http.Server{Addr: ":8080", Handler: router}
 
@@ -162,7 +162,7 @@ func main() {
 
 Middleware — функция, которая оборачивает HTTP-обработчик, добавляя поведение до или после обработки запроса.
 
-```
+```go
 func loggingMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         start := time.Now()
@@ -189,7 +189,7 @@ func authMiddleware(next http.Handler) http.Handler {
 
 Middleware собираются в цепочку:
 
-```
+```go
 handler := loggingMiddleware(authMiddleware(router))
 http.ListenAndServe(":8080", handler)
 ```
@@ -200,7 +200,7 @@ http.ListenAndServe(":8080", handler)
 
 Паттерн табличных тестов работает не только для тестов. Его можно применить для маршрутизации, маппинга и конфигурации.
 
-```
+```go
 type route struct {
     method  string
     path    string

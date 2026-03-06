@@ -14,7 +14,7 @@ order: 2
 
 ## Проблема
 
-```
+```go
 type UserService struct{}
 
 func (s *UserService) GetUser(id int) (*User, error) {
@@ -30,7 +30,7 @@ func (s *UserService) GetUser(id int) (*User, error) {
 
 Вместо прямого обращения к БД, сервис работает через **интерфейс**.
 
-```
+```go
 type UserRepository interface {
     FindByID(id int) (*User, error)
 }
@@ -54,7 +54,7 @@ func (s *UserService) GetUser(id int) (*User, error) {
 
 ### Шаг 2: Реальная реализация (для продакшена)
 
-```
+```go
 type PostgresUserRepo struct {
     db *sql.DB
 }
@@ -69,7 +69,7 @@ func (r *PostgresUserRepo) FindByID(id int) (*User, error) {
 
 ### Шаг 3: Фейковая реализация (для тестов)
 
-```
+```go
 type FakeUserRepo struct {
     users map[int]*User
 }
@@ -85,7 +85,7 @@ func (r *FakeUserRepo) FindByID(id int) (*User, error) {
 
 ### Шаг 4: Тест
 
-```
+```go
 func TestGetUser(t *testing.T) {
     fakeRepo := &FakeUserRepo{
         users: map[int]*User{
@@ -121,7 +121,7 @@ func TestGetUser_NotFound(t *testing.T) {
 
 Стандартная библиотека Go предоставляет пакет **httptest** для тестирования HTTP без реального сервера.
 
-```
+```go
 func TestHealthHandler(t *testing.T) {
     req := httptest.NewRequest("GET", "/health", nil)
     w := httptest.NewRecorder()
@@ -144,3 +144,9 @@ func TestHealthHandler(t *testing.T) {
 2. В тестах подставляйте **фейковые** реализации.
 3. Для HTTP-тестов используйте **httptest.NewRecorder**.
 4. Тесты должны быть быстрыми и не зависеть от внешних сервисов.
+
+## Смотрите также
+
+- **go generate и mockgen** — автоматическая генерация моков из интерфейсов с помощью `go.uber.org/mock` (раздел «Продвинутые темы → go generate»).
+- **Интеграционные тесты** — когда фейков недостаточно и нужно тестировать с реальными зависимостями (раздел «Тестирование → Интеграционные тесты»).
+- **Проектирование интерфейсов** — как правильно определять интерфейсы для тестируемости (раздел «Лучшие практики → Проектирование интерфейсов»).

@@ -14,7 +14,7 @@ order: 3
 
 ## Простой GET-запрос
 
-```
+```go
 resp, err := http.Get("https://api.example.com/users")
 if err != nil {
     fmt.Println("Ошибка запроса:", err)
@@ -36,7 +36,7 @@ fmt.Println("Тело:", string(body))
 
 ## POST-запрос с JSON
 
-```
+```go
 type CreateOrderRequest struct {
     ProductID int `json:"product_id"`
     Quantity  int `json:"quantity"`
@@ -74,7 +74,7 @@ func createOrder() error {
 
 Создавайте **свой клиент** с настройками.
 
-```
+```go
 client := &http.Client{
     Timeout: 10 * time.Second,
 }
@@ -86,7 +86,7 @@ resp, err := client.Get("https://api.example.com/data")
 
 Для полного контроля используйте **http.NewRequest**.
 
-```
+```go
 req, err := http.NewRequest("GET", "https://api.example.com/users", nil)
 if err != nil {
     return err
@@ -101,7 +101,7 @@ resp, err := client.Do(req)
 
 ### Запрос с контекстом (отмена и таймаут)
 
-```
+```go
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 defer cancel()
 
@@ -119,7 +119,7 @@ defer resp.Body.Close()
 
 Сеть ненадежна. Запросы могут падать из-за временных проблем (перегрузка, таймаут, сетевой сбой). Простая стратегия повторов:
 
-```
+```go
 func doWithRetry(client *http.Client, req *http.Request, maxRetries int) (*http.Response, error) {
     var resp *http.Response
     var err error

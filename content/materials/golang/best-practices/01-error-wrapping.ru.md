@@ -12,7 +12,7 @@ order: 1
 
 ## Проблема: Потеря контекста
 
-```
+```go
 func GetUser(id int) (*User, error) {
     user, err := db.FindUser(id)
     if err != nil {
@@ -28,7 +28,7 @@ func GetUser(id int) (*User, error) {
 
 Оператор **%w** в **fmt.Errorf** **оборачивает** ошибку: добавляет контекст, но сохраняет оригинал внутри.
 
-```
+```go
 func GetUser(id int) (*User, error) {
     user, err := db.FindUser(id)
     if err != nil {
@@ -44,7 +44,7 @@ func GetUser(id int) (*User, error) {
 
 Каждый слой добавляет свой контекст:
 
-```
+```go
 func (r *Repo) FindUser(id int) (*User, error) {
     err := r.db.QueryRow(...)
     if err != nil {
@@ -73,7 +73,7 @@ func handleGetUser(w http.ResponseWriter, r *http.Request) {
 
 ### errors.Is — проверка на конкретную ошибку
 
-```
+```go
 import "errors"
 
 if errors.Is(err, sql.ErrNoRows) {
@@ -88,7 +88,7 @@ if errors.Is(err, sql.ErrNoRows) {
 
 ### errors.As — извлечение типизированной ошибки
 
-```
+```go
 var pgErr *pgconn.PgError
 if errors.As(err, &pgErr) {
     fmt.Println("Код ошибки PostgreSQL:", pgErr.Code)
@@ -99,7 +99,7 @@ if errors.As(err, &pgErr) {
 
 Для сложных проектов полезно создать свои типы ошибок.
 
-```
+```go
 type NotFoundError struct {
     Entity string
     ID     int
@@ -130,3 +130,13 @@ if errors.As(err, &nfErr) {
 3. **errors.Is** — проверка на конкретную ошибку (через цепочку обёрток).
 4. **errors.As** — извлечение типизированной ошибки.
 5. Не оборачивайте ошибки, которые вы обрабатываете на месте (только те, что прокидываете вверх).
+
+## Практика
+
+1. Напишите трёхслойное приложение (handler → service → repository). В каждом слое оборачивайте ошибку через `%w` с контекстом. Проверьте, что `errors.Is` находит оригинальную ошибку через всю цепочку.
+2. Создайте свой тип ошибки `ValidationError` с полями `Field` и `Message`. Напишите функцию валидации и обработчик, который через `errors.As` извлекает детали ошибки.
+
+## Смотрите также
+
+- **Основы обработки ошибок** — если вы ещё не знакомы с `if err != nil` (раздел «Базовые конструкции → Ошибки и проверка результата»).
+- **Логирование и наблюдаемость** — как правильно логировать обёрнутые ошибки (раздел «Лучшие практики → Логирование и наблюдаемость»).

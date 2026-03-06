@@ -18,7 +18,7 @@ order: 2
 
 Самый удобный способ — через Homebrew:
 
-```
+```bash
 brew install go
 ```
 
@@ -26,9 +26,11 @@ brew install go
 
 ### Linux (Ubuntu/Debian)
 
-```
-wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz
+```bash
+# Замените VERSION на актуальную версию с go.dev/dl
+VERSION=1.24.1
+wget https://go.dev/dl/go${VERSION}.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go${VERSION}.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 ```
 
@@ -40,11 +42,11 @@ export PATH=$PATH:/usr/local/go/bin
 
 После установки откройте **новый** терминал и выполните:
 
-```
+```bash
 go version
 ```
 
-Если вы видите что-то вроде **go version go1.22.0 darwin/arm64**, значит всё работает.
+Если вы видите что-то вроде **go version go1.24.1 darwin/arm64** (номер версии может отличаться), значит всё работает.
 
 Если терминал говорит "command not found", скорее всего нужно перезапустить терминал или добавить Go в переменную PATH.
 
@@ -62,7 +64,7 @@ GOPATH по-прежнему существует (по умолчанию **~/g
 
 Чтобы увидеть все переменные окружения Go:
 
-```
+```bash
 go env
 ```
 
@@ -96,7 +98,7 @@ IDE от JetBrains. Самый мощный инструмент для Go с г
 
 Утилита **go** — ваш швейцарский нож. Вот команды, которые пригодятся с первого дня:
 
-```
+```bash
 go version
 go doc fmt
 go doc fmt.Println
