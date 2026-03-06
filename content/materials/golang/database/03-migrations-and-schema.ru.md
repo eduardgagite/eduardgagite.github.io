@@ -65,7 +65,7 @@ go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@lat
 
 ### Создание миграции
 
-```text
+```bash
 migrate create -ext sql -dir migrations -seq add_orders_table
 ```
 
@@ -73,7 +73,7 @@ migrate create -ext sql -dir migrations -seq add_orders_table
 
 ### Применение
 
-```text
+```bash
 migrate -path migrations -database "postgres://user:pass@localhost:5432/mydb?sslmode=disable" up
 
 migrate -path migrations -database "..." down 1

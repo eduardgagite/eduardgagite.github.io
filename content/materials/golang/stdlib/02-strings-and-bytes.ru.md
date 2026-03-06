@@ -139,3 +139,9 @@ s2 := string(b)   // []byte → string (копирование)
 ## Итого
 
 **strings** и **bytes** — парные пакеты с одинаковым API. **strings.Builder** незаменим при сборке строк в цикле. **strings.NewReader** и **bytes.Buffer** — мосты между строками/байтами и интерфейсом **io.Reader/Writer**, которые используются повсюду в стандартной библиотеке.
+
+## Практика
+
+1. Напишите функцию `CamelToSnake(s string) string`, которая конвертирует `"HelloWorld"` в `"hello_world"` используя `strings.Builder`.
+2. Напишите функцию `WordCount(text string) map[string]int`, которая считает частоту слов в тексте (без учёта регистра). Используйте `strings.Fields` и `strings.ToLower`.
+3. Напишите функцию, которая читает текст из `io.Reader`, заменяет все вхождения одной подстроки на другую и записывает результат в `io.Writer`. Используйте `bytes.Buffer`.
