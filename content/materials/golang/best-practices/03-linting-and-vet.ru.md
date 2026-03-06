@@ -106,13 +106,13 @@ if err := os.Remove("/tmp/file"); err != nil {
 
 **staticcheck** — подозрительные конструкции:
 
-```bash
+```go
 if x == true { // staticcheck: should omit comparison to bool constant
 ```
 
 Правильно:
 
-```text
+```go
 if x {
 ```
 
@@ -129,7 +129,7 @@ if err != nil {
 
 Правильно:
 
-```text
+```go
 return err
 ```
 
@@ -144,7 +144,7 @@ x = 10 // ineffassign: x is overwritten before its first use
 
 Создайте файл **.golangci.yml** в корне проекта, чтобы настроить набор линтеров и исключения.
 
-```bash
+```yaml
 linters:
   enable:
     - errcheck
@@ -190,7 +190,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
+          go-version: "1.24"
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v4
         with:

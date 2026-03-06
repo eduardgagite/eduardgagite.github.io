@@ -42,8 +42,8 @@ go tool dist list
 
 ### Минимальный Dockerfile
 
-```bash
-FROM golang:1.22-alpine AS builder
+```dockerfile
+FROM golang:1.24-alpine AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
@@ -65,7 +65,7 @@ ENTRYPOINT ["/server"]
 
 Иногда нужны сертификаты (для HTTPS) или временные зоны:
 
-```text
+```dockerfile
 FROM alpine:3.19
 RUN apk --no-cache add ca-certificates tzdata
 COPY --from=builder /app/server /server
@@ -84,7 +84,7 @@ go install github.com/goreleaser/goreleaser@latest
 
 ### Конфигурация (.goreleaser.yml)
 
-```bash
+```yaml
 builds:
   - main: ./cmd/api
     goos:
@@ -116,3 +116,9 @@ GoReleaser соберет бинарники для 6 платформ (3 ОС *
 2. Docker: используйте multi-stage build с **FROM scratch** для минимального образа.
 3. **CGO_ENABLED=0** — для полностью статического бинарника.
 4. GoReleaser — автоматизация сборки и публикации для всех платформ.
+
+## Практика
+
+1. Соберите свою программу для трёх платформ: Linux amd64, macOS arm64, Windows amd64. Сравните размеры бинарников.
+2. Напишите multi-stage Dockerfile для своего Go-приложения. Соберите образ и проверьте его размер командой `docker images`. Добейтесь размера менее 20 МБ.
+3. Настройте `.goreleaser.yml` для своего проекта. Создайте git-тег и запустите `goreleaser release --snapshot` (без публикации) для проверки.
