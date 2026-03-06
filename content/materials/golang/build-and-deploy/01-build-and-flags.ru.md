@@ -12,13 +12,13 @@ order: 1
 
 ## Базовая сборка
 
-```
+```bash
 go build
 ```
 
 Создаст бинарник с именем модуля в текущей папке. Чтобы задать имя:
 
-```
+```bash
 go build -o myapp
 ```
 
@@ -30,7 +30,7 @@ go build -o myapp
 
 ### Шаг 1: Объявляем переменные
 
-```
+```go
 package main
 
 import "fmt"
@@ -50,12 +50,12 @@ func main() {
 
 ### Шаг 2: Передаем значения при сборке
 
-```
+```bash
 go build -ldflags "-X main.Version=1.2.3 -X main.BuildTime=$(date -u '+%Y-%m-%d_%H:%M:%S') -X main.GitCommit=$(git rev-parse --short HEAD)" -o myapp
 ```
 
 Теперь при запуске **./myapp** вы увидите:
-```
+```text
 Версия: 1.2.3
 Время сборки: 2025-01-28_14:30:00
 Коммит: a1b2c3d
@@ -65,7 +65,7 @@ go build -ldflags "-X main.Version=1.2.3 -X main.BuildTime=$(date -u '+%Y-%m-%d_
 
 По умолчанию бинарник содержит отладочную информацию. Её можно убрать:
 
-```
+```bash
 go build -ldflags "-s -w" -o myapp
 ```
 
@@ -78,7 +78,7 @@ go build -ldflags "-s -w" -o myapp
 
 Чтобы не запоминать длинные команды, используйте **Makefile**:
 
-```
+```makefile
 VERSION := $(shell git describe --tags --always)
 BUILD_TIME := $(shell date -u '+%Y-%m-%d_%H:%M:%S')
 COMMIT := $(shell git rev-parse --short HEAD)
@@ -95,7 +95,7 @@ run: build
 ```
 
 Теперь:
-```
+```bash
 make build
 make test
 make run

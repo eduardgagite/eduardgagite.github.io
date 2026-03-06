@@ -16,7 +16,7 @@ order: 1
 - **reflect.Type** — описывает тип переменной.
 - **reflect.Value** — содержит само значение и позволяет с ним работать.
 
-```
+```go
 x := 42
 t := reflect.TypeOf(x)
 v := reflect.ValueOf(x)
@@ -31,7 +31,7 @@ fmt.Println(v.Int())    // 42
 
 ## Изучение структуры
 
-```
+```go
 type User struct {
     Name  string `json:"name"`
     Age   int    `json:"age,omitempty"`
@@ -60,7 +60,7 @@ for i := 0; i < t.NumField(); i++ {
 
 Чтобы изменить значение через рефлексию, нужно передать **указатель**:
 
-```
+```go
 u := User{Name: "Alice", Age: 30}
 v := reflect.ValueOf(&u).Elem() // Elem() разыменовывает указатель
 
@@ -79,7 +79,7 @@ fmt.Println(u.Name) // Bob
 
 ## Вызов методов
 
-```
+```go
 type Greeter struct {
     Name string
 }
@@ -100,7 +100,7 @@ fmt.Println(result[0].String()) // Hello, World!
 
 ## Практический пример: универсальный принтер структур
 
-```
+```go
 func printStruct(v interface{}) {
     t := reflect.TypeOf(v)
     val := reflect.ValueOf(v)

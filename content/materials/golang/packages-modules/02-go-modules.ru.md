@@ -20,7 +20,7 @@ order: 2
 
 ## Файл go.mod
 
-```
+```text
 module github.com/myname/myproject
 
 go 1.22
@@ -50,7 +50,7 @@ require (
 
 ### 1. Инициализация нового проекта
 
-```
+```bash
 mkdir myapp && cd myapp
 go mod init github.com/myname/myapp
 ```
@@ -59,7 +59,7 @@ go mod init github.com/myname/myapp
 
 ### 2. Добавление библиотеки (go get)
 
-```
+```bash
 go get github.com/google/uuid
 ```
 
@@ -70,7 +70,7 @@ go get github.com/google/uuid
 
 Можно указать конкретную версию:
 
-```
+```bash
 go get github.com/google/uuid@v1.5.0
 ```
 
@@ -78,7 +78,7 @@ go get github.com/google/uuid@v1.5.0
 
 Самая полезная команда. Запускайте её **перед каждым коммитом**.
 
-```
+```bash
 go mod tidy
 ```
 
@@ -88,7 +88,7 @@ go mod tidy
 
 ### 4. Обновление зависимостей
 
-```
+```bash
 go get -u github.com/gin-gonic/gin
 
 go get -u ./...
@@ -98,7 +98,7 @@ go get -u ./...
 
 Если вы клонировали чужой репозиторий и хотите скачать все библиотеки:
 
-```
+```bash
 go mod download
 ```
 
@@ -112,7 +112,7 @@ Go использует **semver** (Semantic Versioning): **vMAJOR.MINOR.PATCH**
 
 Когда мажорная версия >= 2, она добавляется в путь импорта:
 
-```
+```go
 import "github.com/user/lib/v2"
 ```
 

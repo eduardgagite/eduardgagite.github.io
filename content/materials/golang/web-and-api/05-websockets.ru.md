@@ -3,7 +3,7 @@ title: "WebSockets"
 category: "golang"
 categoryTitle: "Go"
 section: "web-and-api"
-sectionTitle: "Web и API"
+sectionTitle: "Веб и API"
 sectionOrder: 8
 order: 5
 ---
@@ -16,7 +16,7 @@ HTTP работает по модели запрос-ответ: клиент с
 
 Стандартная библиотека Go не включает WebSocket. Самый популярный пакет — **gorilla/websocket**:
 
-```
+```bash
 go get github.com/gorilla/websocket
 ```
 
@@ -24,7 +24,7 @@ go get github.com/gorilla/websocket
 
 Сервер принимает HTTP-соединение и апгрейдит его до WebSocket. Затем читает и отправляет сообщения в цикле:
 
-```
+```go
 package main
 
 import (
@@ -78,7 +78,7 @@ func main() {
 
 На практике сообщения почти всегда в формате JSON. Используйте **ReadJSON** и **WriteJSON** для удобства:
 
-```
+```go
 type Message struct {
     Type    string `json:"type"`
     Payload string `json:"payload"`
@@ -110,7 +110,7 @@ func handleWS(w http.ResponseWriter, r *http.Request) {
 
 Реальные приложения (чаты, уведомления) требуют рассылки сообщений всем подключённым клиентам. Для этого используют **Hub** — центральный менеджер соединений:
 
-```
+```go
 type Hub struct {
     clients    map[*websocket.Conn]bool
     broadcast  chan []byte
@@ -159,7 +159,7 @@ func (h *Hub) Run() {
 
 WebSocket-соединения могут зависнуть, если клиент пропал. Настройте Ping/Pong для проверки "жив ли клиент":
 
-```
+```go
 const (
     writeWait  = 10 * time.Second
     pongWait   = 60 * time.Second

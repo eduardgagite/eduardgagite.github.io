@@ -16,7 +16,7 @@ order: 3
 
 ### unsafe.Sizeof — размер типа в байтах
 
-```
+```go
 fmt.Println(unsafe.Sizeof(int(0)))      // 8 (на 64-битной системе)
 fmt.Println(unsafe.Sizeof(int32(0)))    // 4
 fmt.Println(unsafe.Sizeof(bool(false))) // 1
@@ -30,14 +30,14 @@ fmt.Println(unsafe.Sizeof(Point{})) // 16
 
 ### unsafe.Alignof — выравнивание типа
 
-```
+```go
 fmt.Println(unsafe.Alignof(int64(0)))   // 8
 fmt.Println(unsafe.Alignof(bool(false))) // 1
 ```
 
 ### unsafe.Offsetof — смещение поля структуры
 
-```
+```go
 type Header struct {
     Magic   uint32
     Version uint16
@@ -58,7 +58,7 @@ fmt.Println(unsafe.Sizeof(Header{}))           // 16
 
 **unsafe.Pointer** — аналог **void\*** в C. Можно конвертировать в него любой указатель и обратно:
 
-```
+```go
 x := int64(42)
 p := unsafe.Pointer(&x)        // *int64 → unsafe.Pointer
 q := (*float64)(p)              // unsafe.Pointer → *float64
@@ -70,7 +70,7 @@ fmt.Println(*q) // 42.0 — те же биты, другой тип
 
 Самый распространённый use-case **unsafe** в production-коде:
 
-```
+```go
 // string → []byte без копирования
 func unsafeStringToBytes(s string) []byte {
     return unsafe.Slice(unsafe.StringData(s), len(s))
@@ -90,7 +90,7 @@ func unsafeBytesToString(b []byte) string {
 
 Для арифметики с указателями нужен **uintptr** — числовое представление адреса:
 
-```
+```go
 type Point struct {
     X int
     Y int

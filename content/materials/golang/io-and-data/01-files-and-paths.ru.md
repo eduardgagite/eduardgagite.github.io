@@ -14,7 +14,7 @@ order: 1
 
 Самый простой способ. Подходит для небольших файлов (конфиги, ключи, шаблоны).
 
-```
+```go
 import (
     "fmt"
     "os"
@@ -40,7 +40,7 @@ func main() {
 
 Создает файл (или перезаписывает, если существует).
 
-```
+```go
 content := []byte("Hello, Go!\nВторая строка")
 
 err := os.WriteFile("output.txt", content, 0644)
@@ -53,7 +53,7 @@ if err != nil {
 
 Если нужно добавить строку, а не перезаписать весь файл (например, в лог):
 
-```
+```go
 f, err := os.OpenFile("app.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 if err != nil {
     panic(err)
@@ -65,7 +65,7 @@ f.WriteString("2025-01-28 Событие произошло\n")
 
 ## Проверка существования файла
 
-```
+```go
 _, err := os.Stat("config.json")
 
 if os.IsNotExist(err) {
@@ -79,7 +79,7 @@ if os.IsNotExist(err) {
 
 ## Создание и удаление
 
-```
+```go
 os.MkdirAll("data/uploads/images", 0755)
 
 os.Remove("temp.txt")
@@ -94,7 +94,7 @@ os.RemoveAll("data/uploads")
 
 Чтобы программа работала на любой ОС, **никогда не склеивайте пути через + или конкатенацию строк**. Используйте пакет **path/filepath**.
 
-```
+```go
 import "path/filepath"
 
 path := filepath.Join("data", "uploads", "image.png")
@@ -110,7 +110,7 @@ dir := filepath.Dir("/home/user/photo.jpg") // "/home/user"
 
 Чтобы найти все файлы в папке (рекурсивно):
 
-```
+```go
 filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
     if err != nil {
         return err

@@ -14,7 +14,7 @@ order: 3
 
 ## Объявление структуры
 
-```
+```go
 type User struct {
     Name  string
     Age   int
@@ -30,7 +30,7 @@ type User struct {
 
 ### 1. По именам полей (рекомендуется)
 
-```
+```go
 u := User{
     Name:  "Alice",
     Age:   30,
@@ -42,13 +42,13 @@ u := User{
 
 ### 2. Частичное заполнение
 
-```
+```go
 u := User{Name: "Bob"}
 ```
 
 ### 3. Пустая структура
 
-```
+```go
 var u User
 fmt.Println(u.Name) // ""
 fmt.Println(u.Age)  // 0
@@ -58,7 +58,7 @@ fmt.Println(u.Age)  // 0
 
 Через точку. Просто и понятно.
 
-```
+```go
 fmt.Println(u.Name)
 u.Age = 31
 ```
@@ -69,7 +69,7 @@ u.Age = 31
 
 Метод — это обычная функция, но с дополнительным параметром перед именем: **receiver** (получатель). Он привязывает функцию к конкретному типу.
 
-```
+```go
 func (u User) Greet() string {
     return fmt.Sprintf("Привет, я %s, мне %d лет", u.Name, u.Age)
 }
@@ -88,7 +88,7 @@ func main() {
 
 Получатель **(u User)** получает **копию** структуры. Любые изменения внутри метода **не затронут** оригинал.
 
-```
+```go
 func (u User) SetAge(newAge int) {
     u.Age = newAge
 }
@@ -106,7 +106,7 @@ func main() {
 
 Получатель **(u \*User)** — со звездочкой — получает **указатель** на оригинальную структуру. Изменения **сохранятся**.
 
-```
+```go
 func (u *User) SetAge(newAge int) {
     u.Age = newAge
 }
@@ -129,7 +129,7 @@ func main() {
 
 В Go нет встроенных конструкторов. Вместо них пишут обычные функции с префиксом **New**.
 
-```
+```go
 func NewUser(name, email string) *User {
     return &User{
         Name:  name,

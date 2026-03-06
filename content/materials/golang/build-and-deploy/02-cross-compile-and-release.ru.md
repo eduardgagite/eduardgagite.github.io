@@ -18,7 +18,7 @@ Go умеет компилировать программу для **любой*
 
 ### Примеры
 
-```
+```bash
 GOOS=linux GOARCH=amd64 go build -o myapp-linux
 
 GOOS=darwin GOARCH=arm64 go build -o myapp-mac
@@ -30,7 +30,7 @@ GOOS=windows GOARCH=amd64 go build -o myapp.exe
 
 ### Посмотреть все доступные платформы
 
-```
+```bash
 go tool dist list
 ```
 
@@ -42,7 +42,7 @@ go tool dist list
 
 ### Минимальный Dockerfile
 
-```
+```bash
 FROM golang:1.22-alpine AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
@@ -65,7 +65,7 @@ ENTRYPOINT ["/server"]
 
 Иногда нужны сертификаты (для HTTPS) или временные зоны:
 
-```
+```text
 FROM alpine:3.19
 RUN apk --no-cache add ca-certificates tzdata
 COPY --from=builder /app/server /server
@@ -78,13 +78,13 @@ ENTRYPOINT ["/server"]
 
 ### Установка
 
-```
+```bash
 go install github.com/goreleaser/goreleaser@latest
 ```
 
 ### Конфигурация (.goreleaser.yml)
 
-```
+```bash
 builds:
   - main: ./cmd/api
     goos:
@@ -102,7 +102,7 @@ archives:
 
 ### Выпуск релиза
 
-```
+```bash
 git tag v1.0.0
 git push origin v1.0.0
 goreleaser release

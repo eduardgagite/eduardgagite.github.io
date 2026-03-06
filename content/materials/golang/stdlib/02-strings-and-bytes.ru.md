@@ -12,7 +12,7 @@ order: 2
 
 ## Основные операции со строками
 
-```
+```go
 s := "Hello, Gopher!"
 
 fmt.Println(strings.ToUpper(s))          // HELLO, GOPHER!
@@ -25,7 +25,7 @@ fmt.Println(strings.TrimSuffix(s, "!"))       // Hello, Gopher
 
 ## Поиск и проверки
 
-```
+```go
 s := "Hello, Gopher!"
 
 fmt.Println(strings.Contains(s, "Gopher"))        // true
@@ -39,7 +39,7 @@ fmt.Println(strings.ContainsAny(s, "aeiou"))       // true — есть хотя
 
 ## Замена и разбивка
 
-```
+```go
 s := "foo bar foo baz foo"
 
 // Replace — заменить n первых вхождений (-1 = все)
@@ -67,7 +67,7 @@ fmt.Println(strings.Join([]string{"a", "b", "c"}, "-")) // a-b-c
 
 Конкатенация через **+** в цикле создаёт новую строку на каждой итерации. Для эффективной сборки используйте **strings.Builder**:
 
-```
+```go
 var b strings.Builder
 for i := 0; i < 5; i++ {
     fmt.Fprintf(&b, "item%d ", i)
@@ -81,7 +81,7 @@ result := b.String() // item0 item1 item2 item3 item4
 
 Когда функция принимает **io.Reader**, а у вас строка:
 
-```
+```go
 r := strings.NewReader("hello world")
 data, _ := io.ReadAll(r)
 fmt.Println(string(data)) // hello world
@@ -93,7 +93,7 @@ fmt.Println(string(data)) // hello world
 
 **bytes** — это зеркало **strings** для **[]byte**. Все функции аналогичны:
 
-```
+```go
 b := []byte("Hello, Gopher!")
 
 fmt.Println(bytes.Contains(b, []byte("Gopher")))   // true
@@ -106,7 +106,7 @@ fmt.Println(len(parts)) // 2
 
 **bytes.Buffer** — аналог **strings.Builder** для байт:
 
-```
+```go
 var buf bytes.Buffer
 buf.WriteString("Hello")
 buf.WriteString(", ")
@@ -128,7 +128,7 @@ fmt.Println(buf.String()) // Hello, World!
 - Производительных операций — преобразование **string → []byte** копирует данные.
 
 Преобразование между ними:
-```
+```go
 s := "hello"
 b := []byte(s)    // string → []byte (копирование)
 s2 := string(b)   // []byte → string (копирование)

@@ -16,13 +16,13 @@ order: 6
 
 Популярная библиотека:
 
-```
+```bash
 go get github.com/golang-jwt/jwt/v5
 ```
 
 ### Создание токена при логине
 
-```
+```go
 import (
     "time"
     "github.com/golang-jwt/jwt/v5"
@@ -53,7 +53,7 @@ func generateToken(userID int, role string) (string, error) {
 
 ### Проверка токена
 
-```
+```go
 func parseToken(tokenStr string) (*Claims, error) {
     token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(t *jwt.Token) (interface{}, error) {
         if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -77,7 +77,7 @@ func parseToken(tokenStr string) (*Claims, error) {
 
 Middleware — это функция, которая оборачивает handler. Она проверяет токен, и если всё в порядке — передаёт управление следующему обработчику:
 
-```
+```go
 type contextKey string
 
 const userClaimsKey contextKey = "claims"
@@ -118,7 +118,7 @@ func ClaimsFromContext(ctx context.Context) (*Claims, bool) {
 
 ## Middleware для авторизации по ролям
 
-```
+```go
 func RequireRole(role string) func(http.Handler) http.Handler {
     return func(next http.Handler) http.Handler {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -141,7 +141,7 @@ func RequireRole(role string) func(http.Handler) http.Handler {
 
 ## Применение middleware в маршрутах
 
-```
+```go
 func main() {
     mux := http.NewServeMux()
 
@@ -167,7 +167,7 @@ func profileHandler(w http.ResponseWriter, r *http.Request) {
 
 ## Handler для логина
 
-```
+```go
 type LoginRequest struct {
     Email    string `json:"email"`
     Password string `json:"password"`

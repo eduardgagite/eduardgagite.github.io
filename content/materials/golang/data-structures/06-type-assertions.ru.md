@@ -14,7 +14,7 @@ order: 6
 
 Если у вас есть значение типа **interface{}** (или любого другого интерфейса) и вы хотите получить конкретный тип, используйте **type assertion**:
 
-```
+```go
 var i interface{} = "hello"
 
 s := i.(string)
@@ -25,7 +25,7 @@ fmt.Println(s) // hello
 
 Если утверждение неверно, программа запаникует:
 
-```
+```go
 var i interface{} = 42
 s := i.(string) // panic: interface conversion: interface {} is int, not string
 ```
@@ -34,7 +34,7 @@ s := i.(string) // panic: interface conversion: interface {} is int, not string
 
 Чтобы не получить panic, используйте форму с двумя значениями:
 
-```
+```go
 var i interface{} = 42
 
 s, ok := i.(string)
@@ -51,7 +51,7 @@ fmt.Println(s)
 
 Когда нужно обработать несколько возможных типов, **type switch** удобнее цепочки **if-else**:
 
-```
+```go
 func describe(i interface{}) string {
     switch v := i.(type) {
     case int:
@@ -74,7 +74,7 @@ func describe(i interface{}) string {
 
 Самый частый use-case — разбор ошибок. В Go ошибки — это интерфейс, и конкретный тип ошибки несёт дополнительную информацию:
 
-```
+```go
 type NotFoundError struct {
     Resource string
     ID       int
@@ -109,7 +109,7 @@ func handleError(err error) {
 
 Начиная с Go 1.13, для работы с цепочками ошибок (wrapped errors) рекомендуется **errors.As** вместо type assertion:
 
-```
+```go
 var notFound *NotFoundError
 
 if errors.As(err, &notFound) {
@@ -123,7 +123,7 @@ if errors.As(err, &notFound) {
 
 В Go 1.18 появился псевдоним **any** для **interface{}**:
 
-```
+```go
 func printValue(v any) {
     switch val := v.(type) {
     case string:

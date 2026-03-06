@@ -26,7 +26,7 @@ order: 4
 
 Создаем интерфейс **Speaker** — "тот, кто умеет говорить".
 
-```
+```go
 type Speaker interface {
     Speak() string
 }
@@ -34,7 +34,7 @@ type Speaker interface {
 
 Любой тип, у которого есть метод **Speak() string**, автоматически является **Speaker**.
 
-```
+```go
 type Dog struct {
     Name string
 }
@@ -54,7 +54,7 @@ func (h Human) Speak() string {
 
 Теперь мы можем написать функцию, которая работает с **любым** Speaker.
 
-```
+```go
 func announce(s Speaker) {
     fmt.Println(s.Speak())
 }
@@ -74,7 +74,7 @@ func main() {
 
 Представьте: у вас есть сервис, который отправляет уведомления. Сегодня — по email, завтра — через Telegram, послезавтра — через SMS.
 
-```
+```go
 type Notifier interface {
     Send(message string) error
 }
@@ -105,7 +105,7 @@ func NotifyUser(n Notifier, msg string) {
 
 Интерфейс без методов. Ему удовлетворяет **любой** тип.
 
-```
+```go
 var x any
 
 x = 42
@@ -120,7 +120,7 @@ x = User{Name: "Alice"}
 
 Как переиспользовать код без наследования? Через встраивание одной структуры в другую.
 
-```
+```go
 type User struct {
     Name  string
     Email string
@@ -133,7 +133,7 @@ func (u *User) Greet() string {
 
 Хотим создать Admin, который умеет всё то же, что и User, плюс имеет уровень доступа.
 
-```
+```go
 type Admin struct {
     User
     Level int
@@ -142,7 +142,7 @@ type Admin struct {
 
 Теперь Admin "наследует" поля и методы User.
 
-```
+```go
 func main() {
     admin := Admin{
         User:  User{Name: "Иван", Email: "ivan@admin.com"},

@@ -12,7 +12,7 @@ order: 1
 
 ## Основные функции вывода
 
-```
+```go
 fmt.Print("Hello")           // без перевода строки
 fmt.Println("Hello", "Go")   // с переводом строки, пробел между аргументами
 fmt.Printf("Name: %s\n", name) // форматированный вывод
@@ -27,7 +27,7 @@ fmt.Printf("Name: %s\n", name) // форматированный вывод
 
 Глагол — это спецификатор формата, начинающийся с **%**:
 
-```
+```go
 name := "Gopher"
 age := 5
 pi := 3.14159
@@ -45,7 +45,7 @@ fmt.Printf("%p\n", &name)   // 0xc0000b4010  — адрес в памяти
 
 Самый универсальный глагол — **%v**: он работает с любым типом. Для структур **%+v** выводит имена полей, а **%#v** — Go-синтаксис:
 
-```
+```go
 type User struct {
     Name string
     Age  int
@@ -61,7 +61,7 @@ fmt.Printf("%#v\n", u)  // main.User{Name:"Alice", Age:30}
 
 **Sprintf** не выводит, а возвращает отформатированную строку:
 
-```
+```go
 msg := fmt.Sprintf("Пользователь %s, возраст %d", name, age)
 // msg = "Пользователь Gopher, возраст 5"
 ```
@@ -72,14 +72,14 @@ msg := fmt.Sprintf("Пользователь %s, возраст %d", name, age)
 
 **fmt.Errorf** создаёт ошибку с форматированным сообщением:
 
-```
+```go
 userID := 42
 err := fmt.Errorf("пользователь %d не найден", userID)
 ```
 
 С Go 1.13 появился глагол **%w** для оборачивания ошибок. Это позволяет сохранить исходную ошибку внутри:
 
-```
+```go
 originalErr := sql.ErrNoRows
 wrappedErr := fmt.Errorf("getUser: %w", originalErr)
 
@@ -93,7 +93,7 @@ if errors.Is(wrappedErr, sql.ErrNoRows) {
 
 **Fprintf** пишет не в стандартный вывод, а в любой **io.Writer**: файл, HTTP-ответ, буфер:
 
-```
+```go
 // В файл
 file, _ := os.Create("log.txt")
 fmt.Fprintf(file, "Время: %s\n", time.Now())
@@ -113,7 +113,7 @@ s := buf.String() // "count: 42"
 
 Если **Printf** форматирует значения в строку, то **Sscanf** делает обратное — извлекает значения из строки:
 
-```
+```go
 var name string
 var age int
 
@@ -125,7 +125,7 @@ n, err := fmt.Sscanf("Alice 30", "%s %d", &name, &age)
 
 Если реализовать метод **String() string** для своего типа, **fmt** будет использовать его автоматически:
 
-```
+```go
 type Color int
 
 const (
