@@ -27,6 +27,7 @@
     "searchPlaceholder": "Title or description",
     "levelFilter": "Level",
     "tagsFilter": "Tags",
+    "closeSidebar": "Close navigation",
     "filtersReset": "Reset filters",
     "noMatches": "No materials match the filters.",
     "emptyState": "No materials yet.",
@@ -83,4 +84,3 @@
     "goMaterials": "Go to materials"
   }
 }
-
