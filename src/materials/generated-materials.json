@@ -1021,6 +1021,23 @@
       "contentPath": "/materials-content/golang/build-and-deploy/02-cross-compile-and-release.ru.json"
     },
     {
+      "title": "CI/CD и GitHub Actions",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "build-and-deploy",
+      "sectionTitle": "Сборка и деплой",
+      "order": 3,
+      "sectionOrder": 10,
+      "id": {
+        "category": "golang",
+        "section": "build-and-deploy",
+        "slug": "03-ci-cd",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/build-and-deploy/03-ci-cd.ru.md",
+      "contentPath": "/materials-content/golang/build-and-deploy/03-ci-cd.ru.json"
+    },
+    {
       "title": "Пакет flag",
       "category": "golang",
       "categoryTitle": "Go",
@@ -1327,6 +1344,23 @@
       "contentPath": "/materials-content/golang/database/03-migrations-and-schema.ru.json"
     },
     {
+      "title": "Экосистема: sqlx, pgx, GORM",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "database",
+      "sectionTitle": "Базы данных",
+      "order": 4,
+      "sectionOrder": 9,
+      "id": {
+        "category": "golang",
+        "section": "database",
+        "slug": "04-ecosystem",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/database/04-ecosystem.ru.md",
+      "contentPath": "/materials-content/golang/database/04-ecosystem.ru.json"
+    },
+    {
       "title": "Что такое Go",
       "category": "golang",
       "categoryTitle": "Go",
@@ -1495,6 +1529,23 @@
       },
       "path": "/content/materials/golang/packages-modules/03-project-layout.ru.md",
       "contentPath": "/materials-content/golang/packages-modules/03-project-layout.ru.json"
+    },
+    {
+      "title": "Go Workspaces (мультимодульная разработка)",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "packages-modules",
+      "sectionTitle": "Пакеты и модули",
+      "order": 4,
+      "sectionOrder": 4,
+      "id": {
+        "category": "golang",
+        "section": "packages-modules",
+        "slug": "04-go-workspaces",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/packages-modules/04-go-workspaces.ru.md",
+      "contentPath": "/materials-content/golang/packages-modules/04-go-workspaces.ru.json"
     },
     {
       "title": "Пакет fmt",
@@ -1684,6 +1735,23 @@
       "contentPath": "/materials-content/golang/testing/04-integration-tests.ru.json"
     },
     {
+      "title": "Фаз-тестирование",
+      "category": "golang",
+      "categoryTitle": "Go",
+      "section": "testing",
+      "sectionTitle": "Тестирование",
+      "order": 5,
+      "sectionOrder": 7,
+      "id": {
+        "category": "golang",
+        "section": "testing",
+        "slug": "05-fuzz-testing",
+        "lang": "ru"
+      },
+      "path": "/content/materials/golang/testing/05-fuzz-testing.ru.md",
+      "contentPath": "/materials-content/golang/testing/05-fuzz-testing.ru.json"
+    },
+    {
       "title": "HTTP-сервер на стандартной библиотеке",
       "category": "golang",
       "categoryTitle": "Go",
@@ -1756,7 +1824,7 @@
       "category": "golang",
       "categoryTitle": "Go",
       "section": "web-and-api",
-      "sectionTitle": "Web и API",
+      "sectionTitle": "Веб и API",
       "order": 5,
       "sectionOrder": 8,
       "id": {
