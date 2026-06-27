@@ -1,16 +1,15 @@
-// @ts-nocheck
 import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Highlight, themes } from 'prism-react-renderer';
+import { Highlight, themes, type Language } from 'prism-react-renderer';
 
 export interface CodeBlockProps {
   code: string;
-  language?: string;
+  language?: Language;
 }
 
 export function CodeBlock({ code, language }: CodeBlockProps) {
   const { t } = useTranslation();
-  const lang = (language || 'text').toLowerCase();
+  const lang: Language = (language || 'text').toLowerCase();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -61,43 +60,44 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
           )}
         </button>
       </div>
-      
-        {/* Code content */}
-        <div className="relative">
+
+      {/* Code content */}
+      <div className="relative">
         <Highlight
-        code={code.trimEnd()}
-        language={lang as any}
-        theme={themes.oneDark}
-      >
-        {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <pre
+          code={code.trimEnd()}
+          language={lang}
+          theme={themes.oneDark}
+        >
+          {({ className, style, tokens, getLineProps, getTokenProps }) => (
+            <pre
               className={`${className} m-0 overflow-x-auto py-4 pl-5 pr-4 font-mono text-[13px] leading-[1.7]`}
-            style={{ ...style, background: 'transparent' }}
-          >
-            {tokens.map((line, i) => {
-              const { key: lineKey, className: lineClassName, ...lineProps } = getLineProps({ line, key: i });
-              return (
+              style={{ ...style, background: 'transparent' }}
+            >
+              {tokens.map((line, i) => {
+                const lineProps = getLineProps({
+                  line,
+                  className: 'group/line relative hover:bg-white/[0.02] transition-colors -mx-5 px-5',
+                });
+                return (
                   <div
-                    key={lineKey ?? i}
+                    key={i}
                     {...lineProps}
-                    className={`group/line relative hover:bg-white/[0.02] transition-colors -mx-5 px-5 ${lineClassName ?? ''}`}
                   >
                     {/* Line number */}
                     <span className="mr-6 inline-block w-5 select-none text-right font-mono text-[11px] text-white/20 group-hover/line:text-white/35 transition-colors">
                       {i + 1}
                     </span>
                     {/* Code tokens */}
-                  {line.map((token, tokenIndex) => {
-                    const { key: tokenKey, ...tokenProps } = getTokenProps({ token, key: tokenIndex });
-                    return <span key={tokenKey ?? tokenIndex} {...tokenProps} />;
-                  })}
-                </div>
-              );
-            })}
-          </pre>
-        )}
-      </Highlight>
-    </div>
+                    {line.map((token, tokenIndex) => (
+                      <span key={tokenIndex} {...getTokenProps({ token })} />
+                    ))}
+                  </div>
+                );
+              })}
+            </pre>
+          )}
+        </Highlight>
+      </div>
     </div>
   );
 }
