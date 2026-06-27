@@ -3,6 +3,7 @@ import { materialKey, type MaterialsCategory, type MaterialsSection } from '../.
 import type { FilterOptions, SidebarCopy } from './types';
 
 export interface MaterialsSidebarProps {
+  idPrefix: string;
   copy: SidebarCopy;
   filterOptions: FilterOptions;
   searchQuery: string;
@@ -20,11 +21,12 @@ export interface MaterialsSidebarProps {
   activeSectionId?: string;
   activeMaterialKey?: string | null;
   onToggleCategory: (categoryId: string) => void;
-  onToggleSection: (sectionId: string) => void;
+  onToggleSection: (categoryId: string, sectionId: string) => void;
   onSelectMaterial: (category: MaterialsCategory, section: MaterialsSection, slug: string) => void;
 }
 
 export function MaterialsSidebar({
+  idPrefix,
   copy,
   filterOptions,
   searchQuery,
@@ -67,9 +69,10 @@ export function MaterialsSidebar({
         </div>
 
         <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-theme-surface-elevated border border-theme-border focus-within:border-theme-accent/50 focus-within:bg-theme-card transition-all">
-          <SearchIcon className="w-4 h-4 text-theme-text-muted" />
+          <SearchIcon className="w-4 h-4 text-theme-text-muted" aria-hidden="true" />
           <input
             type="search"
+            aria-label={copy.searchLabel}
             value={searchQuery}
             onChange={(event) => onSearchChange(event.target.value)}
             placeholder={copy.searchPlaceholder}
@@ -78,7 +81,7 @@ export function MaterialsSidebar({
         </div>
 
         {filterOptions.levels.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
+          <div role="group" aria-label={copy.levelLabel} className="flex flex-wrap gap-1.5">
             {filterOptions.levels.map((level) => (
               <FilterChip
                 key={level}
@@ -91,7 +94,7 @@ export function MaterialsSidebar({
         )}
 
         {filterOptions.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto scroll-elegant">
+          <div role="group" aria-label={copy.tagsLabel} className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto scroll-elegant">
             {filterOptions.tags.map((tag) => (
               <FilterChip
                 key={tag}
@@ -113,10 +116,13 @@ export function MaterialsSidebar({
             {categories.map((category) => {
               const isCategoryOpen = !!categoryOpen[category.id];
               const isCategoryActive = category.id === activeCategoryId;
+              const categoryPanelId = `${idPrefix}-category-${toElementIdPart(category.id)}`;
               return (
                 <li key={category.id}>
                   <button
                     type="button"
+                    aria-controls={categoryPanelId}
+                    aria-expanded={isCategoryOpen}
                     onClick={() => onToggleCategory(category.id)}
                     className={`flex w-full items-center justify-between gap-2 px-3 py-2 rounded-xl border transition-all text-left relative overflow-hidden ${
                       isCategoryActive
@@ -140,21 +146,28 @@ export function MaterialsSidebar({
                       {category.title}
                     </span>
                     <div className="flex items-center gap-2 shrink-0 relative z-10">
-                      <ChevronIcon className={`w-4 h-4 text-theme-text-muted transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`} />
+                      <ChevronIcon
+                        className={`w-4 h-4 text-theme-text-muted transition-transform ${isCategoryOpen ? 'rotate-180' : ''}`}
+                        aria-hidden="true"
+                      />
                     </div>
                   </button>
 
                   {isCategoryOpen && (
-                    <ul className="mt-2 ml-3 space-y-1.5 border-l border-theme-border pl-3">
+                    <ul id={categoryPanelId} className="mt-2 ml-3 space-y-1.5 border-l border-theme-border pl-3">
                       {category.sections.map((section, sectionIdx) => {
                         const isSectionActive = category.id === activeCategoryId && section.id === activeSectionId;
-                        const isSectionOpen = !!sectionOpen[section.id];
+                        const sectionStateKey = `${category.id}/${section.id}`;
+                        const isSectionOpen = !!sectionOpen[sectionStateKey];
+                        const sectionPanelId = `${idPrefix}-section-${toElementIdPart(category.id)}-${toElementIdPart(section.id)}`;
 
                         return (
                           <li key={section.id}>
                             <button
                               type="button"
-                              onClick={() => onToggleSection(section.id)}
+                              aria-controls={sectionPanelId}
+                              aria-expanded={isSectionOpen}
+                              onClick={() => onToggleSection(category.id, section.id)}
                               className={`flex w-full items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg text-left transition-all relative overflow-hidden ${
                                 isSectionActive
                                   ? 'text-theme-text shadow-[0_0_16px_rgba(31,111,235,0.2)]'
@@ -185,11 +198,14 @@ export function MaterialsSidebar({
                                   {section.title}
                                 </span>
                               </span>
-                              <ChevronIcon className={`w-3.5 h-3.5 text-theme-text-muted shrink-0 transition-transform ${isSectionOpen ? 'rotate-180' : ''}`} />
+                              <ChevronIcon
+                                className={`w-3.5 h-3.5 text-theme-text-muted shrink-0 transition-transform ${isSectionOpen ? 'rotate-180' : ''}`}
+                                aria-hidden="true"
+                              />
                             </button>
 
                             {isSectionOpen && section.materials.length > 0 && (
-                              <ul className="mt-1.5 ml-2 space-y-0.5">
+                              <ul id={sectionPanelId} className="mt-1.5 ml-2 space-y-0.5">
                                 {section.materials.map((material, materialIdx) => {
                                   const key = materialKey(material.id);
                                   const isActive = activeMaterialKey === key;
@@ -198,6 +214,7 @@ export function MaterialsSidebar({
                                     <li key={key}>
                                       <button
                                         type="button"
+                                        aria-current={isActive ? 'page' : undefined}
                                         onClick={() => onSelectMaterial(category, section, material.id.slug)}
                                         className={`w-full px-2.5 py-1.5 rounded-lg text-left text-[12px] transition-all relative overflow-hidden ${
                                           isActive
@@ -258,6 +275,7 @@ function FilterChip({ label, isActive, onClick }: FilterChipProps) {
   return (
     <button
       type="button"
+      aria-pressed={isActive}
       onClick={onClick}
       className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
         isActive
@@ -268,6 +286,10 @@ function FilterChip({ label, isActive, onClick }: FilterChipProps) {
       {label}
     </button>
   );
+}
+
+function toElementIdPart(value: string) {
+  return value.replace(/[^a-zA-Z0-9_-]/g, '-');
 }
 
 function SearchIcon(props: SVGProps<SVGSVGElement>) {
