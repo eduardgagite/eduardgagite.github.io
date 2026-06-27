@@ -1,6 +1,6 @@
 import { readdir, readFile, writeFile, mkdir, rm } from 'node:fs/promises';
 import path from 'node:path';
-import matter from 'gray-matter';
+import { parse as parseYaml } from 'yaml';
 
 const ROOT_DIR = path.resolve(new URL('..', import.meta.url).pathname);
 const MATERIALS_DIR = path.join(ROOT_DIR, 'content', 'materials');
@@ -57,6 +57,23 @@ function isValidDateString(value) {
   if (!isNonEmptyString(value) || !DATE_PATTERN.test(value)) return false;
   const parsed = new Date(`${value}T00:00:00.000Z`);
   return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+function parseMarkdownWithFrontmatter(raw) {
+  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)([\s\S]*)$/);
+  if (!match) {
+    throw new Error('missing frontmatter block');
+  }
+
+  const data = parseYaml(match[1]) ?? {};
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error('frontmatter must be a YAML mapping');
+  }
+
+  return {
+    data,
+    content: match[2],
+  };
 }
 
 function validateFrontmatter({ frontmatter, id, filePath }) {
@@ -148,7 +165,15 @@ async function main() {
       return;
     }
 
-    const { data, content } = matter(raw);
+    let parsed;
+    try {
+      parsed = parseMarkdownWithFrontmatter(raw);
+    } catch (error) {
+      errors.push(`${toPosixPath(path.relative(ROOT_DIR, filePath))}: invalid frontmatter: ${error.message}`);
+      return;
+    }
+
+    const { data, content } = parsed;
     if (!content.trim()) {
       errors.push(`${filePath}: markdown content is empty`);
       return;
