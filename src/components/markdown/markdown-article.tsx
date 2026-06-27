@@ -31,119 +31,121 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
     };
 
     return {
-    h1: (props: any) => {
-      const { node, children, ...rest } = props;
-      const headingId = resolveHeadingId(node, headingCounts);
-      return (
-        <h1 id={headingId} {...rest}>
-          {children}
-        </h1>
-      );
-    },
-    h2: (props: any) => {
-      const { node, children, ...rest } = props;
-      const headingId = resolveHeadingId(node, headingCounts);
-      return (
-        <h2 id={headingId} {...rest}>
-          {children}
-        </h2>
-      );
-    },
-    h3: (props: any) => {
-      const { node, children, ...rest } = props;
-      const headingId = resolveHeadingId(node, headingCounts);
-      return (
-        <h3 id={headingId} {...rest}>
-          {children}
-        </h3>
-      );
-    },
-    h4: (props: any) => {
-      const { node, children, ...rest } = props;
-      const headingId = resolveHeadingId(node, headingCounts);
-      return (
-        <h4 id={headingId} {...rest}>
-          {children}
-        </h4>
-      );
-    },
-    p: (props: any) => <p {...props} />,
-    ul: (props: any) => <ul {...props} />,
-    ol: (props: any) => <ol {...props} />,
-    li: (props: any) => <li {...props} />,
-    blockquote: (props: any) => <blockquote {...props} />,
-    hr: () => <hr />,
-    a: (props: any) => {
-      const { href, children, ...rest } = props;
-      const isExternal = href?.startsWith('http');
-      return (
-        <a
-          href={href}
-          target={isExternal ? '_blank' : undefined}
-          rel={isExternal ? 'noopener noreferrer' : undefined}
-          {...rest}
-        >
-          {children}
-        </a>
-      );
-    },
-    table: (props: any) => <table {...props} />,
-    thead: (props: any) => <thead {...props} />,
-    tbody: (props: any) => <tbody {...props} />,
-    tr: (props: any) => <tr {...props} />,
-    th: (props: any) => <th {...props} />,
-    td: (props: any) => <td {...props} />,
-    strong: (props: any) => <strong {...props} />,
-    em: (props: any) => <em {...props} />,
-    code: ((props: any) => {
-      const { inline, className, children } = props;
-      const match = /language-(\w+)/.exec(className || '');
-      const content = String(children ?? '').trim();
+      h1: (props) => {
+        const { node, children, ...rest } = props;
+        const headingId = resolveHeadingId(node, headingCounts);
+        return (
+          <h1 id={headingId} {...rest}>
+            {children}
+          </h1>
+        );
+      },
+      h2: (props) => {
+        const { node, children, ...rest } = props;
+        const headingId = resolveHeadingId(node, headingCounts);
+        return (
+          <h2 id={headingId} {...rest}>
+            {children}
+          </h2>
+        );
+      },
+      h3: (props) => {
+        const { node, children, ...rest } = props;
+        const headingId = resolveHeadingId(node, headingCounts);
+        return (
+          <h3 id={headingId} {...rest}>
+            {children}
+          </h3>
+        );
+      },
+      h4: (props) => {
+        const { node, children, ...rest } = props;
+        const headingId = resolveHeadingId(node, headingCounts);
+        return (
+          <h4 id={headingId} {...rest}>
+            {children}
+          </h4>
+        );
+      },
+      p: ({ node, ...props }) => <p {...props} />,
+      ul: ({ node, ...props }) => <ul {...props} />,
+      ol: ({ node, ...props }) => <ol {...props} />,
+      li: ({ node, ...props }) => <li {...props} />,
+      blockquote: ({ node, ...props }) => <blockquote {...props} />,
+      hr: ({ node, ...props }) => <hr {...props} />,
+      a: (props) => {
+        const { node, href, children, ...rest } = props;
+        const isExternal = href?.startsWith('http');
+        return (
+          <a
+            href={href}
+            target={isExternal ? '_blank' : undefined}
+            rel={isExternal ? 'noopener noreferrer' : undefined}
+            {...rest}
+          >
+            {children}
+          </a>
+        );
+      },
+      table: ({ node, ...props }) => <table {...props} />,
+      thead: ({ node, ...props }) => <thead {...props} />,
+      tbody: ({ node, ...props }) => <tbody {...props} />,
+      tr: ({ node, ...props }) => <tr {...props} />,
+      th: ({ node, ...props }) => <th {...props} />,
+      td: ({ node, ...props }) => <td {...props} />,
+      strong: ({ node, ...props }) => <strong {...props} />,
+      em: ({ node, ...props }) => <em {...props} />,
+      code: (props) => {
+        const { node, className, children } = props;
+        const match = /language-([\w-]+)/.exec(className || '');
+        const rawContent = String(children ?? '');
+        const isBlock = !!className || rawContent.includes('\n');
+        const content = rawContent.trim();
 
-      if (inline) {
-        return <InlineCode>{children}</InlineCode>;
-      }
+        if (!isBlock) {
+          return <InlineCode>{children}</InlineCode>;
+        }
 
-      return (
-        <CodeBlock
-          code={content}
-          language={match?.[1]}
-        />
-      );
-    }) as Components['code'],
-    img: (props: any) => {
-      const { src, alt, ...rest } = props;
-      const resolvedSrc = resolveImagePath(src || '');
-      return (
-        <figure className="my-6">
-          <div className="overflow-hidden rounded-xl border border-theme-border bg-theme-surface max-w-[70%]">
-            <img
-              src={resolvedSrc}
-              alt={alt || ''}
-              className="w-full h-auto object-contain"
-              loading="lazy"
-              {...rest}
-            />
-          </div>
-          {alt && (
-            <figcaption className="mt-2 text-sm text-theme-text-muted italic">
-              {alt}
-            </figcaption>
-          )}
-        </figure>
-      );
-    },
+        return (
+          <CodeBlock
+            code={content}
+            language={match?.[1]}
+          />
+        );
+      },
+      img: (props) => {
+        const { node, src, alt, ...rest } = props;
+        const resolvedSrc = resolveImagePath(src || '');
+        return (
+          <figure className="my-6">
+            <div className="overflow-hidden rounded-xl border border-theme-border bg-theme-surface max-w-[70%]">
+              <img
+                src={resolvedSrc}
+                alt={alt || ''}
+                className="w-full h-auto object-contain"
+                loading="lazy"
+                {...rest}
+              />
+            </div>
+            {alt && (
+              <figcaption className="mt-2 text-sm text-theme-text-muted italic">
+                {alt}
+              </figcaption>
+            )}
+          </figure>
+        );
+      },
     };
   }, [materialPath]);
 
   return (
     <div className="prose-article">
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      components={components}
-    >
-      {content}
-    </ReactMarkdown>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={components}
+      >
+        {content}
+      </ReactMarkdown>
     </div>
   );
 }
@@ -168,16 +170,23 @@ export function assignHeadingSlug({ value, counts }: { value: string; counts: Re
   return `${base}-${count + 1}`;
 }
 
-function resolveHeadingId(node: any, counts: Record<string, number>): string {
+function resolveHeadingId(node: unknown, counts: Record<string, number>): string {
   const text = extractHeadingText(node);
   return assignHeadingSlug({ value: text, counts });
 }
 
-function extractHeadingText(node: any): string {
+function extractHeadingText(node: unknown): string {
   if (!node) return '';
   if (typeof node === 'string' || typeof node === 'number') return String(node);
-  if (typeof node.value === 'string') return node.value;
-  if (!Array.isArray(node.children)) return '';
-  return node.children.map(extractHeadingText).join('');
-}
+  if (typeof node !== 'object') return '';
 
+  if ('value' in node && typeof node.value === 'string') {
+    return node.value;
+  }
+
+  if ('children' in node && Array.isArray(node.children)) {
+    return node.children.map(extractHeadingText).join('');
+  }
+
+  return '';
+}
