@@ -46,10 +46,10 @@ export interface MaterialsCategory {
 export interface MaterialsTree {
   categories: MaterialsCategory[];
   byId: Record<string, MaterialMeta>;
-  availableLanguages: Record<string, Array<'ru' | 'en'>>; // Maps canonical key to available languages
+  availableLanguages: Record<string, Array<'ru' | 'en'>>;
 }
 
-interface GeneratedMaterialsFile {
+export interface GeneratedMaterialsFile {
   entries: MaterialMeta[];
 }
 
@@ -72,11 +72,7 @@ async function loadMaterialsIndex(): Promise<GeneratedMaterialsFile> {
       if (!response.ok) {
         throw new Error(`Failed to load materials index: ${response.status}`);
       }
-      const payload = (await response.json()) as { entries?: unknown };
-      if (!payload || !Array.isArray(payload.entries)) {
-        throw new Error('Invalid materials index payload');
-      }
-      return payload as GeneratedMaterialsFile;
+      return parseMaterialsIndexPayload(await response.json());
     })
     .catch((error) => {
       materialsIndexPromise = null;
@@ -86,9 +82,7 @@ async function loadMaterialsIndex(): Promise<GeneratedMaterialsFile> {
   return materialsIndexPromise;
 }
 
-function buildMaterialsTree(entries: MaterialMeta[], preferredLang: 'ru' | 'en'): MaterialsTree {
-
-  // Group by canonical id (category/section/slug) and choose best lang
+export function buildMaterialsTree(entries: MaterialMeta[], preferredLang: 'ru' | 'en'): MaterialsTree {
   const byCanonical: Record<string, MaterialMeta[]> = {};
   for (const entry of entries) {
     const key = `${entry.id.category}/${entry.id.section}/${entry.id.slug}`;
@@ -106,12 +100,9 @@ function buildMaterialsTree(entries: MaterialMeta[], preferredLang: 'ru' | 'en')
     picked.push(chosen);
     const key = materialKey(chosen.id);
     byId[key] = chosen;
-    
-    // Track available languages for this material
-    availableLanguages[canonicalKey] = variants.map(v => v.id.lang);
+    availableLanguages[canonicalKey] = sortMaterialLanguages(variants.map((variant) => variant.id.lang));
   });
 
-  // Build categories/sections
   const categoriesMap = new Map<string, MaterialsCategory>();
   for (const m of picked) {
     let category = categoriesMap.get(m.category);
@@ -134,7 +125,6 @@ function buildMaterialsTree(entries: MaterialMeta[], preferredLang: 'ru' | 'en')
       };
       category.sections.push(section);
     } else {
-      // Update order if this material has a sectionOrder (sections use sectionOrder from their materials)
       if (m.sectionOrder !== undefined && (section.order === undefined || m.sectionOrder < section.order)) {
         section.order = m.sectionOrder;
       }
@@ -191,13 +181,9 @@ export async function loadMaterialContent(material: MaterialMeta): Promise<Mater
       if (!response.ok) {
         throw new Error(`Failed to load material content: ${response.status}`);
       }
-      const payload = (await response.json()) as { content?: unknown };
-      if (typeof payload.content !== 'string') {
-        throw new Error('Invalid material content payload');
-      }
       return {
         ...material,
-        content: payload.content,
+        content: parseMaterialContentPayload(await response.json()),
       };
     })
     .catch((error) => {
@@ -207,4 +193,128 @@ export async function loadMaterialContent(material: MaterialMeta): Promise<Mater
 
   materialContentCache.set(cacheKey, pending);
   return pending;
+}
+
+export function parseMaterialsIndexPayload(payload: unknown): GeneratedMaterialsFile {
+  if (!isRecord(payload) || !Array.isArray(payload.entries)) {
+    throw new Error('Invalid materials index payload');
+  }
+
+  return {
+    entries: payload.entries.map(parseMaterialMeta),
+  };
+}
+
+export function parseMaterialContentPayload(payload: unknown): string {
+  if (!isRecord(payload) || typeof payload.content !== 'string') {
+    throw new Error('Invalid material content payload');
+  }
+  return payload.content;
+}
+
+function parseMaterialMeta(value: unknown): MaterialMeta {
+  if (!isRecord(value)) {
+    throw new Error('Invalid material index entry');
+  }
+
+  const id = parseMaterialId(value.id);
+  const category = readRequiredString(value, 'category');
+  const section = readRequiredString(value, 'section');
+  if (id.category !== category || id.section !== section) {
+    throw new Error('Material id does not match material frontmatter');
+  }
+
+  const meta: MaterialMeta = {
+    title: readRequiredString(value, 'title'),
+    category,
+    categoryTitle: readRequiredString(value, 'categoryTitle'),
+    section,
+    sectionTitle: readRequiredString(value, 'sectionTitle'),
+    id,
+    path: readRequiredString(value, 'path'),
+    contentPath: readRequiredString(value, 'contentPath'),
+  };
+
+  const subtitle = readOptionalString(value, 'subtitle');
+  const datePublished = readOptionalString(value, 'datePublished');
+  const dateModified = readOptionalString(value, 'dateModified');
+  const level = readOptionalString(value, 'level');
+  const sectionOrder = readOptionalNumber(value, 'sectionOrder');
+  const order = readOptionalNumber(value, 'order');
+  const tags = readOptionalStringArray(value, 'tags');
+
+  if (subtitle !== undefined) meta.subtitle = subtitle;
+  if (datePublished !== undefined) meta.datePublished = datePublished;
+  if (dateModified !== undefined) meta.dateModified = dateModified;
+  if (level !== undefined) meta.level = level;
+  if (sectionOrder !== undefined) meta.sectionOrder = sectionOrder;
+  if (order !== undefined) meta.order = order;
+  if (tags !== undefined) meta.tags = tags;
+
+  return meta;
+}
+
+function parseMaterialId(value: unknown): MaterialId {
+  if (!isRecord(value)) {
+    throw new Error('Invalid material id');
+  }
+
+  const lang = value.lang;
+  if (lang !== 'ru' && lang !== 'en') {
+    throw new Error('Invalid material language');
+  }
+
+  return {
+    category: readRequiredString(value, 'category'),
+    section: readRequiredString(value, 'section'),
+    slug: readRequiredString(value, 'slug'),
+    lang,
+  };
+}
+
+function readRequiredString(source: Record<string, unknown>, key: string): string {
+  const value = source[key];
+  if (typeof value !== 'string') {
+    throw new Error(`Invalid material field: ${key}`);
+  }
+  return value;
+}
+
+function readOptionalString(source: Record<string, unknown>, key: string): string | undefined {
+  const value = source[key];
+  if (value === undefined) return undefined;
+  if (typeof value !== 'string') {
+    throw new Error(`Invalid material field: ${key}`);
+  }
+  return value;
+}
+
+function readOptionalNumber(source: Record<string, unknown>, key: string): number | undefined {
+  const value = source[key];
+  if (value === undefined) return undefined;
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    throw new Error(`Invalid material field: ${key}`);
+  }
+  return value;
+}
+
+function readOptionalStringArray(source: Record<string, unknown>, key: string): string[] | undefined {
+  const value = source[key];
+  if (value === undefined) return undefined;
+  if (!Array.isArray(value) || !value.every((item) => typeof item === 'string')) {
+    throw new Error(`Invalid material field: ${key}`);
+  }
+  return value;
+}
+
+function sortMaterialLanguages(languages: Array<'ru' | 'en'>): Array<'ru' | 'en'> {
+  return [...new Set(languages)].sort((a, b) => languageOrder(a) - languageOrder(b));
+}
+
+function languageOrder(lang: 'ru' | 'en') {
+  return lang === 'ru' ? 0 : 1;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }

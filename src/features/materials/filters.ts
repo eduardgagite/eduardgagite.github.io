@@ -1,4 +1,4 @@
-import { materialKey, type MaterialMeta, type MaterialsCategory, type MaterialsSection, type MaterialsTree } from '../../materials/loader';
+import type { MaterialMeta, MaterialsCategory, MaterialsSection } from '../../materials/loader';
 import type { FilterCriteria, FilterOptions } from './types';
 
 interface FilterCategoriesArgs {
@@ -62,11 +62,6 @@ export function deriveFilterOptions({ categories }: FilterOptionsArgs): FilterOp
     tags: Array.from(tags).sort((a, b) => a.localeCompare(b)),
     levels: Array.from(levels).sort((a, b) => a.localeCompare(b)),
   };
-}
-
-export function findMaterial(tree: MaterialsTree, categoryId: string, sectionId: string, slug: string) {
-  const key = materialKey({ category: categoryId, section: sectionId, slug, lang: 'ru' });
-  return tree.byId[key];
 }
 
 function materialMatches({ material, criteria }: MaterialMatchArgs): boolean {
