@@ -31,18 +31,11 @@ function applyThemeToDocument(colors: ThemeColors): void {
   
   // Apply primary color variants for opacity support
   root.style.setProperty('--color-primary', colors.primary);
-  // Convert hex to rgba with proper opacity
-  const hexToRgba = (hex: string, alpha: number) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  };
-  
-  const primary5 = hexToRgba(colors.primary, 0.05);
-  const primary30 = hexToRgba(colors.primary, 0.30);
-  const primary40 = hexToRgba(colors.primary, 0.40);
-  const primary80 = hexToRgba(colors.primary, 0.80);
+
+  const primary5 = `rgba(${colors.primaryRgb}, 0.05)`;
+  const primary30 = `rgba(${colors.primaryRgb}, 0.30)`;
+  const primary40 = `rgba(${colors.primaryRgb}, 0.40)`;
+  const primary80 = `rgba(${colors.primaryRgb}, 0.80)`;
   
   root.style.setProperty('--color-primary-5', primary5);
   root.style.setProperty('--color-primary-30', primary30);
@@ -51,8 +44,7 @@ function applyThemeToDocument(colors: ThemeColors): void {
   
   // Set RGB values for CSS gradients
   root.style.setProperty('--theme-primary-rgb', colors.primaryRgb);
-  
-  }
+}
 
 /**
  * Sets the theme class on the document for potential CSS selectors
@@ -78,9 +70,13 @@ export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
   const [themeName, setThemeName] = useState<ThemeName>(() => {
     // Try to get from localStorage, fall back to initial or default
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(THEME_STORAGE_KEY) as ThemeName | null;
-      if (stored && themes[stored]) {
-        return stored;
+      try {
+        const stored = localStorage.getItem(THEME_STORAGE_KEY) as ThemeName | null;
+        if (stored && themes[stored]) {
+          return stored;
+        }
+      } catch {
+        // Ignore storage errors and use the default theme.
       }
     }
     return initialTheme ?? defaultTheme;
@@ -91,7 +87,11 @@ export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
   useEffect(() => {
     applyThemeToDocument(theme.colors);
     setThemeClass(themeName);
-    localStorage.setItem(THEME_STORAGE_KEY, themeName);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, themeName);
+    } catch {
+      // Ignore storage errors; the visual theme has already been applied.
+    }
   }, [theme, themeName]);
 
   const setTheme = (name: ThemeName) => {
