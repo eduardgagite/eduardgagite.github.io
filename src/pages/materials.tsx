@@ -7,13 +7,12 @@ import {
   type MaterialsSection,
 } from '../materials/loader';
 import { buildPageSeoUrl, resetSEO, updateSEO } from '../utils/seo';
-import { readLastMaterialsPath, writeLastMaterialsPath } from '../utils/materials-location';
+import { writeLastMaterialsPath } from '../utils/materials-location';
 import { withLang } from '../i18n/url';
 import { ArticleView } from '../features/materials/article-view';
 import { EmptyState, MaterialsIntro } from '../features/materials/intro';
 import {
   parseMaterialsSegments,
-  parseStoredMaterialsPath,
   resolveMaterialsRoute,
 } from '../features/materials/route';
 import { CloseIcon, MaterialsSidebar, MenuIcon, type MaterialsSidebarProps } from '../features/materials/sidebar';
@@ -130,22 +129,9 @@ export function Materials() {
     [isTreeReady, segments, tree],
   );
   const isRoot = routeState?.type === 'root';
+  const isRedirect = routeState?.type === 'redirect';
   const isArticle = routeState?.type === 'article';
   const isNotFound = routeState?.type === 'not-found';
-
-  useEffect(() => {
-    if (!isTreeReady) return;
-    if (!isRoot) return;
-    const lastPath = readLastMaterialsPath({ lang });
-    if (!lastPath) return;
-    if (lastPath === '/materials') return;
-    const lastSegments = parseStoredMaterialsPath(lastPath);
-    if (!lastSegments) return;
-    const resolved = resolveMaterialsRoute(lastSegments, tree);
-    if (resolved.type !== 'article') return;
-    const canonicalPath = `/materials/${resolved.category.id}/${resolved.section.id}/${resolved.material.id.slug}`;
-    navigate(withLang(canonicalPath, lang), { replace: true });
-  }, [isRoot, isTreeReady, lang, navigate, tree]);
 
   useEffect(() => {
     if (!isTreeReady) return;
@@ -301,12 +287,16 @@ export function Materials() {
           </>
         )}
 
-        <main className="relative flex-1 min-w-0">
+        <div className="relative flex-1 min-w-0">
           <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
           <div className="relative h-full rounded-[28px] border border-theme-border bg-theme-surface shadow-[0_28px_70px_-40px_rgba(0,0,0,0.85)] backdrop-blur overflow-hidden">
             <div className="h-full overflow-hidden p-4 sm:p-5 lg:p-6">
               {isRoot ? (
-                <MaterialsIntro />
+                <MaterialsIntro categories={tree.categories} lang={lang} />
+              ) : isRedirect ? (
+                <div className="flex h-full items-center justify-center" role="status">
+                  <p className="text-sm text-theme-text-muted">{t('common.loading')}</p>
+                </div>
               ) : !isArticle || !activeCategory || !activeSection || !activeMaterial ? (
                 <EmptyState />
               ) : (
@@ -319,7 +309,7 @@ export function Materials() {
               )}
             </div>
           </div>
-        </main>
+        </div>
       </div>
     </section>
   );

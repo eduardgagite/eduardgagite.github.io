@@ -78,8 +78,8 @@ export const midnightTheme: Theme = {
     primaryRgb: '31, 111, 235', // RGB values for gradients
     
     // Accent
-    accent: 'rgb(59, 130, 246)',
-    accentSecondary: 'rgb(11, 87, 240)',
+    accent: 'rgb(56, 189, 248)',
+    accentSecondary: 'rgb(96, 165, 250)',
     
     // Semantic
     success: 'rgb(16, 185, 129)',

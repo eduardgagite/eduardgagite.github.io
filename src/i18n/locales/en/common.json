@@ -1,24 +1,30 @@
 {
   "meta": {
     "homeTitle": "Eduard Gagite — Backend Engineer",
-    "homeDescription": "Personal site of a backend engineer: experience, contact details, and materials on Go, Kafka, Redis, and infrastructure.",
+    "homeDescription": "Personal site of a Go backend engineer with contact details and a practical knowledge base on Go, Redis, and Docker.",
     "materialsTitle": "Backend materials — Eduard Gagite",
-    "materialsDescription": "Courses, cheatsheets, and notes on Go, Kafka, Redis, Docker, and CI/CD for backend engineers."
+    "materialsDescription": "Practical courses, cheatsheets, and notes on Go, Redis, and Docker for backend engineers."
   },
   "materials": {
-    "note": "I create educational materials for backend engineers — concise cheatsheets and notes.",
+    "note": "I maintain a practical backend knowledge base — from fundamentals to production scenarios.",
     "cta": "View materials",
-    "topicsShort": "Go · Kafka · gRPC · CI/CD",
+    "topicsShort": "Go · Redis · Docker",
     "sidebarIntro": "Browse topics, filter by tags, and jump back to the right notes.",
     "statsCategories": "Categories",
     "statsSections": "Sections",
     "statsMaterials": "Materials",
     "filtersTitle": "Filters",
     "structureTitle": "Structure",
-    "introTitle": "About the Materials section",
-    "introP1": "This section is my living documentation for backend work: Go, messaging systems, infrastructure, CI/CD and everything around production services.",
+    "introEyebrow": "Practical knowledge base",
+    "introTitle": "Learn backend engineering from working notes",
+    "introP1": "This section is my living backend documentation: Go, Redis, Docker, and everything that helps build and maintain production services.",
     "introP2": "Most materials started as personal notes. The focus is on real issues from real projects — from code structure and patterns to debugging and observability.",
     "introP3": "Each article is meant to be self-contained: you can open it before a task, refresh the key ideas and immediately apply them in code.",
+    "russianContentNotice": "The interface is available in English, but the articles themselves are currently published in Russian.",
+    "coursesEyebrow": "Learning paths",
+    "coursesTitle": "Choose a course",
+    "chooseCourse": "Start with the technology you need",
+    "startCourse": "Open the first article →",
     "philosophyTitle": "Section principles",
     "philosophy1": "Grounded in hands-on experience and real-world problems, not purely academic examples.",
     "philosophy2": "Show code and typical scenarios — what to write and why, not only high-level theory.",
@@ -36,10 +42,12 @@
     "tocTitle": "Contents",
     "copyLink": "Copy link",
     "copyLinkSuccess": "Link copied",
+    "readingTime": "{{minutes}} min read",
+    "contentInRussian": "Article in Russian",
     "backToSection": "Back to section",
     "prevArticle": "Previous article",
     "nextArticle": "Next article",
-    "keyboardHints": "Shortcuts: ← previous, → next, Esc section"
+    "keyboardHints": "Shortcuts: ← previous · → next"
   },
   "nav": {
     "home": "Home",
@@ -69,7 +77,11 @@
     "copyright": "© {{year}} Eduard Gagite"
   },
   "common": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "skipToContent": "Skip to main content",
+    "errorTitle": "Something went wrong",
+    "errorDescription": "The interface could not continue. Reload the page — your saved preferences and last opened article will remain available.",
+    "reload": "Reload the page"
   },
   "codeBlock": {
     "copy": "Copy",

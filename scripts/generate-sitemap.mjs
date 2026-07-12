@@ -61,11 +61,14 @@ async function main() {
     const sample = variants[0];
     const langs = Array.from(new Set(variants.map((v) => v.id.lang)));
     for (const lang of langs) {
+      const variant = variants.find((entry) => entry.id.lang === lang);
+      const lastmod = variant?.dateModified || variant?.datePublished;
       const url = `${BASE_URL}/materials/${sample.id.category}/${sample.id.section}/${sample.id.slug}?lang=${lang}`;
       if (urlSet.has(url)) continue;
       urlSet.add(url);
       urls.push({
         loc: url,
+        lastmod,
         changefreq: 'monthly',
         priority: '0.8',
       });
@@ -73,15 +76,11 @@ async function main() {
   }
 
   // Generate XML
-  // Use W3C Datetime format (YYYY-MM-DD) for better compatibility
-  const now = new Date().toISOString().split('T')[0];
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((url) => `  <url>
     <loc>${escapeXml(url.loc)}</loc>
-    <lastmod>${now}</lastmod>
-    <changefreq>${url.changefreq}</changefreq>
+${url.lastmod ? `    <lastmod>${escapeXml(url.lastmod)}</lastmod>\n` : ''}    <changefreq>${url.changefreq}</changefreq>
     <priority>${url.priority}</priority>
   </url>`).join('\n')}
 </urlset>`;

@@ -1,4 +1,4 @@
-import { materialKey, type MaterialMeta, type MaterialsSection, type MaterialsTree } from '../../materials/loader';
+import { materialKey, type MaterialMeta, type MaterialsCategory, type MaterialsTree } from '../../materials/loader';
 
 export interface AdjacentMaterials {
   currentIndex: number;
@@ -24,9 +24,10 @@ export function getAvailableMaterialLanguages({
   return tree.availableLanguages[buildMaterialCanonicalKey(material)] || [material.id.lang];
 }
 
-export function getAdjacentMaterials(section: MaterialsSection, material: MaterialMeta): AdjacentMaterials {
+export function getAdjacentCourseMaterials(category: MaterialsCategory, material: MaterialMeta): AdjacentMaterials {
+  const materials = category.sections.flatMap((section) => section.materials);
   const currentKey = materialKey(material.id);
-  const currentIndex = section.materials.findIndex((item) => materialKey(item.id) === currentKey);
+  const currentIndex = materials.findIndex((item) => materialKey(item.id) === currentKey);
 
   if (currentIndex === -1) {
     return { currentIndex };
@@ -34,7 +35,7 @@ export function getAdjacentMaterials(section: MaterialsSection, material: Materi
 
   return {
     currentIndex,
-    previous: currentIndex > 0 ? section.materials[currentIndex - 1] : undefined,
-    next: currentIndex < section.materials.length - 1 ? section.materials[currentIndex + 1] : undefined,
+    previous: currentIndex > 0 ? materials[currentIndex - 1] : undefined,
+    next: currentIndex < materials.length - 1 ? materials[currentIndex + 1] : undefined,
   };
 }

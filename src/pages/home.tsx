@@ -51,14 +51,28 @@ export function Home() {
             {/* Card */}
             <div className="relative rounded-[28px] border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 overflow-hidden shadow-[0_28px_70px_-40px_rgba(0,0,0,0.85)]">
               
-              {/* Avatar */}
-              <div className="relative w-full aspect-square rounded-xl overflow-hidden ring-1 ring-white/10">
-                <img
-                  src="/images/avatar.jpg"
-                  alt={name}
-                  className="h-full w-full object-cover"
-                  loading="eager"
+              {/* Brand portrait — does not depend on an external photo asset */}
+              <div
+                role="img"
+                aria-label={name}
+                className="relative grid w-full aspect-square place-items-center overflow-hidden rounded-xl bg-[#0d1117] ring-1 ring-white/10"
+              >
+                <div
+                  className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(56,189,248,0.22),transparent_32%),radial-gradient(circle_at_80%_75%,rgba(168,85,247,0.18),transparent_36%)]"
+                  aria-hidden="true"
                 />
+                <div
+                  className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,0.35)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.35)_1px,transparent_1px)] [background-size:32px_32px]"
+                  aria-hidden="true"
+                />
+                <div className="relative flex flex-col items-center">
+                  <span className="grid size-28 place-items-center rounded-[28px] border border-theme-accent/35 bg-theme-primary/15 font-mono text-4xl font-bold tracking-tight text-theme-text shadow-[0_0_50px_rgba(56,189,248,0.18)] sm:size-32 sm:text-5xl">
+                    EG
+                  </span>
+                  <span className="mt-5 font-mono text-[11px] uppercase tracking-[0.28em] text-theme-text-muted">
+                    backend.go
+                  </span>
+                </div>
               </div>
               
               {/* Name & Role */}

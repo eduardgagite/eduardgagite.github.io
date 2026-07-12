@@ -1,10 +1,15 @@
-import { useCallback, useMemo, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { MaterialMeta, MaterialsCategory, MaterialsSection, MaterialsTree } from '../../materials/loader';
 import { MarkdownArticle } from '../../components/markdown/markdown-article';
-import { withLang } from '../../i18n/url';
-import { buildMaterialRoutePath, getAdjacentMaterials } from './article-navigation';
+import {
+  estimateReadingTimeMinutes,
+  extractArticleHeadings,
+  type ArticleHeading,
+} from '../../components/markdown/article-metadata';
+import { normalizeLang, withLang } from '../../i18n/url';
+import { buildMaterialRoutePath, getAdjacentCourseMaterials } from './article-navigation';
 import { useArticleKeyboardNavigation } from './use-article-keyboard-navigation';
 import { useMaterialContent } from './use-material-content';
 import { useMaterialSeo } from './use-material-seo';
@@ -17,23 +22,28 @@ interface ArticleViewProps {
 }
 
 export function ArticleView({ category, section, material, tree }: ArticleViewProps) {
-  const { t } = useTranslation();
-  const lang = material.id.lang;
+  const { t, i18n } = useTranslation();
+  const uiLang = normalizeLang(i18n.resolvedLanguage || 'ru');
   const navigate = useNavigate();
   const contentState = useMaterialContent(material);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
   const { previous, next } = useMemo(
-    () => getAdjacentMaterials(section, material),
-    [material, section],
+    () => getAdjacentCourseMaterials(category, material),
+    [category, material],
   );
+  const articleContent = contentState.status === 'ready' ? contentState.material.content : '';
+  const headings = useMemo(() => extractArticleHeadings(articleContent), [articleContent]);
+  const readingTime = useMemo(() => estimateReadingTimeMinutes(articleContent), [articleContent]);
+  const isLanguageFallback = uiLang !== material.id.lang;
 
   useMaterialSeo({ material, tree });
 
   const goToMaterial = useCallback(
     (target?: MaterialMeta) => {
       if (!target) return;
-      navigate(withLang(buildMaterialRoutePath(target), lang));
+      navigate(withLang(buildMaterialRoutePath(target), uiLang));
     },
-    [lang, navigate],
+    [navigate, uiLang],
   );
 
   const handlePrev = useCallback(() => goToMaterial(previous), [goToMaterial, previous]);
@@ -45,6 +55,28 @@ export function ArticleView({ category, section, material, tree }: ArticleViewPr
     onPrevious: handlePrev,
     onNext: handleNext,
   });
+
+  useEffect(() => {
+    setIsLinkCopied(false);
+  }, [material]);
+
+  useEffect(() => {
+    if (!isLinkCopied) return;
+    const timeout = window.setTimeout(() => setIsLinkCopied(false), 2000);
+    return () => window.clearTimeout(timeout);
+  }, [isLinkCopied]);
+
+  const handleCopyLink = useCallback(async () => {
+    const path = withLang(buildMaterialRoutePath(material), uiLang);
+    const url = new URL(path, window.location.origin).toString();
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setIsLinkCopied(true);
+    } catch {
+      setIsLinkCopied(false);
+    }
+  }, [material, uiLang]);
 
   const previousArticleLabel = t('materials.prevArticle');
   const nextArticleLabel = t('materials.nextArticle');
@@ -65,6 +97,27 @@ export function ArticleView({ category, section, material, tree }: ArticleViewPr
         {material.subtitle && (
           <p className="mt-2 text-sm text-theme-text-subtle">{material.subtitle}</p>
         )}
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
+          {contentState.status === 'ready' && (
+            <span className="rounded-lg border border-theme-border bg-theme-surface-elevated px-2.5 py-1 text-theme-text-muted">
+              {t('materials.readingTime', { minutes: readingTime })}
+            </span>
+          )}
+          {isLanguageFallback && (
+            <span className="rounded-lg border border-theme-warning/25 bg-theme-warning/10 px-2.5 py-1 text-theme-warning">
+              {t('materials.contentInRussian')}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={handleCopyLink}
+            className="rounded-lg border border-theme-border bg-theme-surface-elevated px-2.5 py-1 text-theme-text-subtle transition-colors hover:border-theme-border-hover hover:text-theme-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent"
+          >
+            <span aria-live="polite">
+              {isLinkCopied ? t('materials.copyLinkSuccess') : t('materials.copyLink')}
+            </span>
+          </button>
+        </div>
       </header>
 
       <div
@@ -78,7 +131,12 @@ export function ArticleView({ category, section, material, tree }: ArticleViewPr
           <ArticleStatusMessage role="alert">{t('materials.loadError')}</ArticleStatusMessage>
         )}
         {contentState.status === 'ready' && (
-          <MarkdownArticle content={contentState.material.content} materialPath={contentState.material.path} />
+          <>
+            {headings.length > 0 && (
+              <ArticleTableOfContents headings={headings} title={t('materials.tocTitle')} />
+            )}
+            <MarkdownArticle content={contentState.material.content} materialPath={contentState.material.path} />
+          </>
         )}
       </div>
 
@@ -101,8 +159,36 @@ export function ArticleView({ category, section, material, tree }: ArticleViewPr
             {next?.title || nextArticleLabel}
           </NavButton>
         </div>
+        <p className="mt-2 text-center font-mono text-[10px] text-theme-text-faint">
+          {t('materials.keyboardHints')}
+        </p>
       </footer>
     </article>
+  );
+}
+
+function ArticleTableOfContents({ headings, title }: { headings: ArticleHeading[]; title: string }) {
+  return (
+    <details className="mb-6 rounded-xl border border-theme-border bg-theme-surface-elevated">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-medium text-theme-text-secondary marker:content-none">
+        <span>{title}</span>
+        <span className="font-mono text-[11px] text-theme-text-muted">{headings.length}</span>
+      </summary>
+      <nav aria-label={title} className="max-h-52 overflow-y-auto border-t border-theme-border px-4 py-3 scroll-elegant">
+        <ol className="space-y-2">
+          {headings.map((heading) => (
+            <li key={`${heading.line}-${heading.id}`} className={heading.depth === 3 ? 'pl-4' : undefined}>
+              <a
+                href={`#${heading.id}`}
+                className="text-[13px] text-theme-text-subtle transition-colors hover:text-theme-accent"
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </details>
   );
 }
 

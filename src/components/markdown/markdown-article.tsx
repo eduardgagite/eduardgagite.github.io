@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Components } from 'react-markdown';
 import { CodeBlock, InlineCode } from './code-block';
+import { extractArticleHeadings, slugifyHeading } from './article-metadata';
 
 export interface MarkdownArticleProps {
   content: string;
@@ -10,9 +11,12 @@ export interface MarkdownArticleProps {
 }
 
 export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps) {
-  const components = useMemo<Components>(() => {
-    const headingCounts: Record<string, number> = {};
+  const headingIdsByLine = useMemo(
+    () => new Map(extractArticleHeadings(content).map((heading) => [heading.line, heading.id])),
+    [content],
+  );
 
+  const components = useMemo<Components>(() => {
     const resolveImagePath = (src: string): string => {
       if (!src) return src;
       if (src.startsWith('http://') || src.startsWith('https://')) return src;
@@ -33,7 +37,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
     return {
       h1: (props) => {
         const { node, children, ...rest } = props;
-        const headingId = resolveHeadingId(node, headingCounts);
+        const headingId = resolveHeadingId(node, headingIdsByLine);
         return (
           <h1 id={headingId} {...rest}>
             {children}
@@ -42,7 +46,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
       },
       h2: (props) => {
         const { node, children, ...rest } = props;
-        const headingId = resolveHeadingId(node, headingCounts);
+        const headingId = resolveHeadingId(node, headingIdsByLine);
         return (
           <h2 id={headingId} {...rest}>
             {children}
@@ -51,7 +55,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
       },
       h3: (props) => {
         const { node, children, ...rest } = props;
-        const headingId = resolveHeadingId(node, headingCounts);
+        const headingId = resolveHeadingId(node, headingIdsByLine);
         return (
           <h3 id={headingId} {...rest}>
             {children}
@@ -60,7 +64,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
       },
       h4: (props) => {
         const { node, children, ...rest } = props;
-        const headingId = resolveHeadingId(node, headingCounts);
+        const headingId = resolveHeadingId(node, headingIdsByLine);
         return (
           <h4 id={headingId} {...rest}>
             {children}
@@ -136,7 +140,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
         );
       },
     };
-  }, [materialPath]);
+  }, [headingIdsByLine, materialPath]);
 
   return (
     <div className="prose-article">
@@ -150,29 +154,24 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
   );
 }
 
-export function slugifyHeading(value: string): string {
-  if (!value) return 'section';
-  const normalized = value
-    .toLowerCase()
-    .normalize('NFKD')
-    .replace(/[^\p{L}\p{N}\s-]/gu, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
-  return normalized || 'section';
-}
+function resolveHeadingId(node: unknown, headingIdsByLine: Map<number, string>): string {
+  const line = extractHeadingLine(node);
+  if (line !== null) {
+    const id = headingIdsByLine.get(line);
+    if (id) return id;
+  }
 
-export function assignHeadingSlug({ value, counts }: { value: string; counts: Record<string, number> }): string {
-  const base = slugifyHeading(value);
-  const count = counts[base] ?? 0;
-  counts[base] = count + 1;
-  if (count === 0) return base;
-  return `${base}-${count + 1}`;
-}
-
-function resolveHeadingId(node: unknown, counts: Record<string, number>): string {
   const text = extractHeadingText(node);
-  return assignHeadingSlug({ value: text, counts });
+  return slugifyHeading(text);
+}
+
+function extractHeadingLine(node: unknown): number | null {
+  if (!node || typeof node !== 'object' || !('position' in node)) return null;
+  const position = node.position;
+  if (!position || typeof position !== 'object' || !('start' in position)) return null;
+  const start = position.start;
+  if (!start || typeof start !== 'object' || !('line' in start) || typeof start.line !== 'number') return null;
+  return start.line;
 }
 
 function extractHeadingText(node: unknown): string {

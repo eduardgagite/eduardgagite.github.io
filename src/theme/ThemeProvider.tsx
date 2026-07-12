@@ -114,11 +114,3 @@ export function useTheme(): ThemeContextValue {
   }
   return context;
 }
-
-/**
- * Hook to get current theme colors
- */
-export function useThemeColors(): ThemeColors {
-  const { theme } = useTheme();
-  return theme.colors;
-}

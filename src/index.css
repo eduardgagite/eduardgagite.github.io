@@ -130,6 +130,10 @@
   line-height: 1.75;
 }
 
+.prose-article :is(h1, h2, h3, h4) {
+  scroll-margin-top: 1rem;
+}
+
 /* Заголовки статей */
 .prose-article h1 {
   @apply text-2xl sm:text-3xl font-bold tracking-tight mb-6;
