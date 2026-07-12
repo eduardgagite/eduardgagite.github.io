@@ -7,12 +7,13 @@
     "generate:assets": "node scripts/generate-static-assets.mjs",
     "dev": "npm run generate:assets && node scripts/generate-materials-json.mjs && node scripts/generate-sitemap.mjs && vite",
     "build": "npm run generate:assets && node scripts/generate-materials-json.mjs && node scripts/generate-sitemap.mjs && tsc -b && vite build && node scripts/generate-route-shells.mjs",
-    "preview": "vite preview --port 5173 --strictPort",
+    "preview": "vite preview --host 127.0.0.1 --port 5173 --strictPort",
     "typecheck": "tsc -b --pretty false",
     "lint": "npm run typecheck && eslint . --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "node --import tsx --test scripts/tests/*.test.mjs scripts/tests/*.test.ts",
+    "test:e2e": "playwright test",
     "check": "npm run lint && npm run format:check && npm run test"
   },
   "dependencies": {
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.61.1",
     "@resvg/resvg-js": "^2.6.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
