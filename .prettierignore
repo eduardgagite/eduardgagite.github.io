@@ -1,0 +1,9 @@
+dist/
+node_modules/
+content/materials/
+public/materials-content/
+public/materials-index.json
+public/sitemap.xml
+src/materials/generated-materials.json
+*.png
+*.svg

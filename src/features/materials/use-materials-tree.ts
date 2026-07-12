@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import { loadMaterialsTree, type MaterialsTree } from '../../materials/loader';
 
 type MaterialsTreeState =
-  | { status: 'loading'; tree: null }
-  | { status: 'ready'; tree: MaterialsTree }
-  | { status: 'error'; tree: null };
+  { status: 'loading'; tree: null } | { status: 'ready'; tree: MaterialsTree } | { status: 'error'; tree: null };
 
 const EMPTY_TREE: MaterialsTree = {
   categories: [],

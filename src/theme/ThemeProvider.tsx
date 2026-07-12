@@ -23,12 +23,12 @@ function toKebabCase(str: string): string {
  */
 function applyThemeToDocument(colors: ThemeColors): void {
   const root = document.documentElement;
-  
+
   Object.entries(colors).forEach(([key, value]) => {
     const cssVar = `--theme-${toKebabCase(key)}`;
     root.style.setProperty(cssVar, value);
   });
-  
+
   // Apply primary color variants for opacity support
   root.style.setProperty('--color-primary', colors.primary);
 
@@ -36,12 +36,12 @@ function applyThemeToDocument(colors: ThemeColors): void {
   const primary30 = `rgba(${colors.primaryRgb}, 0.30)`;
   const primary40 = `rgba(${colors.primaryRgb}, 0.40)`;
   const primary80 = `rgba(${colors.primaryRgb}, 0.80)`;
-  
+
   root.style.setProperty('--color-primary-5', primary5);
   root.style.setProperty('--color-primary-30', primary30);
   root.style.setProperty('--color-primary-40', primary40);
   root.style.setProperty('--color-primary-80', primary80);
-  
+
   // Set RGB values for CSS gradients
   root.style.setProperty('--theme-primary-rgb', colors.primaryRgb);
 }
@@ -51,12 +51,12 @@ function applyThemeToDocument(colors: ThemeColors): void {
  */
 function setThemeClass(themeName: ThemeName): void {
   const root = document.documentElement;
-  
+
   // Remove existing theme classes
   Object.keys(themes).forEach((name) => {
     root.classList.remove(`theme-${name}`);
   });
-  
+
   // Add current theme class
   root.classList.add(`theme-${themeName}`);
 }
@@ -100,11 +100,7 @@ export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
     }
   };
 
-  return (
-    <ThemeContext.Provider value={{ theme, themeName, setTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, themeName, setTheme }}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme(): ThemeContextValue {

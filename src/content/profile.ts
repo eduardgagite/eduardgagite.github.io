@@ -17,5 +17,3 @@ export const profileContent: ProfileContent = {
     email: 'eduardgagite@gmail.com',
   },
 };
-
-

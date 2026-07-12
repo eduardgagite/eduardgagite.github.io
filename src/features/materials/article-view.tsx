@@ -27,10 +27,7 @@ export function ArticleView({ category, section, material, tree }: ArticleViewPr
   const navigate = useNavigate();
   const contentState = useMaterialContent(material);
   const [isLinkCopied, setIsLinkCopied] = useState(false);
-  const { previous, next } = useMemo(
-    () => getAdjacentCourseMaterials(category, material),
-    [category, material],
-  );
+  const { previous, next } = useMemo(() => getAdjacentCourseMaterials(category, material), [category, material]);
   const articleContent = contentState.status === 'ready' ? contentState.material.content : '';
   const headings = useMemo(() => extractArticleHeadings(articleContent), [articleContent]);
   const readingTime = useMemo(() => estimateReadingTimeMinutes(articleContent), [articleContent]);
@@ -55,10 +52,6 @@ export function ArticleView({ category, section, material, tree }: ArticleViewPr
     onPrevious: handlePrev,
     onNext: handleNext,
   });
-
-  useEffect(() => {
-    setIsLinkCopied(false);
-  }, [material]);
 
   useEffect(() => {
     if (!isLinkCopied) return;
@@ -94,9 +87,7 @@ export function ArticleView({ category, section, material, tree }: ArticleViewPr
         <h1 id="material-title" className="mt-2 text-xl sm:text-2xl font-bold text-theme-text leading-tight">
           {material.title}
         </h1>
-        {material.subtitle && (
-          <p className="mt-2 text-sm text-theme-text-subtle">{material.subtitle}</p>
-        )}
+        {material.subtitle && <p className="mt-2 text-sm text-theme-text-subtle">{material.subtitle}</p>}
         <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
           {contentState.status === 'ready' && (
             <span className="rounded-lg border border-theme-border bg-theme-surface-elevated px-2.5 py-1 text-theme-text-muted">
@@ -113,17 +104,12 @@ export function ArticleView({ category, section, material, tree }: ArticleViewPr
             onClick={handleCopyLink}
             className="rounded-lg border border-theme-border bg-theme-surface-elevated px-2.5 py-1 text-theme-text-subtle transition-colors hover:border-theme-border-hover hover:text-theme-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-accent"
           >
-            <span aria-live="polite">
-              {isLinkCopied ? t('materials.copyLinkSuccess') : t('materials.copyLink')}
-            </span>
+            <span aria-live="polite">{isLinkCopied ? t('materials.copyLinkSuccess') : t('materials.copyLink')}</span>
           </button>
         </div>
       </header>
 
-      <div
-        className="flex-1 overflow-y-auto py-4 scroll-elegant"
-        aria-busy={contentState.status === 'loading'}
-      >
+      <div className="flex-1 overflow-y-auto py-4 scroll-elegant" aria-busy={contentState.status === 'loading'}>
         {contentState.status === 'loading' && (
           <ArticleStatusMessage role="status">{t('materials.loadingMaterial')}</ArticleStatusMessage>
         )}
@@ -132,9 +118,7 @@ export function ArticleView({ category, section, material, tree }: ArticleViewPr
         )}
         {contentState.status === 'ready' && (
           <>
-            {headings.length > 0 && (
-              <ArticleTableOfContents headings={headings} title={t('materials.tocTitle')} />
-            )}
+            {headings.length > 0 && <ArticleTableOfContents headings={headings} title={t('materials.tocTitle')} />}
             <MarkdownArticle content={contentState.material.content} materialPath={contentState.material.path} />
           </>
         )}
@@ -142,26 +126,14 @@ export function ArticleView({ category, section, material, tree }: ArticleViewPr
 
       <footer className="shrink-0 pt-4 border-t border-theme-border">
         <div className="flex items-center justify-between gap-3">
-          <NavButton
-            onClick={handlePrev}
-            disabled={!previous}
-            direction="prev"
-            label={previousNavLabel}
-          >
+          <NavButton onClick={handlePrev} disabled={!previous} direction="prev" label={previousNavLabel}>
             {previous?.title || previousArticleLabel}
           </NavButton>
-          <NavButton
-            onClick={handleNext}
-            disabled={!next}
-            direction="next"
-            label={nextNavLabel}
-          >
+          <NavButton onClick={handleNext} disabled={!next} direction="next" label={nextNavLabel}>
             {next?.title || nextArticleLabel}
           </NavButton>
         </div>
-        <p className="mt-2 text-center font-mono text-[10px] text-theme-text-faint">
-          {t('materials.keyboardHints')}
-        </p>
+        <p className="mt-2 text-center font-mono text-[10px] text-theme-text-faint">{t('materials.keyboardHints')}</p>
       </footer>
     </article>
   );
@@ -174,7 +146,10 @@ function ArticleTableOfContents({ headings, title }: { headings: ArticleHeading[
         <span>{title}</span>
         <span className="font-mono text-[11px] text-theme-text-muted">{headings.length}</span>
       </summary>
-      <nav aria-label={title} className="max-h-52 overflow-y-auto border-t border-theme-border px-4 py-3 scroll-elegant">
+      <nav
+        aria-label={title}
+        className="max-h-52 overflow-y-auto border-t border-theme-border px-4 py-3 scroll-elegant"
+      >
         <ol className="space-y-2">
           {headings.map((heading) => (
             <li key={`${heading.line}-${heading.id}`} className={heading.depth === 3 ? 'pl-4' : undefined}>
@@ -224,7 +199,7 @@ function NavButton({ onClick, disabled, direction, label, children }: NavButtonP
         disabled
           ? 'text-theme-text-disabled cursor-not-allowed'
           : 'text-theme-text-secondary bg-theme-surface-elevated border border-theme-border hover:bg-theme-card hover:border-theme-border-hover hover:text-theme-text'
-        }`}
+      }`}
     >
       {direction === 'prev' && (
         <span className="shrink-0" aria-hidden="true">

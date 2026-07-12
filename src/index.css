@@ -8,30 +8,30 @@
      * Theme CSS custom properties
      * Default values for midnight theme - will be overridden by ThemeProvider
      */
-    
+
     /* Base */
     --theme-background: #0b0c10;
     --theme-foreground: #e9eef4;
-    
+
     /* Surfaces */
     --theme-surface: rgba(255, 255, 255, 0.03);
     --theme-surface-elevated: rgba(255, 255, 255, 0.05);
     --theme-card: rgba(255, 255, 255, 0.04);
-    
+
     /* Primary brand */
     --theme-primary: #1f6feb;
     --theme-primary-hover: #388bfd;
     --theme-primary-rgb: 31, 111, 235;
-    
+
     /* Accent */
     --theme-accent: #38bdf8;
     --theme-accent-secondary: #60a5fa;
-    
+
     /* Semantic */
     --theme-success: #10b981;
     --theme-warning: #f59e0b;
     --theme-error: #ef4444;
-    
+
     /* Text hierarchy */
     --theme-text: #ffffff;
     --theme-text-secondary: rgba(255, 255, 255, 0.85);
@@ -39,19 +39,19 @@
     --theme-text-subtle: rgba(255, 255, 255, 0.7);
     --theme-text-faint: rgba(255, 255, 255, 0.4);
     --theme-text-disabled: rgba(255, 255, 255, 0.3);
-    
+
     /* Borders */
     --theme-border: rgba(255, 255, 255, 0.1);
     --theme-border-hover: rgba(255, 255, 255, 0.2);
-    
+
     /* Special */
     --theme-glow: rgba(31, 111, 235, 0.35);
     --theme-network-color: #e9eef4;
-    
+
     /* Scrollbar */
     --theme-scrollbar: rgba(255, 255, 255, 0.04);
     --theme-scrollbar-thumb: rgba(56, 189, 248, 0.9);
-    
+
     /* Code */
     --theme-code-background: #0d1117;
 
@@ -59,15 +59,17 @@
     --color-accent: var(--theme-accent);
     --color-accent-secondary: var(--theme-accent-secondary);
     --color-surface: var(--theme-surface);
-    
+
     /* Dynamic primary gradients */
     --gradient-primary-5: rgba(var(--theme-primary-rgb), 0.05);
-    --gradient-primary-30: rgba(var(--theme-primary-rgb), 0.30);
-    --gradient-primary-40: rgba(var(--theme-primary-rgb), 0.40);
-    --gradient-primary-80: rgba(var(--theme-primary-rgb), 0.80);
+    --gradient-primary-30: rgba(var(--theme-primary-rgb), 0.3);
+    --gradient-primary-40: rgba(var(--theme-primary-rgb), 0.4);
+    --gradient-primary-80: rgba(var(--theme-primary-rgb), 0.8);
   }
 
-  html, body, #root {
+  html,
+  body,
+  #root {
     height: 100%;
   }
 
@@ -76,14 +78,21 @@
     color: var(--theme-foreground);
     @apply antialiased;
     margin: 0;
-    font-feature-settings: 'liga' 1, 'calt' 1;
+    font-feature-settings:
+      'liga' 1,
+      'calt' 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   /* Улучшенная типографика для заголовков */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply tracking-tight;
     font-family: 'Outfit', system-ui, sans-serif;
     text-wrap: balance;
@@ -271,18 +280,12 @@
 .prose-article a {
   color: var(--theme-accent);
   @apply no-underline transition-all duration-200;
-  background: linear-gradient(
-    transparent 90%,
-    color-mix(in srgb, var(--theme-accent) 30%, transparent) 90%
-  );
+  background: linear-gradient(transparent 90%, color-mix(in srgb, var(--theme-accent) 30%, transparent) 90%);
 }
 
 .prose-article a:hover {
   color: var(--theme-accent-secondary);
-  background: linear-gradient(
-    transparent 80%,
-    color-mix(in srgb, var(--theme-accent) 40%, transparent) 80%
-  );
+  background: linear-gradient(transparent 80%, color-mix(in srgb, var(--theme-accent) 40%, transparent) 80%);
 }
 
 /* Горизонтальная линия */
@@ -389,7 +392,8 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
   }

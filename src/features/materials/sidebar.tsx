@@ -94,7 +94,11 @@ export function MaterialsSidebar({
         )}
 
         {filterOptions.tags.length > 0 && (
-          <div role="group" aria-label={copy.tagsLabel} className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto scroll-elegant">
+          <div
+            role="group"
+            aria-label={copy.tagsLabel}
+            className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto scroll-elegant"
+          >
             {filterOptions.tags.map((tag) => (
               <FilterChip
                 key={tag}
@@ -129,20 +133,28 @@ export function MaterialsSidebar({
                         ? 'text-theme-text shadow-[0_0_16px_rgba(31,111,235,0.2)]'
                         : 'bg-theme-card border-theme-border hover:bg-theme-card hover:border-theme-border-hover'
                     }`}
-                    style={isCategoryActive ? {
-                      background: 'linear-gradient(135deg, rgba(31, 111, 235, 0.25) 0%, rgba(31, 111, 235, 0.15) 50%, rgba(31, 111, 235, 0.08) 100%)',
-                      border: '1px solid rgba(31, 111, 235, 0.2)',
-                    } : undefined}
+                    style={
+                      isCategoryActive
+                        ? {
+                            background:
+                              'linear-gradient(135deg, rgba(31, 111, 235, 0.25) 0%, rgba(31, 111, 235, 0.15) 50%, rgba(31, 111, 235, 0.08) 100%)',
+                            border: '1px solid rgba(31, 111, 235, 0.2)',
+                          }
+                        : undefined
+                    }
                   >
                     {isCategoryActive && (
                       <span
                         className="absolute inset-0 opacity-30"
                         style={{
-                          background: 'radial-gradient(circle at left center, rgba(31, 111, 235, 0.4), transparent 70%)',
+                          background:
+                            'radial-gradient(circle at left center, rgba(31, 111, 235, 0.4), transparent 70%)',
                         }}
                       />
                     )}
-                    <span className={`text-sm truncate relative z-10 ${isCategoryActive ? 'font-semibold' : 'font-medium'}`}>
+                    <span
+                      className={`text-sm truncate relative z-10 ${isCategoryActive ? 'font-semibold' : 'font-medium'}`}
+                    >
                       {category.title}
                     </span>
                     <div className="flex items-center gap-2 shrink-0 relative z-10">
@@ -173,25 +185,33 @@ export function MaterialsSidebar({
                                   ? 'text-theme-text shadow-[0_0_16px_rgba(31,111,235,0.2)]'
                                   : 'hover:bg-theme-surface-elevated text-theme-text-secondary hover:text-theme-text'
                               }`}
-                              style={isSectionActive ? {
-                                background: 'linear-gradient(135deg, rgba(31, 111, 235, 0.25) 0%, rgba(31, 111, 235, 0.15) 50%, rgba(31, 111, 235, 0.08) 100%)',
-                                border: '1px solid rgba(31, 111, 235, 0.2)',
-                              } : undefined}
+                              style={
+                                isSectionActive
+                                  ? {
+                                      background:
+                                        'linear-gradient(135deg, rgba(31, 111, 235, 0.25) 0%, rgba(31, 111, 235, 0.15) 50%, rgba(31, 111, 235, 0.08) 100%)',
+                                      border: '1px solid rgba(31, 111, 235, 0.2)',
+                                    }
+                                  : undefined
+                              }
                             >
                               {isSectionActive && (
                                 <span
                                   className="absolute inset-0 opacity-30"
                                   style={{
-                                    background: 'radial-gradient(circle at left center, rgba(31, 111, 235, 0.4), transparent 70%)',
+                                    background:
+                                      'radial-gradient(circle at left center, rgba(31, 111, 235, 0.4), transparent 70%)',
                                   }}
                                 />
                               )}
                               <span className="flex items-center gap-2 min-w-0 relative z-10">
-                                <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                                  isSectionActive
-                                    ? 'text-theme-primary bg-theme-primary/20 font-semibold'
-                                    : 'text-theme-text-muted bg-theme-card'
-                                }`}>
+                                <span
+                                  className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
+                                    isSectionActive
+                                      ? 'text-theme-primary bg-theme-primary/20 font-semibold'
+                                      : 'text-theme-text-muted bg-theme-card'
+                                  }`}
+                                >
                                   {sectionIdx + 1}
                                 </span>
                                 <span className={`text-[13px] truncate ${isSectionActive ? 'font-semibold' : ''}`}>
@@ -221,23 +241,31 @@ export function MaterialsSidebar({
                                             ? 'text-theme-text shadow-[0_0_12px_rgba(31,111,235,0.15)]'
                                             : 'text-theme-text-subtle hover:bg-theme-surface-elevated hover:text-theme-text'
                                         }`}
-                                        style={isActive ? {
-                                          background: 'linear-gradient(135deg, rgba(31, 111, 235, 0.25) 0%, rgba(31, 111, 235, 0.15) 50%, rgba(31, 111, 235, 0.08) 100%)',
-                                          border: '1px solid rgba(31, 111, 235, 0.2)',
-                                        } : undefined}
+                                        style={
+                                          isActive
+                                            ? {
+                                                background:
+                                                  'linear-gradient(135deg, rgba(31, 111, 235, 0.25) 0%, rgba(31, 111, 235, 0.15) 50%, rgba(31, 111, 235, 0.08) 100%)',
+                                                border: '1px solid rgba(31, 111, 235, 0.2)',
+                                              }
+                                            : undefined
+                                        }
                                       >
                                         {isActive && (
                                           <span
                                             className="absolute inset-0 opacity-30"
                                             style={{
-                                              background: 'radial-gradient(circle at left center, rgba(31, 111, 235, 0.4), transparent 70%)',
+                                              background:
+                                                'radial-gradient(circle at left center, rgba(31, 111, 235, 0.4), transparent 70%)',
                                             }}
                                           />
                                         )}
                                         <span className="flex items-center gap-2 relative z-10">
-                                          <span className={`text-[10px] font-mono ${
-                                            isActive ? 'text-theme-primary font-semibold' : 'text-theme-text-faint'
-                                          }`}>
+                                          <span
+                                            className={`text-[10px] font-mono ${
+                                              isActive ? 'text-theme-primary font-semibold' : 'text-theme-text-faint'
+                                            }`}
+                                          >
                                             {sectionIdx + 1}.{materialIdx + 1}
                                           </span>
                                           <span className={`truncate relative z-10 ${isActive ? 'font-semibold' : ''}`}>

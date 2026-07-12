@@ -11,10 +11,7 @@ export function useMaterialsFilters({ categories }: UseMaterialsFiltersArgs) {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
 
-  const filterOptions = useMemo(
-    () => deriveFilterOptions({ categories }),
-    [categories],
-  );
+  const filterOptions = useMemo(() => deriveFilterOptions({ categories }), [categories]);
 
   const filteredCategories = useMemo(
     () =>

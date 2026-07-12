@@ -14,15 +14,15 @@ export default defineConfig({
         // Copy images and other assets from content/materials to dist
         const contentDir = join(process.cwd(), 'content/materials');
         const distDir = join(process.cwd(), 'dist');
-        
+
         function copyAssets(src: string, dest: string) {
           if (!existsSync(src)) return;
-          
+
           const items = readdirSync(src);
           for (const item of items) {
             const srcPath = join(src, item);
             const destPath = join(dest, item);
-            
+
             if (statSync(srcPath).isDirectory()) {
               if (!existsSync(destPath)) {
                 mkdirSync(destPath, { recursive: true });
@@ -36,7 +36,7 @@ export default defineConfig({
             }
           }
         }
-        
+
         copyAssets(contentDir, join(distDir, 'content/materials'));
       },
     },
@@ -92,13 +92,18 @@ export default defineConfig({
           }
 
           if (existsSync(filePath) && statSync(filePath).isFile()) {
-            const contentType = 
-              ext === '.png' ? 'image/png' :
-              ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' :
-              ext === '.gif' ? 'image/gif' :
-              ext === '.svg' ? 'image/svg+xml' :
-              ext === '.webp' ? 'image/webp' :
-              'application/octet-stream';
+            const contentType =
+              ext === '.png'
+                ? 'image/png'
+                : ext === '.jpg' || ext === '.jpeg'
+                  ? 'image/jpeg'
+                  : ext === '.gif'
+                    ? 'image/gif'
+                    : ext === '.svg'
+                      ? 'image/svg+xml'
+                      : ext === '.webp'
+                        ? 'image/webp'
+                        : 'application/octet-stream';
             res.setHeader('Content-Type', contentType);
             createReadStream(filePath).pipe(res);
             return;
@@ -111,4 +116,3 @@ export default defineConfig({
   ],
   base: '/',
 });
-

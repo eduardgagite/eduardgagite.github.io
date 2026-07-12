@@ -1,18 +1,18 @@
 # eduardgagite.github.io
 
-Personal site and practical backend knowledge base built with React, TypeScript, Vite, and Tailwind CSS.
+Личный сайт и практическая база знаний по backend-разработке на React, TypeScript, Vite и Tailwind CSS.
 
-The site combines:
+Проект объединяет:
 
-- a compact profile and contact page;
-- 167 Russian-language articles on Go, Redis, and Docker;
-- course navigation, search, keyboard controls, and per-article SEO metadata.
+- компактную страницу с информацией об авторе и контактами;
+- 167 русскоязычных материалов по Go, Redis и Docker;
+- навигацию по курсам, поиск, горячие клавиши и SEO-метаданные для каждой статьи.
 
-## Local development
+## Локальная разработка
 
-Requirements:
+Требования:
 
-- Node.js 20.19 or newer;
+- Node.js 20.19 или новее;
 - npm.
 
 ```bash
@@ -20,70 +20,73 @@ npm ci
 npm run dev
 ```
 
-Useful commands:
+Основные команды:
 
 ```bash
-npm run check    # TypeScript and all tests
-npm run build    # Regenerate content, sitemap, and production bundle
-npm run preview  # Preview the production build on port 5173
+npm run check         # TypeScript, ESLint, Prettier и все тесты
+npm run format        # Применить правила форматирования
+npm run build         # Перегенерировать контент, метаданные и production-сборку
+npm run preview       # Запустить просмотр production-сборки на порту 5173
 ```
 
-## Project structure
+## Структура проекта
 
 ```text
-content/materials/       Markdown sources
-scripts/                 Content and sitemap generators
-scripts/tests/           Data, routing, and locale tests
-src/components/          Shared interface components
-src/features/materials/  Materials domain and reading UI
-src/materials/           Loader, types, and generated index
-src/pages/               Route-level components
-public/                  Generated content and static assets
+content/materials/       Исходные Markdown-материалы
+scripts/                 Генераторы контента, метаданных и sitemap
+scripts/tests/           Тесты данных, маршрутизации и локализации
+src/components/          Общие компоненты интерфейса
+src/features/materials/  Логика и интерфейс раздела материалов
+src/materials/           Загрузчик, типы и сгенерированный индекс
+src/pages/               Компоненты страниц
+public/                  Сгенерированный контент и статические ресурсы
 ```
 
-Markdown files are the source of truth. During development and production builds:
+Markdown-файлы — единственный источник истины для материалов. Во время разработки и production-сборки:
 
-1. `scripts/generate-materials-json.mjs` validates frontmatter and generates the public index and article payloads.
-2. `scripts/generate-sitemap.mjs` creates `public/sitemap.xml`.
-3. TypeScript and Vite build the application.
+1. `scripts/generate-static-assets.mjs` создаёт Open Graph PNG размером 1200×630 из SVG-источника.
+2. `scripts/generate-materials-json.mjs` проверяет frontmatter и генерирует публичный индекс и содержимое статей.
+3. `scripts/generate-sitemap.mjs` создаёт `public/sitemap.xml`.
+4. TypeScript и Vite собирают приложение.
+5. `scripts/generate-route-shells.mjs` создаёт отдельные HTML-метаданные для страницы материалов и каждой статьи.
 
-## Adding an article
+## Добавление материала
 
-Create a file at:
+Создайте файл:
 
 ```text
 content/materials/<category>/<section>/<slug>.ru.md
 ```
 
-Every article requires frontmatter:
+Каждый материал должен содержать frontmatter:
 
 ```yaml
 ---
-title: "Article title"
-category: "golang"
-categoryTitle: "Go"
-section: "intro"
-sectionTitle: "Introduction"
+title: 'Название материала'
+category: 'golang'
+categoryTitle: 'Go'
+section: 'intro'
+sectionTitle: 'Введение'
 sectionOrder: 1
 order: 1
 ---
 ```
 
-Optional fields include `subtitle`, `datePublished`, `dateModified`, `level`, and `tags`.
+Дополнительные поля: `subtitle`, `datePublished`, `dateModified`, `level` и `tags`.
 
-After changing content, run:
+После изменения контента выполните:
 
 ```bash
 npm run build
 npm run check
 ```
 
-Generated JSON and the sitemap are committed so GitHub Pages can serve them as static files.
+Сгенерированные JSON-файлы и sitemap хранятся в репозитории, чтобы GitHub Pages мог раздавать их как статические ресурсы.
 
-## Localization
+## Локализация
 
-The interface supports Russian and English through `?lang=ru|en`. Articles currently exist in Russian; the English interface explicitly communicates this instead of presenting the content as translated.
+Интерфейс поддерживает русский и английский языки через параметр `?lang=ru|en`. Сами материалы пока доступны только на русском языке. Английская версия интерфейса явно сообщает об этом и не выдаёт русские статьи за переведённые.
 
-## Deployment
+## Развёртывание
 
-`.github/workflows/deploy.yml` checks pull requests and deploys pushes to `main` to GitHub Pages.
+Workflow `.github/workflows/deploy.yml` проверяет pull request и развёртывает изменения из ветки `main` на GitHub Pages.

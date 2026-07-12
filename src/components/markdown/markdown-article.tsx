@@ -100,7 +100,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
       strong: ({ node, ...props }) => <strong {...props} />,
       em: ({ node, ...props }) => <em {...props} />,
       code: (props) => {
-        const { node, className, children } = props;
+        const { node: _node, className, children } = props;
         const match = /language-([\w-]+)/.exec(className || '');
         const rawContent = String(children ?? '');
         const isBlock = !!className || rawContent.includes('\n');
@@ -110,12 +110,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
           return <InlineCode>{children}</InlineCode>;
         }
 
-        return (
-          <CodeBlock
-            code={content}
-            language={match?.[1]}
-          />
-        );
+        return <CodeBlock code={content} language={match?.[1]} />;
       },
       img: (props) => {
         const { node, src, alt, ...rest } = props;
@@ -131,11 +126,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
                 {...rest}
               />
             </div>
-            {alt && (
-              <figcaption className="mt-2 text-sm text-theme-text-muted italic">
-                {alt}
-              </figcaption>
-            )}
+            {alt && <figcaption className="mt-2 text-sm text-theme-text-muted italic">{alt}</figcaption>}
           </figure>
         );
       },
@@ -144,10 +135,7 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
 
   return (
     <div className="prose-article">
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        components={components}
-      >
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
         {content}
       </ReactMarkdown>
     </div>

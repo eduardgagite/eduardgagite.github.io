@@ -8,12 +8,7 @@ import {
   getAvailableMaterialLanguages,
 } from '../../src/features/materials/article-navigation';
 
-function material(
-  slug: string,
-  title: string,
-  lang: 'ru' | 'en' = 'ru',
-  section = 'intro',
-): MaterialMeta {
+function material(slug: string, title: string, lang: 'ru' | 'en' = 'ru', section = 'intro'): MaterialMeta {
   return {
     title,
     category: 'golang',

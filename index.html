@@ -6,81 +6,90 @@
 
     <script>
       (function (l) {
-        if (!l.search) return
-        if (l.search[1] !== '/') return
+        if (!l.search) return;
+        if (l.search[1] !== '/') return;
         var decoded = l.search
           .slice(1)
           .split('&')
           .map(function (s) {
-            return s.replace(/~and~/g, '&')
+            return s.replace(/~and~/g, '&');
           })
-          .join('?')
-        window.history.replaceState(null, null, '/' + decoded.slice(1) + l.hash)
-      })(window.location)
+          .join('?');
+        window.history.replaceState(null, null, '/' + decoded.slice(1) + l.hash);
+      })(window.location);
     </script>
-    
+
     <!-- Primary Meta Tags -->
     <title>Eduard Gagite — Backend Developer</title>
     <meta name="title" content="Eduard Gagite — Backend Developer" />
-    <meta name="description" content="Go backend-разработчик. Контакты и практическая база знаний по Go, Redis и Docker." />
+    <meta
+      name="description"
+      content="Go backend-разработчик. Контакты и практическая база знаний по Go, Redis и Docker."
+    />
     <meta name="author" content="Eduard Gagite" />
     <meta name="keywords" content="backend developer, Go, Golang, Kafka, Redis, Docker, gRPC, разработчик, бэкенд" />
     <meta name="theme-color" content="#0b0c10" />
     <meta name="color-scheme" content="dark" />
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://eduardgagite.github.io/" />
     <meta property="og:title" content="Eduard Gagite — Backend Developer" />
-    <meta property="og:description" content="Go backend-разработчик. Контакты и практическая база знаний по Go, Redis и Docker." />
-    <meta property="og:image" content="https://eduardgagite.github.io/images/og-image.svg" />
-    <meta property="og:image:type" content="image/svg+xml" />
+    <meta
+      property="og:description"
+      content="Go backend-разработчик. Контакты и практическая база знаний по Go, Redis и Docker."
+    />
+    <meta property="og:image" content="https://eduardgagite.github.io/images/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="Eduard Gagite" />
     <meta property="og:locale" content="ru_RU" />
     <meta property="og:locale:alternate" content="en_US" />
-    
+
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://eduardgagite.github.io/" />
     <meta name="twitter:title" content="Eduard Gagite — Backend Developer" />
-    <meta name="twitter:description" content="Go backend-разработчик. Контакты и практическая база знаний по Go, Redis и Docker." />
-    <meta name="twitter:image" content="https://eduardgagite.github.io/images/og-image.svg" />
-    
+    <meta
+      name="twitter:description"
+      content="Go backend-разработчик. Контакты и практическая база знаний по Go, Redis и Docker."
+    />
+    <meta name="twitter:image" content="https://eduardgagite.github.io/images/og-image.png" />
+
     <!-- Canonical -->
     <link rel="canonical" href="https://eduardgagite.github.io/" />
-    
+
     <!-- Favicons -->
     <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
     <link rel="manifest" href="/site.webmanifest" />
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Eduard Gagite",
-      "alternateName": "Гагитэ Эдуард Станиславович",
-      "url": "https://eduardgagite.github.io",
-      "jobTitle": "Backend Developer",
-      "description": "Backend-разработчик. Пишу на Go, работаю с Kafka, RabbitMQ, Docker, gRPC.",
-      "sameAs": [
-        "https://github.com/eduardgagite",
-        "https://t.me/edublago"
-      ],
-      "email": "eduardgagite@gmail.com",
-      "knowsAbout": ["Go", "Golang", "Kafka", "Redis", "Docker", "gRPC", "RabbitMQ", "WebSocket", "CI/CD"]
-    }
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Eduard Gagite",
+        "alternateName": "Гагитэ Эдуард Станиславович",
+        "url": "https://eduardgagite.github.io",
+        "jobTitle": "Backend Developer",
+        "description": "Backend-разработчик. Пишу на Go, работаю с Kafka, RabbitMQ, Docker, gRPC.",
+        "sameAs": ["https://github.com/eduardgagite", "https://t.me/edublago"],
+        "email": "eduardgagite@gmail.com",
+        "knowsAbout": ["Go", "Golang", "Kafka", "Redis", "Docker", "gRPC", "RabbitMQ", "WebSocket", "CI/CD"]
+      }
     </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
-  </html>
+</html>

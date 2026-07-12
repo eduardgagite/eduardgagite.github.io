@@ -9,7 +9,7 @@ export default {
         background: 'var(--theme-background)',
         foreground: 'var(--theme-foreground)',
         primary: 'var(--theme-primary)',
-        
+
         // Theme-aware semantic colors
         theme: {
           background: 'var(--theme-background)',
