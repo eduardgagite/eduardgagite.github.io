@@ -10,12 +10,18 @@ const BASE_URL = 'https://eduardgagite.github.io';
 function escapeXml(unsafe) {
   return unsafe.replace(/[<>&'"]/g, (c) => {
     switch (c) {
-      case '<': return '&lt;';
-      case '>': return '&gt;';
-      case '&': return '&amp;';
-      case '\'': return '&apos;';
-      case '"': return '&quot;';
-      default: return c;
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '&':
+        return '&amp;';
+      case "'":
+        return '&apos;';
+      case '"':
+        return '&quot;';
+      default:
+        return c;
     }
   });
 }
@@ -57,7 +63,7 @@ async function main() {
     byCanonical[canonicalKey].push(entry);
   }
 
-  for (const [canonicalKey, variants] of Object.entries(byCanonical)) {
+  for (const variants of Object.values(byCanonical)) {
     const sample = variants[0];
     const langs = Array.from(new Set(variants.map((v) => v.id.lang)));
     for (const lang of langs) {
@@ -78,11 +84,15 @@ async function main() {
   // Generate XML
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((url) => `  <url>
+${urls
+  .map(
+    (url) => `  <url>
     <loc>${escapeXml(url.loc)}</loc>
 ${url.lastmod ? `    <lastmod>${escapeXml(url.lastmod)}</lastmod>\n` : ''}    <changefreq>${url.changefreq}</changefreq>
     <priority>${url.priority}</priority>
-  </url>`).join('\n')}
+  </url>`,
+  )
+  .join('\n')}
 </urlset>`;
 
   // Write file with UTF-8 encoding (without BOM)
@@ -95,4 +105,3 @@ main().catch((error) => {
   console.error('Failed to generate sitemap:', error);
   process.exit(1);
 });
-

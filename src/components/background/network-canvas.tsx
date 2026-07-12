@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { useTheme } from '../../theme';
 
 interface NetworkBackgroundProps {
   density?: 'low' | 'medium' | 'high';
@@ -68,13 +67,12 @@ function usePrefersReducedMotion(): boolean {
 }
 
 export function NetworkBackground({ density = 'medium', color, interactive = false }: NetworkBackgroundProps) {
-  const { themeName } = useTheme();
   const effectiveColor = useMemo(() => {
     if (color) return color;
     if (typeof document === 'undefined') return '#e9eef4';
     const value = getComputedStyle(document.documentElement).getPropertyValue('--theme-network-color').trim();
     return value || '#e9eef4';
-  }, [color, themeName]);
+  }, [color]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -193,8 +191,8 @@ export function NetworkBackground({ density = 'medium', color, interactive = fal
 
     function onMouseMove(ev: MouseEvent) {
       const rect = canvasEl.getBoundingClientRect();
-      mouseX = (ev.clientX - rect.left);
-      mouseY = (ev.clientY - rect.top);
+      mouseX = ev.clientX - rect.left;
+      mouseY = ev.clientY - rect.top;
     }
 
     const ro = new ResizeObserver(resize);
@@ -212,13 +210,5 @@ export function NetworkBackground({ density = 'medium', color, interactive = fal
     };
   }, [density, effectiveColor, interactive, prefersReducedMotion]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 -z-10 pointer-events-none"
-      aria-hidden
-    />
-  );
+  return <canvas ref={canvasRef} className="absolute inset-0 -z-10 pointer-events-none" aria-hidden />;
 }
-
-

@@ -19,10 +19,7 @@ export function extractArticleHeadings(markdown: string): ArticleHeading[] {
       };
       if (!activeFence) {
         activeFence = fence;
-      } else if (
-        activeFence.character === fence.character
-        && fence.length >= activeFence.length
-      ) {
+      } else if (activeFence.character === fence.character && fence.length >= activeFence.length) {
         activeFence = null;
       }
       return;

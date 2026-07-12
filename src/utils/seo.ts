@@ -20,7 +20,7 @@ interface SEOData {
 
 const DEFAULT_TITLE = 'Eduard Gagite — Backend Developer';
 const DEFAULT_DESCRIPTION = 'Go backend-разработчик. Контакты и практическая база знаний по Go, Redis и Docker.';
-const DEFAULT_OG_IMAGE = 'https://eduardgagite.github.io/images/og-image.svg';
+const DEFAULT_OG_IMAGE = 'https://eduardgagite.github.io/images/og-image.png';
 const BASE_URL = 'https://eduardgagite.github.io';
 
 function buildUrlWithLang({ path, lang }: { path: string; lang: 'ru' | 'en' }): string {
@@ -34,25 +34,25 @@ export function buildPageSeoUrl({ path, lang }: { path: string; lang: 'ru' | 'en
 function getOrCreateMetaTag(property: string, attribute: 'name' | 'property' = 'name'): HTMLMetaElement {
   const selector = attribute === 'name' ? `meta[name="${property}"]` : `meta[property="${property}"]`;
   let meta = document.querySelector<HTMLMetaElement>(selector);
-  
+
   if (!meta) {
     meta = document.createElement('meta');
     meta.setAttribute(attribute, property);
     document.head.appendChild(meta);
   }
-  
+
   return meta;
 }
 
 function getOrCreateLinkTag(rel: string): HTMLLinkElement {
   let link = document.querySelector<HTMLLinkElement>(`link[rel="${rel}"]`);
-  
+
   if (!link) {
     link = document.createElement('link');
     link.setAttribute('rel', rel);
     document.head.appendChild(link);
   }
-  
+
   return link;
 }
 
@@ -119,8 +119,8 @@ export function updateSEO(data: SEOData) {
   // Update hreflang links
   if (data.hreflangLinks !== undefined) {
     // Remove existing hreflang links
-    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(link => link.remove());
-    
+    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach((link) => link.remove());
+
     // Add new hreflang links
     data.hreflangLinks.forEach(({ lang, url }) => {
       const link = document.createElement('link');
@@ -160,7 +160,7 @@ export function resetSEO() {
   if (articleSectionMeta) articleSectionMeta.remove();
 
   // Remove hreflang links
-  document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(link => link.remove());
+  document.querySelectorAll('link[rel="alternate"][hreflang]').forEach((link) => link.remove());
 
   // Remove article structured data
   const articleScript = document.querySelector('script[type="application/ld+json"][data-type="article"]');
@@ -194,10 +194,11 @@ export function generateMaterialSEO(
     };
   },
   path: string,
-  availableLanguages: Array<'ru' | 'en'> = ['ru']
+  availableLanguages: Array<'ru' | 'en'> = ['ru'],
 ): SEOData {
   const fullTitle = `${material.title} — ${material.categoryTitle}`;
-  const description = material.subtitle || `Материал из раздела ${material.sectionTitle} курса ${material.categoryTitle}.`;
+  const description =
+    material.subtitle || `Материал из раздела ${material.sectionTitle} курса ${material.categoryTitle}.`;
   const currentLang = normalizeLang(material.id.lang);
   const url = buildUrlWithLang({ path, lang: currentLang });
   const ogLocale = currentLang === 'ru' ? 'ru_RU' : 'en_US';
@@ -233,22 +234,22 @@ export function generateMaterialSEO(
     author: {
       '@type': 'Person',
       name: 'Eduard Gagite',
-      url: 'https://eduardgagite.github.io'
+      url: 'https://eduardgagite.github.io',
     },
     publisher: {
       '@type': 'Person',
       name: 'Eduard Gagite',
-      url: 'https://eduardgagite.github.io'
+      url: 'https://eduardgagite.github.io',
     },
     ...(datePublished ? { datePublished } : {}),
     ...(dateModified ? { dateModified } : {}),
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': url
+      '@id': url,
     },
     articleSection: material.sectionTitle,
     inLanguage: currentLang,
-    image: DEFAULT_OG_IMAGE
+    image: DEFAULT_OG_IMAGE,
   };
 
   return {
@@ -266,6 +267,6 @@ export function generateMaterialSEO(
     articlePublishedTime: datePublished,
     articleSection: material.sectionTitle,
     hreflangLinks,
-    structuredData
+    structuredData,
   };
 }

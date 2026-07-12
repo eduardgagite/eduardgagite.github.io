@@ -22,10 +22,8 @@ export function MaterialsIntro({ categories, lang }: MaterialsIntroProps) {
   const { t } = useTranslation();
   const sectionsCount = categories.reduce((total, category) => total + category.sections.length, 0);
   const materialsCount = categories.reduce(
-    (total, category) => total + category.sections.reduce(
-      (categoryTotal, section) => categoryTotal + section.materials.length,
-      0,
-    ),
+    (total, category) =>
+      total + category.sections.reduce((categoryTotal, section) => categoryTotal + section.materials.length, 0),
     0,
   );
   const stats = [
@@ -85,12 +83,10 @@ export function MaterialsIntro({ categories, lang }: MaterialsIntroProps) {
               (total, section) => total + section.materials.length,
               0,
             );
-            const coursePath = firstSection && firstMaterial
-              ? withLang(
-                `/materials/${category.id}/${firstSection.id}/${firstMaterial.id.slug}`,
-                lang,
-              )
-              : withLang('/materials', lang);
+            const coursePath =
+              firstSection && firstMaterial
+                ? withLang(`/materials/${category.id}/${firstSection.id}/${firstMaterial.id.slug}`, lang)
+                : withLang('/materials', lang);
 
             return (
               <Link
@@ -107,7 +103,10 @@ export function MaterialsIntro({ categories, lang }: MaterialsIntroProps) {
                     <span className="grid size-9 place-items-center rounded-xl border border-theme-border bg-theme-card font-mono text-xs font-semibold text-theme-accent">
                       {String(index + 1).padStart(2, '0')}
                     </span>
-                    <span className="text-theme-text-muted transition-transform group-hover:translate-x-1" aria-hidden="true">
+                    <span
+                      className="text-theme-text-muted transition-transform group-hover:translate-x-1"
+                      aria-hidden="true"
+                    >
                       →
                     </span>
                   </div>
@@ -131,7 +130,9 @@ export function MaterialsIntro({ categories, lang }: MaterialsIntroProps) {
       </section>
 
       <div className="mt-8 p-4 rounded-xl bg-theme-surface-elevated border border-theme-border">
-        <p className="text-[10px] uppercase tracking-widest text-theme-text-muted mb-3">{t('materials.philosophyTitle')}</p>
+        <p className="text-[10px] uppercase tracking-widest text-theme-text-muted mb-3">
+          {t('materials.philosophyTitle')}
+        </p>
         <ul className="space-y-2 font-mono text-[13px] text-theme-text-subtle">
           <li className="flex items-start gap-2">
             <span className="text-theme-accent">//</span>

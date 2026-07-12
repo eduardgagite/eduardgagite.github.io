@@ -92,9 +92,7 @@ function normalizeFrontmatter(frontmatter) {
 
 function pickGeneratedFrontmatter(entry) {
   return Object.fromEntries(
-    frontmatterFields
-      .filter((field) => entry[field] !== undefined)
-      .map((field) => [field, entry[field]]),
+    frontmatterFields.filter((field) => entry[field] !== undefined).map((field) => [field, entry[field]]),
   );
 }
 
@@ -103,10 +101,7 @@ async function readJson(filePath) {
 }
 
 test('generated material indexes and content files match markdown sources', async () => {
-  const [sourceFiles, publicIndex] = await Promise.all([
-    walkMarkdownFiles(materialsDir),
-    readJson(publicIndexPath),
-  ]);
+  const [sourceFiles, publicIndex] = await Promise.all([walkMarkdownFiles(materialsDir), readJson(publicIndexPath)]);
   const entries = publicIndex.entries || [];
 
   const sourceById = new Map();
@@ -143,19 +138,13 @@ test('generated material indexes and content files match markdown sources', asyn
 });
 
 test('public and src material indexes contain the same payload', async () => {
-  const [srcIndex, publicIndex] = await Promise.all([
-    readJson(srcIndexPath),
-    readJson(publicIndexPath),
-  ]);
+  const [srcIndex, publicIndex] = await Promise.all([readJson(srcIndexPath), readJson(publicIndexPath)]);
 
   assert.deepEqual(publicIndex, srcIndex);
 });
 
 test('sitemap contains all generated material and main page URLs', async () => {
-  const [publicIndex, sitemap] = await Promise.all([
-    readJson(publicIndexPath),
-    readFile(sitemapPath, 'utf8'),
-  ]);
+  const [publicIndex, sitemap] = await Promise.all([readJson(publicIndexPath), readFile(sitemapPath, 'utf8')]);
   const entries = publicIndex.entries || [];
   const urls = new Set([...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]));
 
@@ -164,9 +153,9 @@ test('sitemap contains all generated material and main page URLs', async () => {
     `${baseUrl}/?lang=en`,
     `${baseUrl}/materials?lang=ru`,
     `${baseUrl}/materials?lang=en`,
-    ...entries.map((entry) => (
-      `${baseUrl}/materials/${entry.id.category}/${entry.id.section}/${entry.id.slug}?lang=${entry.id.lang}`
-    )),
+    ...entries.map(
+      (entry) => `${baseUrl}/materials/${entry.id.category}/${entry.id.section}/${entry.id.slug}?lang=${entry.id.lang}`,
+    ),
   ].sort();
 
   assert.deepEqual([...urls].sort(), expectedUrls);

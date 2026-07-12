@@ -202,9 +202,7 @@ async function main() {
       return;
     }
 
-    const webPath = `/content/materials/${toPosixPath(
-      path.relative(MATERIALS_DIR, filePath),
-    )}`;
+    const webPath = `/content/materials/${toPosixPath(path.relative(MATERIALS_DIR, filePath))}`;
 
     const relativePath = toPosixPath(path.relative(MATERIALS_DIR, filePath));
     const contentRelativePath = relativePath.replace(/\.md$/, '.json');
@@ -223,10 +221,8 @@ async function main() {
   });
 
   if (errors.length > 0) {
-    // eslint-disable-next-line no-console
     console.error('Material generation failed with validation errors:');
     errors.forEach((entry) => {
-      // eslint-disable-next-line no-console
       console.error(`- ${entry}`);
     });
     process.exit(1);
@@ -239,14 +235,12 @@ async function main() {
   await mkdir(path.dirname(PUBLIC_INDEX_FILE), { recursive: true });
   await writeFile(PUBLIC_INDEX_FILE, JSON.stringify(payload), 'utf8');
 
-  // eslint-disable-next-line no-console
   console.log(
     `Generated ${entries.length} materials into ${path.relative(ROOT_DIR, OUTPUT_FILE)} and ${path.relative(ROOT_DIR, PUBLIC_INDEX_FILE)}`,
   );
 }
 
 main().catch((error) => {
-  // eslint-disable-next-line no-console
   console.error('Failed to generate materials JSON:', error);
   process.exit(1);
 });

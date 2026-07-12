@@ -36,11 +36,11 @@ export function App() {
             <Route path="/" element={<Home />} />
             <Route
               path="/materials/*"
-              element={(
+              element={
                 <Suspense fallback={<MaterialsFallback />}>
                   <Materials />
                 </Suspense>
-              )}
+              }
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

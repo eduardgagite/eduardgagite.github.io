@@ -40,7 +40,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
             </span>
           )}
         </div>
-        
+
         {/* Copy button */}
         <button
           type="button"
@@ -64,11 +64,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
 
       {/* Code content */}
       <div className="relative">
-        <Highlight
-          code={code.trimEnd()}
-          language={lang}
-          theme={themes.oneDark}
-        >
+        <Highlight code={code.trimEnd()} language={lang} theme={themes.oneDark}>
           {({ className, style, tokens, getLineProps, getTokenProps }) => (
             <pre
               className={`${className} m-0 overflow-x-auto py-4 pl-5 pr-4 font-mono text-[13px] leading-[1.7]`}
@@ -80,10 +76,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
                   className: 'group/line relative hover:bg-white/[0.02] transition-colors -mx-5 px-5',
                 });
                 return (
-                  <div
-                    key={i}
-                    {...lineProps}
-                  >
+                  <div key={i} {...lineProps}>
                     {/* Line number */}
                     <span className="mr-6 inline-block w-5 select-none text-right font-mono text-[11px] text-white/20 group-hover/line:text-white/35 transition-colors">
                       {i + 1}
@@ -105,7 +98,15 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
 
 function CopyIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
     </svg>
@@ -114,7 +115,15 @@ function CopyIcon({ className }: { className?: string }) {
 
 function CheckIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <polyline points="20 6 9 17 4 12" />
     </svg>
   );
@@ -125,9 +134,5 @@ export interface InlineCodeProps {
 }
 
 export function InlineCode({ children }: InlineCodeProps) {
-  return (
-    <code className="inline-code">
-      {children}
-    </code>
-  );
+  return <code className="inline-code">{children}</code>;
 }

@@ -1,20 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import {
-  materialKey,
-  type MaterialsCategory,
-  type MaterialsSection,
-} from '../materials/loader';
+import { materialKey, type MaterialsCategory, type MaterialsSection } from '../materials/loader';
 import { buildPageSeoUrl, resetSEO, updateSEO } from '../utils/seo';
 import { writeLastMaterialsPath } from '../utils/materials-location';
 import { withLang } from '../i18n/url';
 import { ArticleView } from '../features/materials/article-view';
 import { EmptyState, MaterialsIntro } from '../features/materials/intro';
-import {
-  parseMaterialsSegments,
-  resolveMaterialsRoute,
-} from '../features/materials/route';
+import { parseMaterialsSegments, resolveMaterialsRoute } from '../features/materials/route';
 import { CloseIcon, MaterialsSidebar, MenuIcon, type MaterialsSidebarProps } from '../features/materials/sidebar';
 import type { SidebarCopy } from '../features/materials/types';
 import { useMaterialsFilters } from '../features/materials/use-materials-filters';
@@ -123,7 +116,8 @@ export function Materials() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [closeMobileSidebar, sidebarOpen]);
 
-  const segments = useMemo(() => parseMaterialsSegments(params['*']), [params['*']]);
+  const routePath = params['*'];
+  const segments = useMemo(() => parseMaterialsSegments(routePath), [routePath]);
   const routeState = useMemo(
     () => (isTreeReady ? resolveMaterialsRoute(segments, tree) : null),
     [isTreeReady, segments, tree],
@@ -155,12 +149,7 @@ export function Materials() {
   const displayActiveCategoryId = isArticle ? activeCategory?.id : undefined;
   const displayActiveSectionId = isArticle ? activeSection?.id : undefined;
   const displayActiveMaterialKey = isArticle ? activeMaterialKey : null;
-  const {
-    categoryOpen,
-    sectionOpen,
-    toggleCategory,
-    toggleSection,
-  } = useMaterialsSidebarState({
+  const { categoryOpen, sectionOpen, toggleCategory, toggleSection } = useMaterialsSidebarState({
     activeCategoryId: displayActiveCategoryId,
     activeSectionId: displayActiveSectionId,
     isArticle,
@@ -300,12 +289,7 @@ export function Materials() {
               ) : !isArticle || !activeCategory || !activeSection || !activeMaterial ? (
                 <EmptyState />
               ) : (
-                <ArticleView
-                  category={activeCategory}
-                  section={activeSection}
-                  material={activeMaterial}
-                  tree={tree}
-                />
+                <ArticleView category={activeCategory} section={activeSection} material={activeMaterial} tree={tree} />
               )}
             </div>
           </div>

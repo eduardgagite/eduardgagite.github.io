@@ -1,28 +1,31 @@
-import { useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Link, useLocation } from 'react-router-dom'
-import { resetSEO, updateSEO, buildPageSeoUrl } from '../utils/seo'
-import { withLang } from '../i18n/url'
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link, useLocation } from 'react-router-dom';
+import { resetSEO, updateSEO, buildPageSeoUrl } from '../utils/seo';
+import { withLang } from '../i18n/url';
 
 export function NotFound() {
-  const { t, i18n } = useTranslation()
-  const location = useLocation()
-  const lang = (i18n.resolvedLanguage || 'ru') === 'ru' ? 'ru' : 'en'
-  const isRu = lang === 'ru'
+  const { t, i18n } = useTranslation();
+  const location = useLocation();
+  const lang = (i18n.resolvedLanguage || 'ru') === 'ru' ? 'ru' : 'en';
+  const isRu = lang === 'ru';
   const displayPath = (() => {
     try {
-      return decodeURIComponent(location.pathname)
+      return decodeURIComponent(location.pathname);
     } catch {
-      return location.pathname
+      return location.pathname;
     }
-  })()
+  })();
 
   useEffect(() => {
-    const title = t('notFound.title') || (lang === 'ru' ? 'Страница не найдена — Eduard Gagite' : 'Page not found — Eduard Gagite')
+    const title =
+      t('notFound.title') || (lang === 'ru' ? 'Страница не найдена — Eduard Gagite' : 'Page not found — Eduard Gagite');
     const description =
       t('notFound.description') ||
-      (lang === 'ru' ? 'Похоже, ссылка неверная или страница была перемещена.' : 'The link looks wrong or the page has been moved.')
-    const url = buildPageSeoUrl({ path: location.pathname, lang })
+      (lang === 'ru'
+        ? 'Похоже, ссылка неверная или страница была перемещена.'
+        : 'The link looks wrong or the page has been moved.');
+    const url = buildPageSeoUrl({ path: location.pathname, lang });
     updateSEO({
       title,
       description,
@@ -32,11 +35,11 @@ export function NotFound() {
       ogType: 'website',
       ogLocale: lang === 'ru' ? 'ru_RU' : 'en_US',
       canonical: url,
-    })
+    });
     return () => {
-      resetSEO()
-    }
-  }, [lang, location.pathname, t])
+      resetSEO();
+    };
+  }, [lang, location.pathname, t]);
 
   return (
     <section className="relative h-full w-full overflow-y-auto overflow-x-hidden">
@@ -70,7 +73,13 @@ export function NotFound() {
                   to={withLang('/', lang)}
                   className="group inline-flex items-center justify-center gap-2 rounded-xl border border-theme-accent/40 bg-gradient-to-r from-theme-accent/25 to-theme-accent/10 px-5 py-2.5 text-sm font-medium text-theme-text transition-all hover:from-theme-accent/35 hover:to-theme-accent/20 hover:border-theme-accent/55"
                 >
-                  <svg className="h-4 w-4 text-theme-accent transition-transform group-hover:-translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    className="h-4 w-4 text-theme-accent transition-transform group-hover:-translate-x-0.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                   </svg>
                   {t('notFound.goHome') || (isRu ? 'На главную' : 'Go home')}
@@ -80,7 +89,13 @@ export function NotFound() {
                   className="group inline-flex items-center justify-center gap-2 rounded-xl border border-theme-border bg-theme-surface-elevated px-5 py-2.5 text-sm font-medium text-theme-text-secondary transition-all hover:bg-theme-card hover:border-theme-border-hover hover:text-theme-text"
                 >
                   {t('notFound.goMaterials') || (isRu ? 'К материалам' : 'Go to materials')}
-                  <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </Link>
@@ -101,7 +116,10 @@ export function NotFound() {
               <div className="rounded-2xl border border-theme-border bg-theme-card/75 p-4 font-mono text-[13px] leading-7 text-theme-text-muted">
                 <div className="break-all">
                   <span className="text-theme-accent">GET</span>{' '}
-                  <span className="text-theme-text-secondary">{displayPath}{location.search}</span>
+                  <span className="text-theme-text-secondary">
+                    {displayPath}
+                    {location.search}
+                  </span>
                 </div>
                 <div>
                   <span className="text-theme-accent">status</span>{' '}
@@ -113,5 +131,5 @@ export function NotFound() {
         </div>
       </div>
     </section>
-  )
+  );
 }
