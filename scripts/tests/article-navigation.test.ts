@@ -1,34 +1,40 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import type { MaterialMeta, MaterialsSection, MaterialsTree } from '../../src/materials/loader';
+import type { MaterialMeta, MaterialsCategory, MaterialsSection, MaterialsTree } from '../../src/materials/loader';
 import {
   buildMaterialCanonicalKey,
   buildMaterialRoutePath,
-  getAdjacentMaterials,
+  getAdjacentCourseMaterials,
   getAvailableMaterialLanguages,
 } from '../../src/features/materials/article-navigation';
 
-function material(slug: string, title: string, lang: 'ru' | 'en' = 'ru'): MaterialMeta {
+function material(
+  slug: string,
+  title: string,
+  lang: 'ru' | 'en' = 'ru',
+  section = 'intro',
+): MaterialMeta {
   return {
     title,
     category: 'golang',
     categoryTitle: 'Go',
-    section: 'intro',
-    sectionTitle: 'Intro',
+    section,
+    sectionTitle: section === 'intro' ? 'Intro' : 'Core',
     id: {
       category: 'golang',
-      section: 'intro',
+      section,
       slug,
       lang,
     },
-    path: `/content/materials/golang/intro/${slug}.${lang}.md`,
-    contentPath: `/materials-content/golang/intro/${slug}.${lang}.json`,
+    path: `/content/materials/golang/${section}/${slug}.${lang}.md`,
+    contentPath: `/materials-content/golang/${section}/${slug}.${lang}.json`,
   };
 }
 
 const first = material('01-what-is-go', 'What is Go');
 const second = material('02-installation', 'Installation');
 const third = material('03-first-program', 'First program');
+const fourth = material('01-concurrency', 'Concurrency', 'ru', 'core');
 
 const section: MaterialsSection = {
   id: 'intro',
@@ -37,26 +43,44 @@ const section: MaterialsSection = {
   materials: [first, second, third],
 };
 
-test('getAdjacentMaterials returns previous and next materials for current item', () => {
-  assert.deepEqual(getAdjacentMaterials(section, second), {
+const coreSection: MaterialsSection = {
+  id: 'core',
+  title: 'Core',
+  order: 2,
+  materials: [fourth],
+};
+
+const category: MaterialsCategory = {
+  id: 'golang',
+  title: 'Go',
+  sections: [section, coreSection],
+};
+
+test('getAdjacentCourseMaterials returns previous and next materials for current item', () => {
+  assert.deepEqual(getAdjacentCourseMaterials(category, second), {
     currentIndex: 1,
     previous: first,
     next: third,
   });
 });
 
-test('getAdjacentMaterials handles boundaries and missing material', () => {
-  assert.deepEqual(getAdjacentMaterials(section, first), {
+test('getAdjacentCourseMaterials continues across sections and handles boundaries', () => {
+  assert.deepEqual(getAdjacentCourseMaterials(category, first), {
     currentIndex: 0,
     previous: undefined,
     next: second,
   });
-  assert.deepEqual(getAdjacentMaterials(section, third), {
+  assert.deepEqual(getAdjacentCourseMaterials(category, third), {
     currentIndex: 2,
     previous: second,
+    next: fourth,
+  });
+  assert.deepEqual(getAdjacentCourseMaterials(category, fourth), {
+    currentIndex: 3,
+    previous: third,
     next: undefined,
   });
-  assert.deepEqual(getAdjacentMaterials(section, material('99-missing', 'Missing')), {
+  assert.deepEqual(getAdjacentCourseMaterials(category, material('99-missing', 'Missing')), {
     currentIndex: -1,
   });
 });

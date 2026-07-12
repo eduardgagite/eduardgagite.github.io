@@ -13,6 +13,8 @@ const Materials = lazy(async () => {
 });
 
 export function App() {
+  const { t } = useTranslation();
+
   return (
     <BrowserRouter
       future={{
@@ -21,9 +23,15 @@ export function App() {
       }}
     >
       <LanguageUrlSync />
+      <a
+        href="#main-content"
+        className="fixed left-4 top-3 z-[100] -translate-y-20 rounded-lg bg-theme-primary px-4 py-2 text-sm font-semibold text-white shadow-lg transition-transform focus:translate-y-0"
+      >
+        {t('common.skipToContent')}
+      </a>
       <div className="h-dvh flex flex-col">
         <Header />
-        <main className="flex-1 min-h-0">
+        <main id="main-content" tabIndex={-1} className="flex-1 min-h-0">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route
