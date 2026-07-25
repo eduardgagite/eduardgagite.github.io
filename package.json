@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "generate:assets": "node scripts/generate-static-assets.mjs",
-    "dev": "npm run generate:assets && node scripts/generate-materials-json.mjs && node scripts/generate-sitemap.mjs && vite",
-    "build": "npm run generate:assets && node scripts/generate-materials-json.mjs && node scripts/generate-sitemap.mjs && tsc -b && vite build && node scripts/generate-route-shells.mjs",
+    "dev": "npm run generate:assets && node scripts/generate-materials-json.mjs && node scripts/generate-projects-json.mjs && node scripts/generate-sitemap.mjs && vite",
+    "build": "npm run generate:assets && node scripts/generate-materials-json.mjs && node scripts/generate-projects-json.mjs && node scripts/generate-sitemap.mjs && tsc -b && vite build && node scripts/generate-route-shells.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 5173 --strictPort",
     "typecheck": "tsc -b --pretty false",
     "lint": "npm run typecheck && eslint . --max-warnings 0",

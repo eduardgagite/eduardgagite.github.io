@@ -7,3 +7,7 @@ public/sitemap.xml
 src/materials/generated-materials.json
 *.png
 *.svg
+content/projects/
+public/projects-content/
+public/projects-index.json
+src/projects/generated-projects.json
