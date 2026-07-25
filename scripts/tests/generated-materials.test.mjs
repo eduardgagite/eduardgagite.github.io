@@ -11,6 +11,7 @@ const materialsDir = path.join(rootDir, 'content', 'materials');
 const publicContentDir = path.join(rootDir, 'public', 'materials-content');
 const srcIndexPath = path.join(rootDir, 'src', 'materials', 'generated-materials.json');
 const publicIndexPath = path.join(rootDir, 'public', 'materials-index.json');
+const projectsIndexPath = path.join(rootDir, 'public', 'projects-index.json');
 const sitemapPath = path.join(rootDir, 'public', 'sitemap.xml');
 const baseUrl = 'https://eduardgagite.github.io';
 
@@ -143,19 +144,30 @@ test('public and src material indexes contain the same payload', async () => {
   assert.deepEqual(publicIndex, srcIndex);
 });
 
-test('sitemap contains all generated material and main page URLs', async () => {
-  const [publicIndex, sitemap] = await Promise.all([readJson(publicIndexPath), readFile(sitemapPath, 'utf8')]);
+test('sitemap contains all generated material, project and main page URLs', async () => {
+  const [publicIndex, projectsIndex, sitemap] = await Promise.all([
+    readJson(publicIndexPath),
+    readJson(projectsIndexPath),
+    readFile(sitemapPath, 'utf8'),
+  ]);
   const entries = publicIndex.entries || [];
+  const projectEntries = projectsIndex.entries || [];
   const urls = new Set([...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]));
 
   const expectedUrls = [
-    `${baseUrl}/?lang=ru`,
-    `${baseUrl}/?lang=en`,
-    `${baseUrl}/materials?lang=ru`,
-    `${baseUrl}/materials?lang=en`,
-    ...entries.map(
-      (entry) => `${baseUrl}/materials/${entry.id.category}/${entry.id.section}/${entry.id.slug}?lang=${entry.id.lang}`,
-    ),
+    ...new Set([
+      `${baseUrl}/?lang=ru`,
+      `${baseUrl}/?lang=en`,
+      `${baseUrl}/projects?lang=ru`,
+      `${baseUrl}/projects?lang=en`,
+      `${baseUrl}/materials?lang=ru`,
+      `${baseUrl}/materials?lang=en`,
+      ...entries.map(
+        (entry) =>
+          `${baseUrl}/materials/${entry.id.category}/${entry.id.section}/${entry.id.slug}?lang=${entry.id.lang}`,
+      ),
+      ...projectEntries.map((entry) => `${baseUrl}/projects/${entry.id.slug}?lang=${entry.id.lang}`),
+    ]),
   ].sort();
 
   assert.deepEqual([...urls].sort(), expectedUrls);

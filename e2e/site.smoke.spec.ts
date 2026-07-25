@@ -37,6 +37,31 @@ test('прямая ссылка открывает статью и её соде
   await expect(page.getByRole('article')).toContainText('Go');
 });
 
+test('список проектов открывается и ведёт в кейс', async ({ page }) => {
+  await page.goto('/projects?lang=ru');
+
+  await expect(page).toHaveTitle(/Проекты/);
+  await expect(page.getByText('~/projects', { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: /Мессенджер/ })).toBeVisible();
+
+  const caseLink = page.getByRole('link', { name: /Мессенджер/ });
+  await expect(caseLink).toBeVisible();
+  await caseLink.click();
+
+  await expect(page).toHaveURL(/\/projects\/aembal-messenger/);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Æmbal');
+});
+
+test('прямая ссылка открывает кейс проекта', async ({ page }) => {
+  await page.goto('/projects/darqima?lang=ru');
+
+  await expect(page).toHaveTitle(/Darqima/);
+  await expect(page.getByRole('heading', { level: 1, name: /Darqima/ })).toBeVisible();
+  await expect(page.getByText('~/projects/darqima.md')).toBeVisible();
+  await expect(page.getByText('screenshots/', { exact: true })).toBeVisible();
+  await expect(page.locator('.prose-article')).toContainText('Go');
+});
+
 test('неизвестный маршрут показывает страницу 404', async ({ page }) => {
   await page.goto('/unknown-route?lang=ru');
 
