@@ -311,7 +311,7 @@ function ProjectsIndex({
             <li key={project.id.slug}>
               <Link
                 to={withLang(`/projects/${project.id.slug}`, lang)}
-                className="group grid grid-cols-[1fr] gap-x-4 rounded-lg px-2 py-4 transition-colors hover:bg-white/[0.035] sm:grid-cols-[3rem_1fr_auto]"
+                className="group grid grid-cols-[1fr] gap-x-8 rounded-lg px-2 py-4 transition-colors hover:bg-white/[0.035] sm:grid-cols-[3rem_1fr_auto]"
               >
                 <RowNumber index={index} />
 
