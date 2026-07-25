@@ -25,7 +25,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
   return (
     <div className="group relative my-6 overflow-hidden rounded-2xl bg-theme-code-background shadow-2xl shadow-black/40 ring-1 ring-theme-border">
       {/* Header bar */}
-      <div className="flex items-center justify-between border-b border-theme-border bg-theme-surface px-4 py-2.5">
+      <div className="flex items-center justify-between border-b border-theme-border bg-theme-surface px-3 py-2.5 sm:px-4">
         {/* Traffic lights */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
@@ -35,7 +35,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
           </div>
           {/* Language badge */}
           {lang && lang !== 'text' && (
-            <span className="ml-3 rounded-md bg-theme-surface-elevated px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-theme-text-faint">
+            <span className="ml-2 rounded-md bg-theme-surface-elevated px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-theme-text-faint sm:ml-3">
               {lang}
             </span>
           )}
@@ -48,15 +48,17 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
           aria-label={copied ? t('codeBlock.copied') : t('codeBlock.copy')}
           className="flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] text-theme-text-faint transition-all hover:bg-theme-surface-elevated hover:text-theme-text-subtle"
         >
+          {/* Ниже sm подпись прячем: на 320px шапка блока иначе не помещается. Подпись для
+              скринридера остаётся в aria-label кнопки. */}
           {copied ? (
             <>
               <CheckIcon className="size-3.5" />
-              <span>{t('codeBlock.copied')}</span>
+              <span className="hidden sm:inline">{t('codeBlock.copied')}</span>
             </>
           ) : (
             <>
               <CopyIcon className="size-3.5" />
-              <span>{t('codeBlock.copy')}</span>
+              <span className="hidden sm:inline">{t('codeBlock.copy')}</span>
             </>
           )}
         </button>
@@ -67,18 +69,24 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
         <Highlight code={code.trimEnd()} language={lang} theme={themes.oneDark}>
           {({ className, style, tokens, getLineProps, getTokenProps }) => (
             <pre
-              className={`${className} m-0 overflow-x-auto py-4 pl-5 pr-4 font-mono text-[13px] leading-[1.7]`}
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- прокручиваемая область должна быть доступна с клавиатуры
+              tabIndex={0}
+              role="group"
+              aria-label={t('codeBlock.code')}
+              className={`${className} code-scroll m-0 overflow-x-auto py-4 pl-3 pr-3 font-mono text-[12px] leading-[1.7] sm:pl-5 sm:pr-4 sm:text-[13px]`}
               style={{ ...style, background: 'transparent' }}
             >
+              {/* Отступы строки обязаны совпадать с паддингом pre, иначе подсветка
+                  строки при наведении разъезжается с горизонтальной прокруткой. */}
               {tokens.map((line, i) => {
                 const lineProps = getLineProps({
                   line,
-                  className: 'group/line relative hover:bg-white/[0.02] transition-colors -mx-5 px-5',
+                  className: 'group/line relative hover:bg-white/[0.02] transition-colors -mx-3 px-3 sm:-mx-5 sm:px-5',
                 });
                 return (
                   <div key={i} {...lineProps}>
                     {/* Line number */}
-                    <span className="mr-6 inline-block w-5 select-none text-right font-mono text-[11px] text-white/20 group-hover/line:text-white/35 transition-colors">
+                    <span className="mr-3 inline-block w-5 select-none text-right font-mono text-[11px] text-white/20 group-hover/line:text-white/35 transition-colors sm:mr-6">
                       {i + 1}
                     </span>
                     {/* Code tokens */}

@@ -91,7 +91,8 @@
   },
   "codeBlock": {
     "copy": "Копировать",
-    "copied": "Скопировано"
+    "copied": "Скопировано",
+    "code": "Блок кода"
   },
   "notFound": {
     "title": "Страница не найдена — Eduard Gagite",
