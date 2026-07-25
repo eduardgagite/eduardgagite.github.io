@@ -244,7 +244,7 @@ function RowNumber({ index }: { index: number }) {
   return (
     <span
       aria-hidden
-      className="block self-start pt-1 text-right font-mono text-[21px] font-light leading-none tracking-tight tabular-nums sm:self-center sm:pt-0 sm:text-[26px]"
+      className="self-start pt-1 font-mono text-[21px] font-light leading-none tracking-tight tabular-nums sm:self-center sm:pt-0 sm:text-[26px]"
     >
       <span className="text-white/[0.16] transition-colors group-hover:text-theme-accent/40">{value.slice(0, -1)}</span>
       <span className="text-white/40 transition-colors group-hover:text-theme-accent">{value.slice(-1)}</span>
