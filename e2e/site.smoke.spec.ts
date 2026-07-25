@@ -75,5 +75,6 @@ test('неизвестный маршрут показывает страниц�
 
   await expect(page.getByRole('heading', { level: 1, name: 'Страница не найдена' })).toBeVisible();
   await expect(page.getByText('404', { exact: true })).toBeVisible();
-  await expect(page.getByText('/unknown-route?lang=ru', { exact: true })).toBeVisible();
+  await expect(page.getByText('~/unknown-route', { exact: true })).toBeVisible();
+  await expect(page.locator('#main-content a[href*="/projects"]')).toHaveCount(1);
 });
