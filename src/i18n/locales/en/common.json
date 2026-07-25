@@ -54,7 +54,7 @@
     "intro": "Work and personal projects — how they started, how they're built, and where I had to compromise. Some sources are private, but I can walk through any of them.",
     "cta": "View projects",
     "loadError": "Failed to load projects.",
-    "codePrivate": "private, shown in an interview",
+    "codePrivate": "private",
     "prevProject": "Previous project",
     "nextProject": "Next project",
     "footerNote": "everything else is experiments and drafts:",
