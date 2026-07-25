@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { profileContent } from '../content/profile';
@@ -16,6 +16,16 @@ export function Home() {
   const telegramHref = `https://t.me/${profileContent.contact.telegramHandle}`;
   const emailHref = `mailto:${profileContent.contact.email}`;
   const githubHref = 'https://github.com/eduardgagite';
+  const scrollerRef = useRef<HTMLElement>(null);
+
+  // Прокручивается вложенная секция, а не документ: без фокуса внутри неё стрелки,
+  // Space и PageDown не делают ничего, пока не дойдёшь до контента табом.
+  useEffect(() => {
+    const active = document.activeElement;
+    if (!active || active === document.body || active === document.documentElement) {
+      scrollerRef.current?.focus({ preventScroll: true });
+    }
+  }, []);
 
   useEffect(() => {
     const title = t('meta.homeTitle') || 'Eduard Gagite — Backend Developer';
@@ -37,10 +47,21 @@ export function Home() {
   }, [lang, location.pathname, t]);
 
   return (
-    <section className="relative h-full w-full overflow-y-auto overflow-x-hidden">
-      <NetworkBackground density="medium" interactive />
+    <section
+      ref={scrollerRef}
+      tabIndex={-1}
+      className="relative h-full w-full overflow-y-auto overflow-x-hidden focus:outline-none"
+    >
+      {/* Фон закреплён во вьюпорте: внутри прокручиваемой секции высота canvas равна
+          одному экрану, и ниже по прокрутке фон остаётся пустым. */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <NetworkBackground density="medium" interactive />
+      </div>
 
-      <div className="relative mx-auto h-full w-full max-w-7xl px-3 py-4 sm:px-4 sm:py-6 grid gap-4 sm:gap-6 lg:gap-8 items-stretch md:[grid-template-rows:auto_1fr] lg:grid-cols-[360px,1fr] lg:[grid-template-rows:initial]">
+      {/* Высота во весь экран — только когда колонки стоят рядом. В одну колонку
+          (телефон, планшет в портрете) окно about.ts иначе сплющивается до полосы,
+          и текст с кнопками уезжает во внутреннюю прокрутку. */}
+      <div className="relative mx-auto w-full max-w-7xl px-3 py-4 sm:px-4 sm:py-6 grid gap-4 sm:gap-6 items-stretch lg:h-full lg:gap-8 lg:grid-cols-[360px,1fr]">
         {/* Left column: avatar + name + role + contacts */}
         <aside className="flex flex-col items-center md:items-start self-center md:self-start lg:self-center">
           <div className="relative w-full max-w-[min(360px,90vw)]">
@@ -126,9 +147,9 @@ export function Home() {
                 <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
                   <blockquote className="min-w-0 font-mono text-[12px] leading-5 text-white/45">
                     <p>{`// "${t('hero.quote')}"`}</p>
-                    <p className="text-white/30">{`//   — ${t('hero.quoteAuthor')}`}</p>
+                    <p className="text-white/50">{`//   — ${t('hero.quoteAuthor')}`}</p>
                   </blockquote>
-                  <div className="grid shrink-0 grid-cols-2 gap-2">
+                  <div className="grid shrink-0 grid-cols-1 gap-2 min-[420px]:grid-cols-2">
                     <HeroCta to={withLang('/projects', lang)} label={t('projects.cta')} primary />
                     <HeroCta to={withLang('/materials', lang)} label={t('materials.cta')} />
                   </div>
