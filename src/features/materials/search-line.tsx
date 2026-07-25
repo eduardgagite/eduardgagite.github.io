@@ -22,9 +22,10 @@ export const SearchLine = forwardRef<HTMLInputElement, SearchLineProps>(function
 
   return (
     <label className="flex items-baseline gap-2 border-b border-white/10 pb-1.5 transition-colors focus-within:border-white/30">
-      <span aria-hidden className="font-mono text-[13px] leading-none text-white/35">
+      <span aria-hidden className="font-mono text-[15px] leading-none text-white/35 lg:text-[13px]">
         /
       </span>
+      {/* Кегль поля на узких экранах — 16px: при меньшем Safari на iOS увеличивает страницу при фокусе. */}
       <input
         ref={ref}
         type="search"
@@ -35,13 +36,13 @@ export const SearchLine = forwardRef<HTMLInputElement, SearchLineProps>(function
         placeholder={t('materials.searchPlaceholder')}
         autoComplete="off"
         spellCheck={false}
-        className="min-w-0 flex-1 bg-transparent font-mono text-[12.5px] text-white/85 placeholder:text-white/35 focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+        className="min-w-0 flex-1 bg-transparent font-mono text-[16px] text-white/85 placeholder:text-white/50 focus:outline-none lg:text-[12.5px] [&::-webkit-search-cancel-button]:hidden"
       />
       {query && (
         <button
           type="button"
           onClick={onClear}
-          className="shrink-0 font-mono text-[11px] text-white/45 transition-colors hover:text-white/80"
+          className="shrink-0 font-mono text-[13px] text-white/45 transition-colors hover:text-white/80 lg:text-[11px]"
         >
           {t('materials.searchClear')}
         </button>
@@ -87,14 +88,15 @@ export function SearchResults({
   }
 
   return (
-    <ul className="space-y-0.5">
+    <ul aria-label={t('materials.searchLabel')} className="space-y-0.5">
       {hits.map((hit, index) => (
         <li key={materialKey(hit.material.id)}>
+          {/* aria-current здесь был бы неправдой: подсветка означает «выбрано стрелками»,
+              а не «это текущая страница». Для скринридера это обычный список ссылок. */}
           <Link
             to={withLang(buildMaterialRoutePath(hit.material), lang)}
             onClick={onPick}
             ref={index === selectedIndex ? selectedRowRef : undefined}
-            aria-current={index === selectedIndex ? 'true' : undefined}
             className={`block rounded-[3px] px-2 py-1.5 transition-colors hover:bg-white/[0.035] ${
               index === selectedIndex ? 'bg-white/[0.05]' : ''
             }`}

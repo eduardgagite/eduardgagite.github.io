@@ -78,7 +78,7 @@ export function Landing({ categories, lang, bookmarks }: LandingProps) {
                   {t('materials.bookmark')}{' '}
                   <Link
                     to={withLang(bookmark.path, lang)}
-                    className="text-white/70 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white"
+                    className="text-white/70 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white hover:decoration-theme-accent"
                   >
                     {bookmark.title}
                   </Link>

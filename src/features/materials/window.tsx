@@ -38,7 +38,8 @@ export const MaterialsWindow = forwardRef<HTMLElement, MaterialsWindowProps>(fun
         <NetworkBackground density="low" />
       </div>
 
-      <div className="relative mx-auto w-full max-w-[86rem] px-3 py-4 sm:px-4 sm:py-6 lg:px-6">
+      {/* Ширина и поля общие с главной: три плиты сайта не должны стоять по разным линиям. */}
+      <div className="relative mx-auto w-full max-w-7xl px-3 py-4 sm:px-4 sm:py-6 lg:px-6">
         <div className="relative">
           <div
             aria-hidden
@@ -55,7 +56,7 @@ export const MaterialsWindow = forwardRef<HTMLElement, MaterialsWindowProps>(fun
               aria-expanded={treeOpen}
               aria-controls="materials-tree"
               onClick={onToggleTree}
-              className="flex w-full items-baseline gap-2 border-b border-white/[0.07] px-4 py-2.5 font-mono text-[12px] text-white/50 transition-colors hover:text-white/80 lg:hidden"
+              className="flex w-full items-baseline gap-2 border-b border-white/[0.07] px-4 py-3 font-mono text-[12px] text-white/50 transition-colors hover:text-white/80 lg:hidden"
             >
               <span aria-hidden className="w-2">
                 {treeOpen ? '▾' : '▸'}
@@ -74,7 +75,7 @@ export const MaterialsWindow = forwardRef<HTMLElement, MaterialsWindowProps>(fun
                 id="materials-tree"
                 className={`lg:block ${treeOpen ? 'block border-b border-white/[0.07]' : 'hidden'}`}
               >
-                <div className="flex max-h-[70vh] flex-col lg:sticky lg:top-11 lg:max-h-[var(--materials-rail)]">
+                <div className="flex max-h-[70dvh] flex-col lg:sticky lg:top-11 lg:max-h-[var(--materials-rail)]">
                   {tree}
                 </div>
               </div>

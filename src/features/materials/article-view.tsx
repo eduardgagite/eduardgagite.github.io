@@ -129,7 +129,6 @@ function AdjacentMaterialLink({ material, direction, currentSectionId, lang }: A
     <Link
       to={withLang(buildMaterialRoutePath(material), lang)}
       aria-label={`${t(direction === 'prev' ? 'materials.prevArticle' : 'materials.nextArticle')}: ${material.title}`}
-      title={direction === 'prev' ? '[' : ']'}
       className={`group flex max-w-[48%] flex-col gap-1 ${
         direction === 'next' ? 'ml-auto items-end text-right' : 'items-start'
       }`}

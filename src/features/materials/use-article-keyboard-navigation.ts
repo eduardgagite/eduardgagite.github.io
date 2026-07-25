@@ -51,8 +51,9 @@ export function shouldIgnoreArticleNavigationShortcut(event: KeyboardEvent): boo
 
   const target = event.target;
   if (!(target instanceof Element)) return false;
+  if (target instanceof HTMLElement && target.isContentEditable) return true;
 
-  return !!target.closest(
-    'a, button, input, textarea, select, pre, table, [contenteditable="true"], [role="dialog"], [role="button"], [role="link"]',
-  );
+  // Только поля ввода и прокручиваемые области. Ссылки и кнопки сюда добавлять нельзя:
+  // после клика мышью фокус остаётся на пункте указателя, и «[», «]», «/» замолкают.
+  return !!target.closest('input, textarea, select, pre, table, [contenteditable="true"], [role="dialog"]');
 }

@@ -54,7 +54,9 @@ export function MaterialsTree({
                 aria-controls={panelId}
                 aria-label={`${open ? t('materials.collapse') : t('materials.expand')}: ${category.title}`}
                 onClick={() => onToggleCategory(category.id)}
-                className="-m-1 shrink-0 p-1 font-mono text-[10px] leading-none text-white/35 transition-colors hover:text-white/70"
+                /* Отрицательный маржин держит ширину бокса прежней, поэтому строка
+                   не разъезжается, а под палец добавляется площадь. */
+                className="-m-2.5 shrink-0 p-2.5 font-mono text-[10px] leading-none text-white/35 transition-colors hover:text-white/70 lg:-m-1 lg:p-1"
               >
                 <span aria-hidden>{open ? '▾' : '▸'}</span>
               </button>

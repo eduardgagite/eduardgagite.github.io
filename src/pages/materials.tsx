@@ -126,7 +126,12 @@ export function Materials() {
   }, [lang, location.pathname, routeState]);
 
   const goTo = useCallback((path: string) => navigate(withLang(path, lang)), [lang, navigate]);
-  const focusSearch = useCallback(() => searchRef.current?.focus(), []);
+  // Ниже lg указатель скрыт через display:none, а .focus() в скрытом поле — тихий no-op,
+  // поэтому сначала раскрываем указатель и только потом ставим фокус.
+  const focusSearch = useCallback(() => {
+    setTreeOpen(true);
+    requestAnimationFrame(() => searchRef.current?.focus());
+  }, []);
 
   useArticleKeyboardNavigation({
     hasPrevious: !!adjacent.previous,
@@ -135,6 +140,16 @@ export function Materials() {
     onNext: () => adjacent.next && goTo(buildMaterialRoutePath(adjacent.next)),
     onFocusSearch: focusSearch,
   });
+
+  // Обложка и страница курса: без фокуса внутри прокручиваемой секции стрелки и PageDown
+  // не работают, пока не дойдёшь до неё табом.
+  useEffect(() => {
+    if (article) return;
+    const active = document.activeElement;
+    if (!active || active === document.body || active === document.documentElement) {
+      scrollerRef.current?.focus({ preventScroll: true });
+    }
+  }, [article]);
 
   // Порядок строгий: контент готов → анкор или верх → и только затем фокус на заголовок.
   useEffect(() => {
@@ -274,7 +289,7 @@ export function Materials() {
         href="https://github.com/eduardgagite/eduardgagite.github.io"
         target="_blank"
         rel="noopener noreferrer"
-        className="text-white/60 underline decoration-white/25 underline-offset-4 transition-colors hover:text-white"
+        className="text-white/60 underline decoration-white/25 underline-offset-4 transition-colors hover:text-white hover:decoration-theme-accent"
       >
         github.com/eduardgagite ↗
       </a>
@@ -322,8 +337,8 @@ export function Materials() {
       statusLeft={
         article ? (
           <>
-            <span className="text-white/40">{article.material.id.lang}</span>
-            {content.status !== 'ready' && <span className="text-white/30">{content.status}</span>}
+            <span className="text-white/55">{article.material.id.lang}</span>
+            {content.status !== 'ready' && <span className="text-white/55">{content.status}</span>}
           </>
         ) : (
           colophon
@@ -335,20 +350,20 @@ export function Materials() {
             <button
               type="button"
               onClick={copyLink}
-              className="font-mono text-[11px] text-white/45 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white/80"
+              className="-mx-1.5 -my-2 px-1.5 py-2 font-mono text-[11px] text-white/55 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white/80"
             >
               <span aria-live="polite">{isLinkCopied ? t('materials.copyLinkSuccess') : t('materials.copyLink')}</span>
             </button>
             <button
               type="button"
               onClick={() => scrollerRef.current?.scrollTo({ top: 0 })}
-              className="font-mono text-[11px] text-white/45 transition-colors hover:text-white/80"
+              className="-mx-1.5 -my-2 px-1.5 py-2 font-mono text-[11px] text-white/55 transition-colors hover:text-white/80"
             >
               ↑ {t('materials.backToTop')}
             </button>
           </>
         ) : (
-          <span className="text-white/40">{lang}</span>
+          <span className="text-white/55">{lang}</span>
         )
       }
       treeOpen={treeOpen}

@@ -33,9 +33,10 @@ export function ArticleToc({ headings, variant, active, className }: ArticleTocP
   const { t } = useTranslation();
   const items = withOrdinals(variant === 'inline' ? headings.filter((h) => h.depth === 2) : headings);
 
+  // Верхнюю линейку рисует <hr> под заголовком, поэтому своей рамки сверху здесь нет.
   if (variant === 'inline') {
     return (
-      <nav aria-label={t('materials.tocTitle')} className={`my-7 border-y border-white/[0.07] py-4 ${className || ''}`}>
+      <nav aria-label={t('materials.tocTitle')} className={`mb-7 border-b border-white/[0.07] py-4 ${className || ''}`}>
         <p className="mb-2.5 text-[11px] text-white/45">{t('materials.tocTitle')}</p>
         <ul className="space-y-1.5">
           {items.map(({ heading, ordinal }) => (
