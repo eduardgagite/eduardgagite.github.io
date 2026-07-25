@@ -3,6 +3,7 @@ import type { MaterialMeta, MaterialsCategory, MaterialsSection, MaterialsTree }
 export type MaterialsRouteState =
   | { type: 'root' }
   | { type: 'redirect'; path: string }
+  | { type: 'category'; category: MaterialsCategory }
   | { type: 'article'; category: MaterialsCategory; section: MaterialsSection; material: MaterialMeta }
   | { type: 'not-found' };
 
@@ -22,14 +23,10 @@ export function resolveMaterialsRoute(segments: string[], tree: MaterialsTree): 
   const category = tree.categories.find((item) => item.id === categoryId);
   if (!category) return { type: 'not-found' };
 
+  // Один сегмент — это страница курса, а не редирект в первый материал:
+  // состав курса из 14 разделов надо видеть и уметь переслать ссылкой.
   if (segments.length === 1) {
-    const firstSection = category.sections[0];
-    const firstMaterial = firstSection?.materials[0];
-    if (!firstSection || !firstMaterial) return { type: 'not-found' };
-    return {
-      type: 'redirect',
-      path: `/materials/${category.id}/${firstSection.id}/${firstMaterial.id.slug}`,
-    };
+    return { type: 'category', category };
   }
 
   const section = category.sections.find((item) => item.id === sectionId);

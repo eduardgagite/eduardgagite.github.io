@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { loadMaterialsTree, type MaterialsTree } from '../../materials/loader';
 
 type MaterialsTreeState =
@@ -12,6 +12,7 @@ const EMPTY_TREE: MaterialsTree = {
 
 export function useMaterialsTree(lang: 'ru' | 'en') {
   const [treeState, setTreeState] = useState<MaterialsTreeState>({ status: 'loading', tree: null });
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -30,12 +31,15 @@ export function useMaterialsTree(lang: 'ru' | 'en') {
     return () => {
       cancelled = true;
     };
-  }, [lang]);
+  }, [lang, reloadKey]);
+
+  const reload = useCallback(() => setReloadKey((key) => key + 1), []);
 
   return {
     tree: treeState.tree ?? EMPTY_TREE,
     isTreeReady: treeState.status === 'ready',
     isTreeLoading: treeState.status === 'loading',
     isTreeError: treeState.status === 'error',
+    reload,
   };
 }

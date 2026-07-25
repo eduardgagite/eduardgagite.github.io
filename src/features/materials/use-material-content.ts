@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { loadMaterialContent, type MaterialMeta, type MaterialWithContent } from '../../materials/loader';
 
 type MaterialContentState =
@@ -6,11 +6,13 @@ type MaterialContentState =
   | { status: 'ready'; material: MaterialWithContent }
   | { status: 'error'; material: null };
 
-export function useMaterialContent(material: MaterialMeta): MaterialContentState {
+export function useMaterialContent(material: MaterialMeta | null) {
   const [state, setState] = useState<MaterialContentState>({ status: 'loading', material: null });
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    if (!material) return;
     setState({ status: 'loading', material: null });
 
     loadMaterialContent(material)
@@ -26,7 +28,9 @@ export function useMaterialContent(material: MaterialMeta): MaterialContentState
     return () => {
       cancelled = true;
     };
-  }, [material]);
+  }, [material, reloadKey]);
 
-  return state;
+  const reload = useCallback(() => setReloadKey((key) => key + 1), []);
+
+  return { ...state, reload };
 }

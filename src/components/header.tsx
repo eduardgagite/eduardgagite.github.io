@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitch } from './language-switch';
 import { Link, useLocation } from 'react-router-dom';
-import { readLastMaterialsPath } from '../utils/materials-location';
 import { normalizeLang, withLang } from '../i18n/url';
 
 export function Header() {
@@ -9,7 +8,7 @@ export function Header() {
   const location = useLocation();
   const initials = 'EG';
   const lang = normalizeLang(i18n.resolvedLanguage || 'ru');
-  const materialsTo = withLang(readLastMaterialsPath({ lang }) || '/materials', lang);
+  const materialsTo = withLang('/materials', lang);
   const homeTo = withLang('/', lang);
   const navLinks = [
     { to: homeTo, label: t('nav.home'), activeBase: '/' },

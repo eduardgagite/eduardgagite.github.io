@@ -4,12 +4,13 @@ import { generateMaterialSEO, resetSEO, updateSEO } from '../../utils/seo';
 import { buildMaterialRoutePath, getAvailableMaterialLanguages } from './article-navigation';
 
 interface UseMaterialSeoArgs {
-  material: MaterialMeta;
+  material: MaterialMeta | null;
   tree: MaterialsTree;
 }
 
 export function useMaterialSeo({ material, tree }: UseMaterialSeoArgs) {
   useEffect(() => {
+    if (!material) return;
     const seoData = generateMaterialSEO(
       material,
       buildMaterialRoutePath(material),

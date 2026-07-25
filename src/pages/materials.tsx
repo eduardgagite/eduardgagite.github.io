@@ -1,21 +1,35 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { materialKey, type MaterialsCategory, type MaterialsSection } from '../materials/loader';
+import { materialKey } from '../materials/loader';
+import { extractArticleHeadings } from '../components/markdown/article-metadata';
 import { buildPageSeoUrl, resetSEO, updateSEO } from '../utils/seo';
-import { writeLastMaterialsPath } from '../utils/materials-location';
+import {
+  clearMaterialsBookmark,
+  readMaterialsBookmarks,
+  writeMaterialsBookmark,
+  type MaterialsBookmarks,
+} from '../utils/materials-location';
 import { withLang } from '../i18n/url';
 import { ArticleView } from '../features/materials/article-view';
-import { EmptyState, MaterialsIntro } from '../features/materials/intro';
+import { CourseView } from '../features/materials/course-view';
+import { Landing } from '../features/materials/landing';
+import { MaterialsWindow } from '../features/materials/window';
+import { MaterialsTree } from '../features/materials/tree';
+import { SearchLine, SearchResults } from '../features/materials/search-line';
+import { NotFoundNote, StateNote } from '../features/materials/state-note';
+import { ArticleToc } from '../features/materials/toc';
+import type { PathSegment } from '../features/materials/path-line';
+import { buildMaterialRoutePath, getAdjacentCourseMaterials } from '../features/materials/article-navigation';
 import { parseMaterialsSegments, resolveMaterialsRoute } from '../features/materials/route';
-import { CloseIcon, MaterialsSidebar, MenuIcon, type MaterialsSidebarProps } from '../features/materials/sidebar';
-import type { SidebarCopy } from '../features/materials/types';
-import { useMaterialsFilters } from '../features/materials/use-materials-filters';
-import { useMaterialsSidebarState } from '../features/materials/use-materials-sidebar-state';
+import { useArticleKeyboardNavigation } from '../features/materials/use-article-keyboard-navigation';
+import { useMaterialContent } from '../features/materials/use-material-content';
+import { useMaterialSeo } from '../features/materials/use-material-seo';
+import { useMaterialsSearch } from '../features/materials/use-materials-search';
 import { useMaterialsTree } from '../features/materials/use-materials-tree';
-import { NotFound } from './not-found';
-
-const MOBILE_SIDEBAR_ID = 'materials-mobile-sidebar';
+import { useReadingHistory } from '../features/materials/use-reading-history';
+import { useTocActiveHeading } from '../features/materials/use-toc-active-heading';
+import { useTreeState } from '../features/materials/use-tree-state';
 
 export function Materials() {
   const { i18n, t } = useTranslation();
@@ -23,146 +37,59 @@ export function Materials() {
   const location = useLocation();
   const params = useParams<{ '*': string }>();
   const lang = (i18n.resolvedLanguage || 'ru') === 'ru' ? 'ru' : 'en';
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const closeSidebarButtonRef = useRef<HTMLButtonElement | null>(null);
-  const mobileSidebarRef = useRef<HTMLElement | null>(null);
-  const sidebarOpenerRef = useRef<HTMLElement | null>(null);
-  const { tree, isTreeReady, isTreeLoading, isTreeError } = useMaterialsTree(lang);
-  const {
-    filterOptions,
-    filteredCategories,
-    hasActiveFilters,
-    searchQuery,
-    selectedLevel,
-    selectedTag,
-    setSearchQuery,
-    setSelectedLevel,
-    setSelectedTag,
-    resetFilters,
-  } = useMaterialsFilters({ categories: tree.categories });
 
-  const sidebarCopy = useMemo<SidebarCopy>(
-    () => ({
-      heading: t('nav.materials'),
-      intro: t('materials.sidebarIntro'),
-      searchLabel: t('materials.searchLabel'),
-      searchPlaceholder: t('materials.searchPlaceholder') || '',
-      levelLabel: t('materials.levelFilter'),
-      tagsLabel: t('materials.tagsFilter'),
-      resetLabel: t('materials.filtersReset'),
-      emptyLabel: t('materials.noMatches'),
-      filtersTitle: t('materials.filtersTitle'),
-      structureTitle: t('materials.structureTitle'),
-    }),
-    [t],
-  );
-  const closeSidebarLabel = t('materials.closeSidebar');
+  const scrollerRef = useRef<HTMLElement | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+  const selectedRowRef = useRef<HTMLAnchorElement | null>(null);
+  const [treeOpen, setTreeOpen] = useState(false);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
+  const [bookmarks, setBookmarks] = useState<MaterialsBookmarks>(() => readMaterialsBookmarks({ lang }));
 
-  const openMobileSidebar = useCallback(() => {
-    sidebarOpenerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    setSidebarOpen(true);
-  }, []);
+  const { tree, isTreeReady, isTreeLoading, isTreeError, reload: reloadTree } = useMaterialsTree(lang);
+  const search = useMaterialsSearch({ categories: tree.categories });
+  const { isRead, markRead } = useReadingHistory();
 
-  const closeMobileSidebar = useCallback(() => {
-    setSidebarOpen(false);
-    window.requestAnimationFrame(() => sidebarOpenerRef.current?.focus());
-  }, []);
+  useEffect(() => setBookmarks(readMaterialsBookmarks({ lang })), [lang]);
 
-  useEffect(() => {
-    if (!sidebarOpen) return;
-    closeSidebarButtonRef.current?.focus();
-  }, [sidebarOpen]);
-
-  useEffect(() => {
-    if (!sidebarOpen) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        closeMobileSidebar();
-        return;
-      }
-
-      if (event.key !== 'Tab') return;
-
-      const sidebar = mobileSidebarRef.current;
-      if (!sidebar) return;
-
-      const focusable = Array.from(
-        sidebar.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-        ),
-      );
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (!first || !last) {
-        event.preventDefault();
-        return;
-      }
-
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-        return;
-      }
-
-      if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [closeMobileSidebar, sidebarOpen]);
-
-  const routePath = params['*'];
-  const segments = useMemo(() => parseMaterialsSegments(routePath), [routePath]);
+  const segments = useMemo(() => parseMaterialsSegments(params['*']), [params]);
   const routeState = useMemo(
     () => (isTreeReady ? resolveMaterialsRoute(segments, tree) : null),
     [isTreeReady, segments, tree],
   );
-  const isRoot = routeState?.type === 'root';
-  const isRedirect = routeState?.type === 'redirect';
-  const isArticle = routeState?.type === 'article';
-  const isNotFound = routeState?.type === 'not-found';
 
   useEffect(() => {
-    if (!isTreeReady) return;
-    if (!routeState || routeState.type !== 'redirect') return;
+    if (routeState?.type !== 'redirect') return;
     navigate(withLang(routeState.path, lang), { replace: true });
-  }, [isTreeReady, lang, navigate, routeState]);
+  }, [lang, navigate, routeState]);
 
-  const activeCategory = routeState?.type === 'article' ? routeState.category : undefined;
-  const activeSection = routeState?.type === 'article' ? routeState.section : undefined;
-  const activeMaterial = routeState?.type === 'article' ? routeState.material : undefined;
+  const article = routeState?.type === 'article' ? routeState : null;
+  const activeMaterialKey = article ? materialKey(article.material.id) : null;
 
-  useEffect(() => {
-    if (!isArticle || !activeCategory || !activeSection || !activeMaterial) return;
-    writeLastMaterialsPath({
-      lang,
-      path: `/materials/${activeCategory.id}/${activeSection.id}/${activeMaterial.id.slug}`,
-    });
-  }, [activeCategory, activeMaterial, activeSection, isArticle, lang]);
+  const content = useMaterialContent(article?.material ?? null);
+  const articleContent = article && content.status === 'ready' ? content.material.content : '';
+  const headings = useMemo(() => extractArticleHeadings(articleContent), [articleContent]);
+  const activeHeading = useTocActiveHeading(headings, !!article && content.status === 'ready');
 
-  const activeMaterialKey = activeMaterial ? materialKey(activeMaterial.id) : null;
-  const displayActiveCategoryId = isArticle ? activeCategory?.id : undefined;
-  const displayActiveSectionId = isArticle ? activeSection?.id : undefined;
-  const displayActiveMaterialKey = isArticle ? activeMaterialKey : null;
-  const { categoryOpen, sectionOpen, toggleCategory, toggleSection } = useMaterialsSidebarState({
-    activeCategoryId: displayActiveCategoryId,
-    activeSectionId: displayActiveSectionId,
-    isArticle,
+  const adjacent = useMemo(
+    () => (article ? getAdjacentCourseMaterials(article.category, article.material) : { currentIndex: -1 }),
+    [article],
+  );
+
+  const { isCategoryOpen, isSectionOpen, toggleCategory, toggleSection, treeScrollRef, activeRowRef } = useTreeState({
+    categories: tree.categories,
+    activeCategoryId: article?.category.id,
+    activeSectionId: article?.section.id,
+    activeMaterialKey,
+    treeOpen,
   });
 
+  useMaterialSeo({ material: article?.material ?? null, tree });
+
   useEffect(() => {
-    if (!isTreeReady) return;
-    if (!isRoot) return;
-    const title = t('meta.materialsTitle') || 'Материалы — Eduard Gagite';
-    const description =
-      t('meta.materialsDescription') ||
-      'Курсы и материалы по Redis, Docker и другим технологиям для backend-разработчиков.';
-    const url = buildPageSeoUrl({ path: location.pathname, lang });
+    if (routeState?.type !== 'root') return;
+    const title = t('meta.materialsTitle');
+    const description = t('meta.materialsDescription');
+    const url = buildPageSeoUrl({ path: '/materials', lang });
     updateSEO({
       title,
       description,
@@ -173,128 +100,262 @@ export function Materials() {
       ogLocale: lang === 'ru' ? 'ru_RU' : 'en_US',
       canonical: url,
     });
-    return () => {
-      resetSEO();
-    };
-  }, [isRoot, isTreeReady, lang, location.pathname, t]);
+    return () => resetSEO();
+  }, [lang, routeState, t]);
 
-  const handleSelectMaterial = (category: MaterialsCategory, section: MaterialsSection, slug: string) => {
-    navigate(withLang(`/materials/${category.id}/${section.id}/${slug}`, lang));
-    setSidebarOpen(false);
+  // Прочитанное и закладка на курс.
+  useEffect(() => {
+    if (!article || content.status !== 'ready') return;
+    markRead(materialKey(article.material.id));
+    writeMaterialsBookmark({
+      lang,
+      categoryId: article.category.id,
+      path: buildMaterialRoutePath(article.material),
+      title: article.material.title,
+    });
+    setBookmarks(readMaterialsBookmarks({ lang }));
+  }, [article, content.status, lang, markRead]);
+
+  // Слаг могли переименовать — битую закладку курса убираем.
+  useEffect(() => {
+    if (routeState?.type !== 'not-found') return;
+    const categoryId = location.pathname.split('/')[2];
+    if (!categoryId) return;
+    clearMaterialsBookmark({ lang, categoryId });
+    setBookmarks(readMaterialsBookmarks({ lang }));
+  }, [lang, location.pathname, routeState]);
+
+  const goTo = useCallback((path: string) => navigate(withLang(path, lang)), [lang, navigate]);
+  const focusSearch = useCallback(() => searchRef.current?.focus(), []);
+
+  useArticleKeyboardNavigation({
+    hasPrevious: !!adjacent.previous,
+    hasNext: !!adjacent.next,
+    onPrevious: () => adjacent.previous && goTo(buildMaterialRoutePath(adjacent.previous)),
+    onNext: () => adjacent.next && goTo(buildMaterialRoutePath(adjacent.next)),
+    onFocusSearch: focusSearch,
+  });
+
+  // Порядок строгий: контент готов → анкор или верх → и только затем фокус на заголовок.
+  useEffect(() => {
+    if (!article || content.status !== 'ready') return;
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    const hash = window.location.hash.slice(1);
+    const target = hash ? document.getElementById(hash) : null;
+    if (target) {
+      scroller.scrollTop += target.getBoundingClientRect().top - scroller.getBoundingClientRect().top - 56;
+    } else {
+      scroller.scrollTo({ top: 0 });
+    }
+
+    const active = document.activeElement;
+    if (!active || active === document.body || active === document.documentElement) {
+      document.getElementById('material-title')?.focus({ preventScroll: true });
+    }
+  }, [activeMaterialKey, article, content.status]);
+
+  useEffect(() => {
+    if (!isLinkCopied) return;
+    const timeout = window.setTimeout(() => setIsLinkCopied(false), 2000);
+    return () => window.clearTimeout(timeout);
+  }, [isLinkCopied]);
+
+  useEffect(() => {
+    selectedRowRef.current?.scrollIntoView({ block: 'nearest' });
+  }, [search.selectedIndex]);
+
+  const copyLink = useCallback(async () => {
+    if (!article) return;
+    const path = withLang(buildMaterialRoutePath(article.material), lang);
+    // Вместе с хешем: иначе скопированный адрес расходится с адресной строкой браузера.
+    const url = new URL(path + window.location.hash, window.location.origin).toString();
+    try {
+      await navigator.clipboard.writeText(url);
+      setIsLinkCopied(true);
+    } catch {
+      setIsLinkCopied(false);
+    }
+  }, [article, lang]);
+
+  const closeTreeOnNavigate = useCallback(() => {
+    setTreeOpen(false);
+    search.clear();
+  }, [search]);
+
+  const handleSearchKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      if (search.query) search.clear();
+      else searchRef.current?.blur();
+      return;
+    }
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      search.moveSelection(1);
+      return;
+    }
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      search.moveSelection(-1);
+      return;
+    }
+    if (event.key === 'Enter' && search.selectedHit) {
+      event.preventDefault();
+      goTo(buildMaterialRoutePath(search.selectedHit.material));
+      closeTreeOnNavigate();
+    }
   };
 
-  const sidebarProps: Omit<MaterialsSidebarProps, 'idPrefix'> = {
-    copy: sidebarCopy,
-    filterOptions,
-    searchQuery,
-    selectedLevel,
-    selectedTag,
-    onSearchChange: setSearchQuery,
-    onSelectLevel: setSelectedLevel,
-    onSelectTag: setSelectedTag,
-    onResetFilters: resetFilters,
-    hasActiveFilters,
-    categories: filteredCategories,
-    categoryOpen,
-    sectionOpen,
-    activeCategoryId: displayActiveCategoryId,
-    activeSectionId: displayActiveSectionId,
-    activeMaterialKey: displayActiveMaterialKey,
-    onToggleCategory: toggleCategory,
-    onToggleSection: toggleSection,
-    onSelectMaterial: handleSelectMaterial,
-  };
+  const pathSegments = useMemo<PathSegment[]>(() => {
+    const root: PathSegment = { label: '~/materials', to: withLang('/materials', lang) };
+    if (routeState?.type === 'category') return [root, { label: routeState.category.id }];
+    if (article) {
+      return [
+        root,
+        { label: article.category.id, to: withLang(`/materials/${article.category.id}`, lang) },
+        { label: article.section.id },
+        { label: `${article.material.id.slug}.md` },
+      ];
+    }
+    return [{ label: '~/materials' }];
+  }, [article, lang, routeState]);
 
-  if (isNotFound) {
-    return <NotFound />;
-  }
+  const treePane = (
+    <>
+      <div className="shrink-0 px-4 pb-2.5 pt-4">
+        <SearchLine
+          ref={searchRef}
+          query={search.query}
+          onChange={search.setQuery}
+          onKeyDown={handleSearchKeyDown}
+          onClear={search.clear}
+        />
+      </div>
+      <div ref={treeScrollRef} className="scroll-elegant min-h-0 flex-1 overflow-y-auto px-2 pb-5">
+        {isTreeLoading && <p className="px-2 font-mono text-[12px] text-white/45">{t('common.loading')}</p>}
+        {isTreeError && <p className="px-2 font-mono text-[12px] text-white/45">{t('materials.loadError')}</p>}
+        {isTreeReady &&
+          (search.isSearching ? (
+            <SearchResults
+              hits={search.hits}
+              query={search.query}
+              lang={lang}
+              selectedIndex={search.selectedIndex}
+              selectedRowRef={selectedRowRef}
+              onPick={closeTreeOnNavigate}
+              onShowAll={search.clear}
+            />
+          ) : (
+            <MaterialsTree
+              categories={tree.categories}
+              lang={lang}
+              activeCategoryId={article?.category.id}
+              activeSectionId={article?.section.id}
+              activeMaterialKey={activeMaterialKey}
+              isCategoryOpen={isCategoryOpen}
+              isSectionOpen={isSectionOpen}
+              onToggleCategory={toggleCategory}
+              onToggleSection={toggleSection}
+              onNavigate={closeTreeOnNavigate}
+              isRead={isRead}
+              activeRowRef={activeRowRef}
+            />
+          ))}
+      </div>
+    </>
+  );
 
-  if (isTreeLoading) {
-    return (
-      <section className="h-full w-full flex items-center justify-center overflow-y-auto overflow-x-hidden">
-        <p className="text-sm text-theme-text-muted">{t('common.loading')}</p>
-      </section>
+  const colophon = (
+    <span className="text-white/45">
+      {t('materials.colophon')}{' '}
+      <a
+        href="https://github.com/eduardgagite/eduardgagite.github.io"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-white/60 underline decoration-white/25 underline-offset-4 transition-colors hover:text-white"
+      >
+        github.com/eduardgagite ↗
+      </a>
+    </span>
+  );
+
+  let body: ReactNode;
+  if (isTreeLoading) body = <StateNote state="loading" />;
+  else if (isTreeError) body = <StateNote state="error" onRetry={reloadTree} />;
+  else if (routeState?.type === 'root')
+    body = <Landing categories={tree.categories} lang={lang} bookmarks={bookmarks} />;
+  else if (routeState?.type === 'category')
+    body = <CourseView category={routeState.category} categories={tree.categories} lang={lang} />;
+  else if (routeState?.type === 'redirect')
+    body = <p className="text-sm text-theme-text-muted">{t('common.loading')}</p>;
+  else if (article)
+    body = (
+      <ArticleView
+        category={article.category}
+        section={article.section}
+        material={article.material}
+        otherCategories={tree.categories.filter((item) => item.id !== article.category.id)}
+        lang={lang}
+        status={content.status}
+        content={articleContent}
+        materialPath={content.status === 'ready' ? content.material.path : undefined}
+        headings={headings}
+        onRetry={content.reload}
+        previous={adjacent.previous}
+        next={adjacent.next}
+      />
     );
-  }
-
-  if (isTreeError) {
-    return (
-      <section className="h-full w-full flex items-center justify-center overflow-y-auto overflow-x-hidden">
-        <p className="text-sm text-theme-text-muted">{t('materials.loadError')}</p>
-      </section>
-    );
-  }
+  else body = <NotFoundNote lang={lang} />;
 
   return (
-    <section className="h-full w-full overflow-y-auto overflow-x-hidden">
-      <div className="flex h-full w-full flex-col gap-4 px-3 py-4 sm:px-4 sm:py-5 lg:gap-6 lg:flex-row">
-        <button
-          type="button"
-          aria-controls={MOBILE_SIDEBAR_ID}
-          aria-expanded={sidebarOpen}
-          onClick={openMobileSidebar}
-          className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl bg-theme-card border border-theme-border text-sm text-theme-text-secondary hover:bg-theme-surface-elevated transition-colors"
-        >
-          <MenuIcon className="w-5 h-5" aria-hidden="true" />
-          <span>{sidebarCopy.heading}</span>
-        </button>
-
-        <aside className="hidden lg:block relative w-[300px] xl:w-[340px] shrink-0">
-          <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
-          <MaterialsSidebar {...sidebarProps} idPrefix="materials-sidebar-desktop" />
-        </aside>
-
-        {sidebarOpen && (
+    <MaterialsWindow
+      ref={scrollerRef}
+      pathSegments={pathSegments}
+      tree={treePane}
+      rail={
+        article && content.status === 'ready' && headings.length >= 2 ? (
+          <ArticleToc variant="rail" headings={headings} active={activeHeading} />
+        ) : undefined
+      }
+      statusLeft={
+        article ? (
+          <>
+            <span className="text-white/40">{article.material.id.lang}</span>
+            {content.status !== 'ready' && <span className="text-white/30">{content.status}</span>}
+          </>
+        ) : (
+          colophon
+        )
+      }
+      statusRight={
+        article ? (
           <>
             <button
               type="button"
-              aria-label={closeSidebarLabel}
-              className="lg:hidden fixed inset-0 bg-theme-background/60 backdrop-blur-sm z-40"
-              onClick={closeMobileSidebar}
-            />
-            <aside
-              ref={mobileSidebarRef}
-              id={MOBILE_SIDEBAR_ID}
-              role="dialog"
-              aria-modal="true"
-              aria-label={sidebarCopy.heading}
-              className="lg:hidden fixed inset-y-0 left-0 w-[85%] max-w-[360px] z-50 p-4"
+              onClick={copyLink}
+              className="font-mono text-[11px] text-white/45 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white/80"
             >
-              <div className="relative h-full">
-                <button
-                  ref={closeSidebarButtonRef}
-                  type="button"
-                  aria-label={closeSidebarLabel}
-                  onClick={closeMobileSidebar}
-                  className="absolute -right-12 top-2 w-10 h-10 flex items-center justify-center rounded-full bg-theme-border text-theme-text-secondary"
-                >
-                  <CloseIcon className="w-5 h-5" aria-hidden="true" />
-                </button>
-                <MaterialsSidebar {...sidebarProps} idPrefix="materials-sidebar-mobile" />
-              </div>
-            </aside>
+              <span aria-live="polite">{isLinkCopied ? t('materials.copyLinkSuccess') : t('materials.copyLink')}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollerRef.current?.scrollTo({ top: 0 })}
+              className="font-mono text-[11px] text-white/45 transition-colors hover:text-white/80"
+            >
+              ↑ {t('materials.backToTop')}
+            </button>
           </>
-        )}
-
-        <div className="relative flex-1 min-w-0">
-          <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
-          <div className="relative h-full rounded-[28px] border border-theme-border bg-theme-surface shadow-[0_28px_70px_-40px_rgba(0,0,0,0.85)] backdrop-blur overflow-hidden">
-            <div className="h-full overflow-hidden p-4 sm:p-5 lg:p-6">
-              {isRoot ? (
-                <MaterialsIntro categories={tree.categories} lang={lang} />
-              ) : isRedirect ? (
-                <div className="flex h-full items-center justify-center" role="status">
-                  <p className="text-sm text-theme-text-muted">{t('common.loading')}</p>
-                </div>
-              ) : !isArticle || !activeCategory || !activeSection || !activeMaterial ? (
-                <EmptyState />
-              ) : (
-                <ArticleView category={activeCategory} section={activeSection} material={activeMaterial} tree={tree} />
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+        ) : (
+          <span className="text-white/40">{lang}</span>
+        )
+      }
+      treeOpen={treeOpen}
+      onToggleTree={() => setTreeOpen(!treeOpen)}
+      announce={article?.material.title}
+    >
+      {body}
+    </MaterialsWindow>
   );
 }
