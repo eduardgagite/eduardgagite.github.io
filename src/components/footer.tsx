@@ -5,12 +5,13 @@ export function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer className="w-full relative">
-      <div className="relative border-t border-white/10 bg-white/[0.02]">
+      {/* Нижний отступ учитывает полосу жестов на iPhone — иначе подпись стоит прямо под ней. */}
+      <div className="relative border-t border-white/10 bg-white/[0.02] pb-[env(safe-area-inset-bottom)]">
         <div
           className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none"
           aria-hidden
         />
-        <div className="mx-auto max-w-5xl px-4 py-4 relative">
+        <div className="mx-auto max-w-5xl px-4 py-3 relative sm:py-4">
           <div className="flex items-center justify-center gap-3">
             <div className="h-px w-8 bg-gradient-to-r from-transparent to-white/20" />
             <span className="text-xs text-white/70 font-medium tracking-wide">{t('footer.copyright', { year })}</span>
