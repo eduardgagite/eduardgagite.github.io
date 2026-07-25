@@ -124,9 +124,10 @@ export function Home() {
               <div className="mt-4">
                 <div className="h-px w-full bg-white/10" />
                 <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-                  <pre className="min-w-0 font-mono text-[12px] leading-5 whitespace-pre-wrap text-white/45">
-                    {`// ${t('materials.note')}\n// [${t('materials.topicsShort')}]`}
-                  </pre>
+                  <blockquote className="min-w-0 font-mono text-[12px] leading-5 text-white/45">
+                    <p>{`// "${t('hero.quote')}"`}</p>
+                    <p className="text-white/30">{`//   — ${t('hero.quoteAuthor')}`}</p>
+                  </blockquote>
                   <div className="grid shrink-0 grid-cols-2 gap-2">
                     <HeroCta to={withLang('/projects', lang)} label={t('projects.cta')} primary />
                     <HeroCta to={withLang('/materials', lang)} label={t('materials.cta')} />

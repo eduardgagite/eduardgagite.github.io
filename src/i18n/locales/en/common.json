@@ -8,9 +8,7 @@
     "projectsDescription": "Case studies of Go backend projects: an E2E messenger, a real-estate valuation platform, production services and self-hosted infrastructure."
   },
   "materials": {
-    "note": "I maintain a practical backend knowledge base — from fundamentals to production scenarios.",
     "cta": "View materials",
-    "topicsShort": "Go · Redis · Docker",
     "sidebarIntro": "Browse topics, filter by tags, and jump back to the right notes.",
     "statsCategories": "Categories",
     "statsSections": "Sections",
@@ -87,7 +85,9 @@
     "telegram": "Telegram",
     "github": "GitHub",
     "email": "Email",
-    "bio": "I am a backend engineer focused on building high‑load, scalable services in Go. I design distributed systems with emphasis on efficiency, observability, and strong engineering practices.\n\nI build server applications, integrations and APIs, work with event‑driven architectures (Kafka, RabbitMQ), and rely on Docker and CI/CD. I prefer clean, structured code based on SOLID principles and Go industry best practices.\n\nI work with microservices, asynchronous queues, real‑time communication (gRPC, WebSocket), and optimize performance and infrastructure.\n\nI continuously learn and explore tools and patterns, and develop side projects. I studied at Sberbank's \"School 21\", where I got intensive hands‑on practice, algorithms and teamwork."
+    "bio": "I am a backend engineer focused on building high‑load, scalable services in Go. I design distributed systems with emphasis on efficiency, observability, and strong engineering practices.\n\nI build server applications, integrations and APIs, work with event‑driven architectures (Kafka, RabbitMQ), and rely on Docker and CI/CD. I prefer clean, structured code based on SOLID principles and Go industry best practices.\n\nI work with microservices, asynchronous queues, real‑time communication (gRPC, WebSocket), and optimize performance and infrastructure.\n\nI continuously learn and explore tools and patterns, and develop side projects. I studied at Sberbank's \"School 21\", where I got intensive hands‑on practice, algorithms and teamwork.",
+    "quote": "Clear is better than clever.",
+    "quoteAuthor": "Rob Pike, Go Proverbs"
   },
   "promo": {
     "title": "I create educational materials for backend engineers",
