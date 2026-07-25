@@ -1,6 +1,6 @@
 ---
-title: 'Money Tracker — iOS-приложение'
-summary: 'Приложение для учёта личных денег на iPhone — доходы, расходы, долги и аналитика.'
+title: 'Money Tracker — отслеживание финансов'
+summary: 'Приложение для iPhone — доходы, расходы, долги и аналитика.'
 order: 7
 status: active
 code: private
