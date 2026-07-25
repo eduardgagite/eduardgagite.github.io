@@ -4,7 +4,7 @@ category: "redis"
 categoryTitle: "Redis"
 section: "advanced"
 sectionTitle: "Продвинутые темы"
-sectionOrder: 12
+sectionOrder: 11
 order: 1
 ---
 

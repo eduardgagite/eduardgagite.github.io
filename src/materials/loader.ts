@@ -1,3 +1,4 @@
+import { orderCategories } from '../features/materials/order';
 export interface MaterialFrontmatter {
   title: string;
   subtitle?: string;
@@ -136,18 +137,22 @@ export function buildMaterialsTree(entries: MaterialMeta[], preferredLang: 'ru' 
   const categories = Array.from(categoriesMap.values()).map((cat) => ({
     ...cat,
     sections: cat.sections
-      .map((section) => ({
-        ...section,
-        materials: section.materials
+      .map((section) => {
+        const materials = section.materials
           .slice()
-          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.title.localeCompare(b.title)),
-      }))
+          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.title.localeCompare(b.title));
+        return {
+          ...section,
+          // Название раздела берём у материала с наименьшим order: в части разделов
+          // sectionTitle расходится между файлами, и «первый встреченный» давал случайное имя.
+          title: materials[0]?.sectionTitle ?? section.title,
+          materials,
+        };
+      })
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.title.localeCompare(b.title)),
   }));
 
-  categories.sort((a, b) => a.title.localeCompare(b.title));
-
-  return { categories, byId, availableLanguages };
+  return { categories: orderCategories(categories), byId, availableLanguages };
 }
 
 export async function loadMaterialsTree(preferredLang: 'ru' | 'en'): Promise<MaterialsTree> {

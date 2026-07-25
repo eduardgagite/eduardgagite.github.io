@@ -4,7 +4,7 @@ category: "redis"
 categoryTitle: "Redis"
 section: "clients"
 sectionTitle: "Клиенты и работа из приложений"
-sectionOrder: 13
+sectionOrder: 12
 order: 3
 ---
 

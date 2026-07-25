@@ -3,7 +3,7 @@ title: "Аутентификация и авторизация"
 category: "golang"
 categoryTitle: "Go"
 section: "web-and-api"
-sectionTitle: "Web и API"
+sectionTitle: "Веб и API"
 sectionOrder: 8
 order: 6
 ---

@@ -5,7 +5,7 @@ categoryTitle: "Docker"
 section: "images"
 sectionTitle: "Dockerfile и сборка образов"
 sectionOrder: 4
-order: 6
+order: 5
 ---
 
 Представьте, что вы пишете на Go, Java или TypeScript.

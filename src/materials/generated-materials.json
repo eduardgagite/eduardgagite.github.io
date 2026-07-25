@@ -244,7 +244,7 @@
       "categoryTitle": "Docker",
       "section": "images",
       "sectionTitle": "Dockerfile и сборка образов",
-      "order": 6,
+      "order": 5,
       "sectionOrder": 4,
       "id": {
         "category": "docker",
@@ -1841,7 +1841,7 @@
       "category": "golang",
       "categoryTitle": "Go",
       "section": "web-and-api",
-      "sectionTitle": "Web и API",
+      "sectionTitle": "Веб и API",
       "order": 6,
       "sectionOrder": 8,
       "id": {
@@ -1860,7 +1860,7 @@
       "section": "advanced",
       "sectionTitle": "Продвинутые темы",
       "order": 1,
-      "sectionOrder": 12,
+      "sectionOrder": 11,
       "id": {
         "category": "redis",
         "section": "advanced",
@@ -1877,7 +1877,7 @@
       "section": "advanced",
       "sectionTitle": "Продвинутые темы",
       "order": 2,
-      "sectionOrder": 12,
+      "sectionOrder": 11,
       "id": {
         "category": "redis",
         "section": "advanced",
@@ -1894,7 +1894,7 @@
       "section": "advanced",
       "sectionTitle": "Продвинутые темы",
       "order": 3,
-      "sectionOrder": 12,
+      "sectionOrder": 11,
       "id": {
         "category": "redis",
         "section": "advanced",
@@ -1911,7 +1911,7 @@
       "section": "advanced",
       "sectionTitle": "Продвинутые темы",
       "order": 4,
-      "sectionOrder": 12,
+      "sectionOrder": 11,
       "id": {
         "category": "redis",
         "section": "advanced",
@@ -1928,7 +1928,7 @@
       "section": "clients",
       "sectionTitle": "Клиенты и работа из приложений",
       "order": 1,
-      "sectionOrder": 13,
+      "sectionOrder": 12,
       "id": {
         "category": "redis",
         "section": "clients",
@@ -1945,7 +1945,7 @@
       "section": "clients",
       "sectionTitle": "Клиенты и работа из приложений",
       "order": 2,
-      "sectionOrder": 13,
+      "sectionOrder": 12,
       "id": {
         "category": "redis",
         "section": "clients",
@@ -1962,7 +1962,7 @@
       "section": "clients",
       "sectionTitle": "Клиенты и работа из приложений",
       "order": 3,
-      "sectionOrder": 13,
+      "sectionOrder": 12,
       "id": {
         "category": "redis",
         "section": "clients",
@@ -1979,7 +1979,7 @@
       "section": "clients",
       "sectionTitle": "Клиенты и работа из приложений",
       "order": 4,
-      "sectionOrder": 13,
+      "sectionOrder": 12,
       "id": {
         "category": "redis",
         "section": "clients",
@@ -2198,7 +2198,7 @@
       "category": "redis",
       "categoryTitle": "Redis",
       "section": "intro",
-      "sectionTitle": "Что такое Redis",
+      "sectionTitle": "Введение",
       "order": 1,
       "sectionOrder": 1,
       "id": {
@@ -2215,7 +2215,7 @@
       "category": "redis",
       "categoryTitle": "Redis",
       "section": "intro",
-      "sectionTitle": "Архитектура и принципы работы",
+      "sectionTitle": "Введение",
       "order": 2,
       "sectionOrder": 1,
       "id": {
@@ -2232,7 +2232,7 @@
       "category": "redis",
       "categoryTitle": "Redis",
       "section": "intro",
-      "sectionTitle": "Установка и запуск Redis",
+      "sectionTitle": "Введение",
       "order": 3,
       "sectionOrder": 1,
       "id": {

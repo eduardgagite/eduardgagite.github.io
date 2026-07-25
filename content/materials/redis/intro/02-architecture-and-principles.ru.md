@@ -3,7 +3,7 @@ title: "Архитектура и основные принципы работы
 category: "redis"
 categoryTitle: "Redis"
 section: "intro"
-sectionTitle: "Архитектура и принципы работы"
+sectionTitle: "Введение"
 sectionOrder: 1
 order: 2
 ---

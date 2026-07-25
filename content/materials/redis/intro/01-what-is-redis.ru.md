@@ -3,7 +3,7 @@ title: "Что такое Redis"
 category: "redis"
 categoryTitle: "Redis"
 section: "intro"
-sectionTitle: "Что такое Redis"
+sectionTitle: "Введение"
 sectionOrder: 1
 order: 1
 ---

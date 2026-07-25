@@ -3,7 +3,7 @@ title: "Установка и запуск Redis"
 category: "redis"
 categoryTitle: "Redis"
 section: "intro"
-sectionTitle: "Установка и запуск Redis"
+sectionTitle: "Введение"
 sectionOrder: 1
 order: 3
 ---
