@@ -26,28 +26,32 @@ export function LanguageSwitch() {
       <button
         type="button"
         onClick={() => change('ru')}
-        className="group relative inline-flex items-center px-2.5 py-1.5 text-[13px] font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-md"
+        className={`group relative inline-flex items-center px-2 py-1.5 text-[13px] font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-md sm:px-2.5 ${
+          isRu ? 'max-sm:hidden' : ''
+        }`}
         aria-pressed={isRu}
         aria-label={t('lang.ru')}
       >
         <span className={isRu ? 'text-white' : 'text-white/70 group-hover:text-white transition-colors'}>ru</span>
         <span
-          className={`pointer-events-none absolute left-2.5 right-2.5 -bottom-0.5 h-px transition-opacity duration-150 ${
+          className={`pointer-events-none absolute left-2 right-2 -bottom-0.5 h-px transition-opacity duration-150 sm:left-2.5 sm:right-2.5 ${
             isRu ? 'opacity-100 bg-white/80' : 'opacity-0 group-hover:opacity-100 bg-white/60'
           }`}
         />
       </button>
-      <span className="mx-1.5 h-4 w-px bg-white/10" aria-hidden="true" />
+      <span className="mx-1.5 h-4 w-px bg-white/10 max-sm:hidden" aria-hidden="true" />
       <button
         type="button"
         onClick={() => change('en')}
-        className="group relative inline-flex items-center px-2.5 py-1.5 text-[13px] font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-md"
+        className={`group relative inline-flex items-center px-2 py-1.5 text-[13px] font-medium tracking-wide focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 rounded-md sm:px-2.5 ${
+          isRu ? '' : 'max-sm:hidden'
+        }`}
         aria-pressed={!isRu}
         aria-label={t('lang.en')}
       >
         <span className={!isRu ? 'text-white' : 'text-white/70 group-hover:text-white transition-colors'}>en</span>
         <span
-          className={`pointer-events-none absolute left-2.5 right-2.5 -bottom-0.5 h-px transition-opacity duration-150 ${
+          className={`pointer-events-none absolute left-2 right-2 -bottom-0.5 h-px transition-opacity duration-150 sm:left-2.5 sm:right-2.5 ${
             !isRu ? 'opacity-100 bg-white/80' : 'opacity-0 group-hover:opacity-100 bg-white/60'
           }`}
         />

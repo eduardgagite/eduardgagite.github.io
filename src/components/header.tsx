@@ -33,8 +33,9 @@ export function Header() {
               'linear-gradient(to right, rgba(var(--theme-primary-rgb), 0.05), transparent, rgba(var(--theme-primary-rgb), 0.05))',
           }}
         />
-        <div className="mx-auto max-w-5xl px-4 h-16 grid grid-cols-[1fr_auto_1fr] items-center gap-4 relative">
-          <Link to={homeTo} className="flex items-center gap-3 group" aria-label={t('nav.home')}>
+        <div className="mx-auto max-w-5xl px-3 h-16 grid grid-cols-[1fr_auto_1fr] items-center gap-2 relative sm:gap-4 sm:px-4">
+          {/* На экранах уже 360px знак не помещается рядом с тремя вкладками и языком. */}
+          <Link to={homeTo} className="flex items-center gap-3 group max-[359px]:hidden" aria-label={t('nav.home')}>
             <div
               className="relative size-9 rounded-full grid place-items-center text-xs font-semibold ring-1 ring-white/20 transition-all duration-300 group-hover:ring-white/40"
               style={{
@@ -44,7 +45,8 @@ export function Header() {
             >
               {initials}
             </div>
-            <div className="leading-tight hidden sm:block">
+            {/* Ниже md строка с должностью не помещается в боковой трек и ломает шапку на три строки. */}
+            <div className="leading-tight hidden md:block">
               <span className="block text-sm font-semibold tracking-wide group-hover:text-white transition-colors">
                 {'Eduard Gagite'}
               </span>
@@ -61,7 +63,7 @@ export function Header() {
                   <Link
                     to={to}
                     aria-current={isActive({ to, activeBase }) ? 'page' : undefined}
-                    className={`group relative inline-flex items-center px-4 py-2 text-[13px] font-medium tracking-wide transition-all duration-300 rounded-md ${
+                    className={`group relative inline-flex items-center px-2 py-2 text-[13px] font-medium tracking-wide transition-all duration-300 rounded-md sm:px-4 ${
                       isActive({ to, activeBase })
                         ? 'text-white bg-white/[0.08]'
                         : 'text-white/70 hover:text-white hover:bg-white/[0.04]'
@@ -75,7 +77,7 @@ export function Header() {
                         opacity: isActive({ to, activeBase }) ? 1 : 0,
                         transition: 'opacity 0.3s',
                       }}
-                      className={`pointer-events-none absolute left-4 right-4 -bottom-0.5 h-0.5 transition-opacity duration-300 ${
+                      className={`pointer-events-none absolute left-2 right-2 -bottom-0.5 h-0.5 transition-opacity duration-300 sm:left-4 sm:right-4 ${
                         isActive({ to, activeBase }) ? '' : 'group-hover:opacity-60'
                       }`}
                     />
