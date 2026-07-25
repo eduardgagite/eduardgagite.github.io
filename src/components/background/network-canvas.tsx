@@ -66,12 +66,44 @@ function usePrefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+const DEFAULT_RGB: [number, number, number] = [233, 238, 244];
+
+/**
+ * Цвет сети приходит из темы строкой rgb(...), а раньше к нему просто клеили
+ * шестнадцатеричную прозрачность. Получался невалидный цвет, canvas молча
+ * оставлял чёрный по умолчанию — сеть рисовалась чёрными линиями по тёмному фону.
+ */
+function parseColorChannels(value: string): [number, number, number] | null {
+  if (!value) return null;
+
+  const rgbMatch = value.match(/rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/i);
+  if (rgbMatch) {
+    return [Number(rgbMatch[1]), Number(rgbMatch[2]), Number(rgbMatch[3])];
+  }
+
+  const hex = value.replace('#', '');
+  if (hex.length === 3) {
+    return [parseInt(hex[0] + hex[0], 16), parseInt(hex[1] + hex[1], 16), parseInt(hex[2] + hex[2], 16)];
+  }
+  if (hex.length === 6) {
+    return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
+  }
+
+  return null;
+}
+
+function withAlpha(channels: [number, number, number], alpha: number): string {
+  return `rgba(${channels[0]}, ${channels[1]}, ${channels[2]}, ${alpha})`;
+}
+
 export function NetworkBackground({ density = 'medium', color, interactive = false }: NetworkBackgroundProps) {
-  const effectiveColor = useMemo(() => {
-    if (color) return color;
-    if (typeof document === 'undefined') return '#e9eef4';
-    const value = getComputedStyle(document.documentElement).getPropertyValue('--theme-network-color').trim();
-    return value || '#e9eef4';
+  const rgb = useMemo(() => {
+    const raw =
+      color ||
+      (typeof document === 'undefined'
+        ? ''
+        : getComputedStyle(document.documentElement).getPropertyValue('--theme-network-color').trim());
+    return parseColorChannels(raw) || DEFAULT_RGB;
   }, [color]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -153,7 +185,7 @@ export function NetworkBackground({ density = 'medium', color, interactive = fal
 
       // Edges
       ctx.lineWidth = 1;
-      ctx.strokeStyle = `${effectiveColor}20`; // ~12.5% alpha
+      ctx.strokeStyle = withAlpha(rgb, 0.13);
       ctx.beginPath();
       for (const e of edges) {
         const a = points[e.a];
@@ -164,7 +196,7 @@ export function NetworkBackground({ density = 'medium', color, interactive = fal
       ctx.stroke();
 
       // Nodes
-      ctx.fillStyle = `${effectiveColor}66`; // ~40% alpha
+      ctx.fillStyle = withAlpha(rgb, 0.4);
       for (const p of points) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, 1.2, 0, Math.PI * 2);
@@ -173,7 +205,7 @@ export function NetworkBackground({ density = 'medium', color, interactive = fal
 
       // Packets along edges
       if (!prefersReducedMotion) {
-        ctx.fillStyle = `${effectiveColor}cc`; // ~80% alpha
+        ctx.fillStyle = withAlpha(rgb, 0.8);
         for (const e of edges) {
           e.packetT += e.packetSpeed * dt * 0.08 * e.packetDir;
           if (e.packetT > 1) e.packetT = 0;
@@ -208,7 +240,7 @@ export function NetworkBackground({ density = 'medium', color, interactive = fal
       ro.disconnect();
       window.removeEventListener('mousemove', onMouseMove);
     };
-  }, [density, effectiveColor, interactive, prefersReducedMotion]);
+  }, [density, rgb, interactive, prefersReducedMotion]);
 
   return <canvas ref={canvasRef} className="absolute inset-0 -z-10 pointer-events-none" aria-hidden />;
 }
