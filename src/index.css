@@ -418,3 +418,32 @@
 .animation-delay-300 {
   animation-delay: 300ms;
 }
+
+/* Projects section */
+.projects-scope ::selection {
+  background: rgba(31, 111, 235, 0.35);
+  color: #fff;
+}
+
+.projects-scope {
+  scroll-padding-top: 2.75rem;
+}
+
+.projects-scope a:focus-visible,
+.projects-scope button:focus-visible {
+  outline: 1px solid var(--theme-accent);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* В кейсах нет заголовков внутри текста, поэтому межабзацный отбив здесь больше,
+   чем в /materials — ритм задают только абзацы. Глобальный .prose-article не трогаем. */
+.projects-scope .prose-article p {
+  margin-bottom: 1.35em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projects-scope .animate-pulse {
+    animation: none;
+  }
+}

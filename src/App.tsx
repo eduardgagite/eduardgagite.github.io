@@ -12,6 +12,11 @@ const Materials = lazy(async () => {
   return { default: module.Materials };
 });
 
+const Projects = lazy(async () => {
+  const module = await import('./pages/projects');
+  return { default: module.Projects };
+});
+
 export function App() {
   const { t } = useTranslation();
 
@@ -39,6 +44,22 @@ export function App() {
               element={
                 <Suspense fallback={<MaterialsFallback />}>
                   <Materials />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/projects"
+              element={
+                <Suspense fallback={<MaterialsFallback />}>
+                  <Projects />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/projects/:slug"
+              element={
+                <Suspense fallback={<MaterialsFallback />}>
+                  <Projects />
                 </Suspense>
               }
             />

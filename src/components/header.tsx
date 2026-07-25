@@ -13,6 +13,7 @@ export function Header() {
   const homeTo = withLang('/', lang);
   const navLinks = [
     { to: homeTo, label: t('nav.home'), activeBase: '/' },
+    { to: withLang('/projects', lang), label: t('nav.projects'), activeBase: '/projects' },
     { to: materialsTo, label: t('nav.materials'), activeBase: '/materials' },
   ];
 
