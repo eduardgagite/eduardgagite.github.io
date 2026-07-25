@@ -50,7 +50,9 @@
 
     /* Scrollbar */
     --theme-scrollbar: rgba(255, 255, 255, 0.04);
-    --theme-scrollbar-thumb: rgba(56, 189, 248, 0.9);
+    /* Хром рисует полосу по scrollbar-color и игнорирует ::-webkit-*, поэтому
+       здесь тот же приглушённый цвет, что и в правилах ниже. */
+    --theme-scrollbar-thumb: rgba(255, 255, 255, 0.18);
 
     /* Code */
     --theme-code-background: #0d1117;
@@ -236,7 +238,7 @@
 }
 
 .prose-article a:hover {
-  text-decoration-color: var(--theme-primary-hover);
+  text-decoration-color: var(--theme-accent);
 }
 
 /* Горизонтальная линия */
@@ -298,13 +300,62 @@
   display: block;
 }
 
-/* Выделение текста */
-.prose-article ::selection {
-  background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
-  color: var(--theme-text);
+/* === Общие правила для всего сайта === */
+
+/* Один цвет выделения на весь сайт, включая страницы без класса-оболочки. */
+body ::selection {
+  background: rgba(31, 111, 235, 0.35);
+  color: #fff;
 }
 
-/* === Animations === */
+/* tabindex="0" — прокручиваемые области (код, таблицы). Цели с tabindex="-1" (секции,
+   заголовки) получают фокус программно при смене маршрута, и обводка там не нужна. */
+body :is(a, button, input, pre, [tabindex='0']):focus-visible {
+  outline: 1px solid var(--theme-accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Пульсирующая точка prod останавливается только с iteration-count: одной длительности мало. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Тонкая полоса прокрутки для областей, которые листают вбок: код, таблицы, скриншоты. */
+.code-scroll,
+.projects-shots {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.code-scroll::-webkit-scrollbar,
+.projects-shots::-webkit-scrollbar {
+  height: 6px;
+}
+
+.code-scroll::-webkit-scrollbar-track,
+.projects-shots::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.code-scroll::-webkit-scrollbar-thumb,
+.projects-shots::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+
+/* === Раздел «Проекты» === */
+
+.projects-scope {
+  scroll-padding-top: 3.25rem;
+}
 
 /* === Раздел «Материалы» === */
 
@@ -312,17 +363,6 @@
   /* хедер 4rem + подвал 3.5rem + адресная строка 2.75rem + поля 1.5rem */
   --materials-rail: calc(100dvh - 11.75rem);
   scroll-padding-top: 3.25rem;
-}
-
-.materials-scope ::selection {
-  background: rgba(31, 111, 235, 0.35);
-  color: #fff;
-}
-
-.materials-scope :is(a, button, input):focus-visible {
-  outline: 1px solid var(--theme-accent);
-  outline-offset: 2px;
-  border-radius: 3px;
 }
 
 .materials-scope .prose-article :is(h2, h3, h4) {
@@ -394,13 +434,4 @@
   font-size: 12px;
   letter-spacing: 0.45em;
   color: var(--theme-text-faint);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .materials-scope *,
-  .materials-scope *::before,
-  .materials-scope *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-  }
 }
