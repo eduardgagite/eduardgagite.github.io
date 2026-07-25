@@ -11,6 +11,16 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://eduardgagite.github.io/projects?lang=ru</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/projects?lang=en</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://eduardgagite.github.io/materials?lang=ru</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -852,6 +862,46 @@
   </url>
   <url>
     <loc>https://eduardgagite.github.io/materials/redis/streams/05-practical-scenarios?lang=ru</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/projects/aembal-messenger?lang=ru</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/projects/darqima?lang=ru</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/projects/sanctions-tg-bot?lang=ru</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/projects/amocrm-automation?lang=ru</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/projects/labelmatrix?lang=ru</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/projects/nosu-kidsclub?lang=ru</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/projects/money-tracker?lang=ru</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://eduardgagite.github.io/projects/infrastructure?lang=ru</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

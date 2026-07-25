@@ -3,6 +3,7 @@ import path from 'node:path';
 
 const ROOT_DIR = path.resolve(new URL('..', import.meta.url).pathname);
 const MATERIALS_FILE = path.join(ROOT_DIR, 'src', 'materials', 'generated-materials.json');
+const PROJECTS_FILE = path.join(ROOT_DIR, 'src', 'projects', 'generated-projects.json');
 const OUTPUT_FILE = path.join(ROOT_DIR, 'public', 'sitemap.xml');
 
 const BASE_URL = 'https://eduardgagite.github.io';
@@ -29,6 +30,8 @@ function escapeXml(unsafe) {
 async function main() {
   const materialsData = JSON.parse(await readFile(MATERIALS_FILE, 'utf8'));
   const entries = materialsData.entries || [];
+  const projectsData = JSON.parse(await readFile(PROJECTS_FILE, 'utf8'));
+  const projectEntries = projectsData.entries || [];
 
   // Group by canonical ID (category/section/slug) to avoid duplicates
   const urlSet = new Set();
@@ -37,6 +40,7 @@ async function main() {
   // Add main pages (language-specific)
   const mainPages = [
     { path: '/', priority: '1.0' },
+    { path: '/projects', priority: '0.9' },
     { path: '/materials', priority: '0.9' },
   ];
 
@@ -75,6 +79,30 @@ async function main() {
       urls.push({
         loc: url,
         lastmod,
+        changefreq: 'monthly',
+        priority: '0.8',
+      });
+    }
+  }
+
+  // Add project pages (language-specific URLs)
+  const projectsBySlug = {};
+  for (const entry of projectEntries) {
+    if (!projectsBySlug[entry.id.slug]) {
+      projectsBySlug[entry.id.slug] = [];
+    }
+    projectsBySlug[entry.id.slug].push(entry);
+  }
+
+  for (const variants of Object.values(projectsBySlug)) {
+    const sample = variants[0];
+    const langs = Array.from(new Set(variants.map((v) => v.id.lang)));
+    for (const lang of langs) {
+      const url = `${BASE_URL}/projects/${sample.id.slug}?lang=${lang}`;
+      if (urlSet.has(url)) continue;
+      urlSet.add(url);
+      urls.push({
+        loc: url,
         changefreq: 'monthly',
         priority: '0.8',
       });

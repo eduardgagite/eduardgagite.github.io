@@ -5,6 +5,7 @@ const ROOT_DIR = path.resolve(new URL('..', import.meta.url).pathname);
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
 const TEMPLATE_FILE = path.join(DIST_DIR, 'index.html');
 const MATERIALS_FILE = path.join(ROOT_DIR, 'src', 'materials', 'generated-materials.json');
+const PROJECTS_FILE = path.join(ROOT_DIR, 'src', 'projects', 'generated-projects.json');
 const BASE_URL = 'https://eduardgagite.github.io';
 const OG_IMAGE_URL = `${BASE_URL}/images/og-image.png`;
 
@@ -191,12 +192,58 @@ ${alternateLinks}${defaultLink}
     <script type="application/ld+json" data-type="article">${jsonLd}</script>`;
 }
 
+function buildProjectExtraHead(project, variants, url) {
+  const alternateLinks = variants
+    .map((variant) => {
+      const alternateUrl = `${BASE_URL}/projects/${variant.id.slug}?lang=${variant.id.lang}`;
+      return `    <link rel="alternate" hreflang="${variant.id.lang}" href="${escapeHtml(alternateUrl)}" />`;
+    })
+    .join('\n');
+  const defaultLink =
+    variants.length > 1
+      ? `\n    <link rel="alternate" hreflang="x-default" href="${BASE_URL}/projects/${project.id.slug}?lang=${project.id.lang}" />`
+      : '';
+
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: project.title,
+    description: project.summary,
+    author: {
+      '@type': 'Person',
+      name: 'Eduard Gagite',
+      url: BASE_URL,
+    },
+    publisher: {
+      '@type': 'Person',
+      name: 'Eduard Gagite',
+      url: BASE_URL,
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': url,
+    },
+    articleSection: 'Проекты',
+    inLanguage: project.id.lang,
+    image: OG_IMAGE_URL,
+    ...(Array.isArray(project.stack) && project.stack.length > 0 ? { keywords: project.stack.join(', ') } : {}),
+  };
+  const jsonLd = JSON.stringify(structuredData).replace(/</g, '\\u003c');
+
+  return `    <meta property="article:author" content="Eduard Gagite" />
+    <meta property="article:section" content="Проекты" />
+${alternateLinks}${defaultLink}
+    <script type="application/ld+json" data-type="article">${jsonLd}</script>`;
+}
+
 async function main() {
-  const [template, materialsPayload] = await Promise.all([
+  const [template, materialsPayload, projectsPayload] = await Promise.all([
     readFile(TEMPLATE_FILE, 'utf8'),
     readFile(MATERIALS_FILE, 'utf8').then(JSON.parse),
+    readFile(PROJECTS_FILE, 'utf8').then(JSON.parse),
   ]);
   const entries = materialsPayload.entries || [];
+  const projectEntries = projectsPayload.entries || [];
   const byCanonical = new Map();
 
   for (const entry of entries) {
@@ -242,7 +289,47 @@ async function main() {
     articleShellCount += 1;
   }
 
-  console.log(`Generated 1 materials shell and ${articleShellCount} article shells`);
+  const projectsUrl = `${BASE_URL}/projects?lang=ru`;
+  const projectsShell = renderPageShell({
+    template,
+    lang: 'ru',
+    title: 'Проекты — Eduard Gagite',
+    description:
+      'Кейсы backend-проектов на Go: мессенджер с E2E-шифрованием, платформа оценки недвижимости, продовые сервисы и собственная инфраструктура.',
+    url: projectsUrl,
+  });
+  await writeRouteShell('/projects', projectsShell);
+
+  let projectShellCount = 0;
+  const projectsBySlug = new Map();
+  for (const entry of projectEntries) {
+    const variants = projectsBySlug.get(entry.id.slug) || [];
+    variants.push(entry);
+    projectsBySlug.set(entry.id.slug, variants);
+  }
+
+  for (const variants of projectsBySlug.values()) {
+    const project = variants.find((variant) => variant.id.lang === 'ru') || variants[0];
+    const route = `/projects/${project.id.slug}`;
+    const url = `${BASE_URL}${route}?lang=${project.id.lang}`;
+    const shell = renderPageShell({
+      template,
+      lang: project.id.lang,
+      title: `${project.title} — Проекты — Eduard Gagite`,
+      description: project.summary,
+      url,
+      type: 'article',
+      extraHead: buildProjectExtraHead(project, variants, url),
+      hasAlternateLocale: variants.length > 1,
+    });
+
+    await writeRouteShell(route, shell);
+    projectShellCount += 1;
+  }
+
+  console.log(
+    `Generated 1 materials shell, ${articleShellCount} article shells, 1 projects shell and ${projectShellCount} project shells`,
+  );
 }
 
 main().catch((error) => {
