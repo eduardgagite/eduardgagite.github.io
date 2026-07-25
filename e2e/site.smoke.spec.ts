@@ -18,23 +18,31 @@ test('главная страница показывает настоящий а
     .toBe(true);
 });
 
-test('посадочная материалов показывает актуальные курсы', async ({ page }) => {
+test('обложка материалов перечисляет курсы', async ({ page }) => {
   await page.goto('/materials?lang=ru');
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Изучайте backend по рабочим конспектам');
-  await expect(page.getByRole('heading', { name: 'Go', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Redis', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Docker', exact: true })).toBeVisible();
-  await expect(page.getByText('167', { exact: true })).toBeVisible();
+  await expect(page.getByText('~/materials', { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Go', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Redis', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Docker', exact: true })).toBeVisible();
 });
 
-test('прямая ссылка открывает статью и её содержание', async ({ page }) => {
+test('страница курса открывается по прямой ссылке', async ({ page }) => {
+  await page.goto('/materials/golang?lang=ru');
+
+  await expect(page).toHaveTitle(/Go/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Go', exact: true })).toBeVisible();
+  await expect(page.getByText('разделы/', { exact: true })).toBeVisible();
+});
+
+test('прямая ссылка открывает статью и указатель отмечает её', async ({ page }) => {
   await page.goto('/materials/golang/intro/01-what-is-go?lang=ru');
 
   await expect(page).toHaveTitle(/Что такое Go/);
   await expect(page.getByRole('heading', { level: 1, name: 'Что такое Go' })).toBeVisible();
-  await expect(page.getByText('Содержание', { exact: true })).toBeVisible();
+  await expect(page.getByText('01-what-is-go.md', { exact: true })).toBeVisible();
   await expect(page.getByRole('article')).toContainText('Go');
+  await expect(page.locator('#materials-tree a[aria-current="page"]')).toHaveCount(1);
 });
 
 test('список проектов открывается и ведёт в кейс', async ({ page }) => {

@@ -73,13 +73,14 @@ test('parseMaterialsSegments normalizes splat path values', () => {
   assert.deepEqual(parseMaterialsSegments('/golang//intro/'), ['golang', 'intro']);
 });
 
-test('resolveMaterialsRoute resolves root, redirects, articles, and misses', () => {
+test('resolveMaterialsRoute resolves root, course pages, articles, and misses', () => {
   assert.deepEqual(resolveMaterialsRoute([], tree), { type: 'root' });
 
-  assert.deepEqual(resolveMaterialsRoute(['golang'], tree), {
-    type: 'redirect',
-    path: '/materials/golang/intro/01-what-is-go',
-  });
+  const course = resolveMaterialsRoute(['golang'], tree);
+  assert.equal(course.type, 'category');
+  if (course.type === 'category') {
+    assert.equal(course.category.id, 'golang');
+  }
 
   assert.deepEqual(resolveMaterialsRoute(['golang', 'intro'], tree), {
     type: 'redirect',

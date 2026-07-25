@@ -162,6 +162,10 @@ test('sitemap contains all generated material, project and main page URLs', asyn
       `${baseUrl}/projects?lang=en`,
       `${baseUrl}/materials?lang=ru`,
       `${baseUrl}/materials?lang=en`,
+      ...[...new Set(entries.map((entry) => entry.id.category))].flatMap((categoryId) => [
+        `${baseUrl}/materials/${categoryId}?lang=ru`,
+        `${baseUrl}/materials/${categoryId}?lang=en`,
+      ]),
       ...entries.map(
         (entry) =>
           `${baseUrl}/materials/${entry.id.category}/${entry.id.section}/${entry.id.slug}?lang=${entry.id.lang}`,
