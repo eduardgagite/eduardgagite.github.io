@@ -103,7 +103,7 @@ function ProjectsShell({
 
   return (
     <section className="projects-scope relative h-full w-full overflow-y-auto overflow-x-hidden">
-      <NetworkBackground density="low" />
+      <NetworkBackground density="medium" interactive />
       <div className="relative mx-auto w-full max-w-5xl px-3 py-5 sm:px-4 sm:py-8">
         <div className="relative">
           <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
@@ -146,7 +146,7 @@ function ProjectsShell({
               </span>
             </div>
 
-            <div className="px-6 py-6 sm:px-10 sm:py-9">{children}</div>
+            <div className="px-6 py-6 sm:px-12 sm:py-9 lg:px-16">{children}</div>
 
             <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-b-[28px] border-t border-white/10 bg-white/[0.02] px-4 py-2.5 font-mono text-[11px]">
               <span className="min-w-0">{statusLeft}</span>
