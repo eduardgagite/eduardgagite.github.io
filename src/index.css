@@ -115,20 +115,16 @@
 }
 
 .scroll-elegant::-webkit-scrollbar-track {
-  background: var(--theme-scrollbar);
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  background: transparent;
 }
 
 .scroll-elegant::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--theme-accent), var(--theme-accent-secondary));
+  background: rgba(255, 255, 255, 0.18);
   border-radius: 999px;
-  border: 1px solid rgba(15, 23, 42, 0.6);
-  box-shadow: 0 0 10px var(--theme-accent);
 }
 
 .scroll-elegant::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--theme-accent-secondary), var(--theme-accent));
+  background: rgba(255, 255, 255, 0.28);
 }
 
 /* === Стили для Markdown-контента === */
@@ -145,35 +141,18 @@
 
 /* Заголовки статей */
 .prose-article h1 {
-  @apply text-2xl sm:text-3xl font-bold tracking-tight mb-6;
+  @apply text-2xl sm:text-3xl font-semibold tracking-tight mb-6;
   color: var(--theme-text);
-  background: linear-gradient(135deg, var(--theme-text) 0%, var(--theme-text-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .prose-article h2 {
   @apply text-xl sm:text-2xl font-semibold mt-10 mb-4;
   color: var(--theme-text);
-  position: relative;
-  padding-left: 1rem;
-}
-
-.prose-article h2::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.2em;
-  bottom: 0.2em;
-  width: 3px;
-  border-radius: 2px;
-  background: linear-gradient(180deg, var(--color-accent), var(--color-accent-secondary));
 }
 
 .prose-article h3 {
   @apply text-lg sm:text-xl font-semibold mt-8 mb-3;
-  color: var(--theme-text-secondary);
+  color: var(--theme-text);
 }
 
 .prose-article h4 {
@@ -197,19 +176,15 @@
 .prose-article ul li {
   @apply mb-3;
   position: relative;
-  padding-left: 1rem;
+  padding-left: 1.15rem;
 }
 
 .prose-article ul li::before {
-  content: '';
+  content: '–';
   position: absolute;
   left: 0;
-  top: 0.75em;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+  top: 0;
+  color: var(--theme-text-faint);
 }
 
 .prose-article ol {
@@ -222,83 +197,60 @@
 .prose-article ol li {
   @apply mb-3;
   position: relative;
-  padding-left: 2rem;
+  padding-left: 2.1rem;
   counter-increment: ol-counter;
 }
 
 .prose-article ol li::before {
-  content: counter(ol-counter);
+  content: counter(ol-counter) '.';
   position: absolute;
   left: 0;
-  top: 0.3em;
-  width: 1.6em;
-  height: 1.6em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  top: 0;
+  width: 1.6rem;
+  text-align: right;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-variant-numeric: tabular-nums;
   font-size: 0.85em;
-  font-weight: 600;
-  line-height: 1;
-  color: var(--color-accent);
-  background: rgba(56, 189, 248, 0.15);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  border-radius: 50%;
+  color: var(--theme-text-faint);
 }
 
 /* Blockquote */
 .prose-article blockquote {
-  @apply my-6 py-4 px-5 text-[15px] leading-7 italic;
-  color: var(--theme-text-secondary);
-  position: relative;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--theme-accent) 15%, transparent),
-    color-mix(in srgb, var(--theme-accent-secondary) 10%, transparent)
-  );
-  border-radius: 0 12px 12px 0;
-  border-left: 3px solid;
-  border-image: linear-gradient(180deg, var(--theme-accent), var(--theme-accent-secondary)) 1;
+  @apply my-6 text-[15px] leading-7;
+  color: var(--theme-text-muted);
+  border-left: 1px solid var(--theme-border);
+  padding-left: 1.15rem;
 }
 
 .prose-article blockquote p {
   @apply mb-0;
 }
 
-.prose-article blockquote::before {
-  content: '"';
-  position: absolute;
-  top: -0.5rem;
-  left: 0.5rem;
-  font-size: 3rem;
-  line-height: 1;
-  color: var(--color-accent);
-  opacity: 0.3;
-  font-family: Georgia, serif;
-}
-
 /* Ссылки */
 .prose-article a {
   color: var(--theme-accent);
-  @apply no-underline transition-all duration-200;
-  background: linear-gradient(transparent 90%, color-mix(in srgb, var(--theme-accent) 30%, transparent) 90%);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.28);
+  text-underline-offset: 4px;
+  @apply transition-colors duration-200;
 }
 
 .prose-article a:hover {
-  color: var(--theme-accent-secondary);
-  background: linear-gradient(transparent 80%, color-mix(in srgb, var(--theme-accent) 40%, transparent) 80%);
+  text-decoration-color: var(--theme-primary-hover);
 }
 
 /* Горизонтальная линия */
 .prose-article hr {
-  @apply my-8 border-0 h-px;
-  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.5), rgba(168, 85, 247, 0.5), transparent);
+  @apply border-0;
+  height: 1px;
+  background: var(--theme-border);
+  margin: 2.5em 0;
 }
 
 /* Таблицы */
 .prose-article table {
   @apply w-full my-6 text-sm;
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
 }
 
 .prose-article thead {
@@ -306,44 +258,18 @@
 }
 
 .prose-article th {
-  @apply px-4 py-3 font-semibold border-b;
-  color: var(--theme-text-secondary);
-  border-color: var(--theme-border);
-  background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
-}
-
-.prose-article th:first-child {
-  border-radius: 8px 0 0 0;
-}
-
-.prose-article th:last-child {
-  border-radius: 0 8px 0 0;
+  @apply px-3 py-2.5 font-normal;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 12px;
+  color: var(--theme-text-muted);
+  border-bottom: 1px solid var(--theme-border);
+  border-top: 1px solid var(--theme-border);
 }
 
 .prose-article td {
-  @apply px-4 py-3 border-b;
-  border-color: var(--theme-border);
+  @apply px-3 py-2.5;
+  border-bottom: 1px solid var(--theme-border);
   color: var(--theme-text-secondary);
-}
-
-.prose-article tr:last-child td {
-  @apply border-b-0;
-}
-
-.prose-article tr:last-child td:first-child {
-  border-radius: 0 0 0 8px;
-}
-
-.prose-article tr:last-child td:last-child {
-  border-radius: 0 0 8px 0;
-}
-
-.prose-article tbody tr {
-  @apply transition-colors;
-}
-
-.prose-article tbody tr:hover {
-  background: var(--theme-surface);
 }
 
 /* Strong и em */
@@ -358,18 +284,18 @@
 
 /* Код внутри текста */
 .prose-article code:not(pre code) {
-  @apply font-mono font-semibold text-[13px] px-1.5 py-0.5 rounded;
-  background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
-  color: #e0f2fe;
-  border: 1px solid color-mix(in srgb, var(--theme-accent) 20%, transparent);
+  @apply font-mono px-1.5 py-0.5;
+  font-size: 0.9em;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--theme-text);
 }
 
 /* Блоки кода - стили переопределены в компоненте CodeBlock */
 
 /* Изображения */
 .prose-article img {
-  @apply rounded-xl;
-  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.4);
+  display: block;
 }
 
 /* Выделение текста */
@@ -380,70 +306,101 @@
 
 /* === Animations === */
 
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* === Раздел «Материалы» === */
+
+.materials-scope {
+  /* хедер 4rem + подвал 3.5rem + адресная строка 2.75rem + поля 1.5rem */
+  --materials-rail: calc(100dvh - 11.75rem);
+  scroll-padding-top: 3.25rem;
 }
 
-@keyframes pulse-glow {
-  0%,
-  100% {
-    opacity: 1;
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
-  }
-  50% {
-    opacity: 0.7;
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
-  }
-}
-
-.animate-fade-in-up {
-  animation: fade-in-up 0.6s ease-out forwards;
-}
-
-.animation-delay-100 {
-  animation-delay: 100ms;
-}
-
-.animation-delay-200 {
-  animation-delay: 200ms;
-}
-
-.animation-delay-300 {
-  animation-delay: 300ms;
-}
-
-/* Projects section */
-.projects-scope ::selection {
+.materials-scope ::selection {
   background: rgba(31, 111, 235, 0.35);
   color: #fff;
 }
 
-.projects-scope {
-  scroll-padding-top: 2.75rem;
-}
-
-.projects-scope a:focus-visible,
-.projects-scope button:focus-visible {
+.materials-scope :is(a, button, input):focus-visible {
   outline: 1px solid var(--theme-accent);
-  outline-offset: 3px;
-  border-radius: 8px;
+  outline-offset: 2px;
+  border-radius: 3px;
 }
 
-/* В кейсах нет заголовков внутри текста, поэтому межабзацный отбив здесь больше,
-   чем в /materials — ритм задают только абзацы. Глобальный .prose-article не трогаем. */
-.projects-scope .prose-article p {
-  margin-bottom: 1.35em;
+.materials-scope .prose-article :is(h2, h3, h4) {
+  scroll-margin-top: 3.5rem;
+}
+
+/* Конспект читают целиком, поэтому кегль здесь крупнее, чем в кейсах,
+   а мера задана на обёртке (40rem) — в неё же укладывается код. */
+.materials-scope .prose-article,
+.materials-scope .prose-article :is(p, li) {
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+@media (max-width: 640px) {
+  .materials-scope .prose-article,
+  .materials-scope .prose-article :is(p, li) {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+}
+
+/* Та же система счёта, что в указателе: номер h2 висит в жёлобе слева. */
+.materials-scope .prose-article {
+  counter-reset: h2-counter;
+}
+
+.materials-scope .prose-article h2 {
+  counter-increment: h2-counter;
+  position: relative;
+}
+
+.materials-scope .prose-article h2::before {
+  content: counter(h2-counter, decimal-leading-zero) '\2003';
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.62em;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+@media (min-width: 1024px) {
+  .materials-scope .prose-article h2 {
+    margin-left: -2.6rem;
+    padding-left: 2.6rem;
+  }
+
+  .materials-scope .prose-article h2::before {
+    content: counter(h2-counter, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 0.42em;
+    width: 1.9rem;
+    text-align: right;
+  }
+}
+
+/* Части текста внутри материала отделяются звёздочками, как в книге. */
+.materials-scope .prose-article hr {
+  border: 0;
+  height: auto;
+  background: none;
+  margin: 2.6em 0;
+  text-align: center;
+}
+
+.materials-scope .prose-article hr::before {
+  content: '* * *';
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0.45em;
+  color: var(--theme-text-faint);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .projects-scope .animate-pulse {
-    animation: none;
+  .materials-scope *,
+  .materials-scope *::before,
+  .materials-scope *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }

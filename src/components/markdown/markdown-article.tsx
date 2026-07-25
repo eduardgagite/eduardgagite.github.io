@@ -91,7 +91,13 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
           </a>
         );
       },
-      table: ({ node, ...props }) => <table {...props} />,
+      // Широкие таблицы прокручиваются сами, а не утаскивают колонку текста.
+      table: ({ node, ...props }) => (
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- прокручиваемая область должна быть доступна с клавиатуры
+        <div className="my-6 overflow-x-auto" role="group" tabIndex={0}>
+          <table {...props} />
+        </div>
+      ),
       thead: ({ node, ...props }) => <thead {...props} />,
       tbody: ({ node, ...props }) => <tbody {...props} />,
       tr: ({ node, ...props }) => <tr {...props} />,
@@ -117,16 +123,16 @@ export function MarkdownArticle({ content, materialPath }: MarkdownArticleProps)
         const resolvedSrc = resolveImagePath(src || '');
         return (
           <figure className="my-6">
-            <div className="overflow-hidden rounded-xl border border-theme-border bg-theme-surface max-w-[70%]">
+            <span className="block overflow-hidden rounded-lg border border-white/10 bg-theme-surface">
               <img
                 src={resolvedSrc}
                 alt={alt || ''}
-                className="w-full h-auto object-contain"
+                className="h-auto w-full object-contain"
                 loading="lazy"
                 {...rest}
               />
-            </div>
-            {alt && <figcaption className="mt-2 text-sm text-theme-text-muted italic">{alt}</figcaption>}
+            </span>
+            {alt && <figcaption className="mt-2 font-mono text-[12px] text-white/50">{alt}</figcaption>}
           </figure>
         );
       },
