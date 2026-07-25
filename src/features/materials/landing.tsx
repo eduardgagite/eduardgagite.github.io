@@ -88,14 +88,14 @@ export function Landing({ categories, lang, bookmarks }: LandingProps) {
               <div className="relative mt-4 -mx-2">
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute inset-y-0 left-[3.4rem] hidden w-px bg-white/[0.07] sm:block"
+                  className="pointer-events-none absolute inset-y-0 left-11 w-px bg-white/[0.07] sm:left-16"
                 />
                 <ul className="divide-y divide-white/[0.06]">
                   {category.sections.map((section) => (
                     <li key={section.id}>
                       <Link
                         to={withLang(firstMaterialPath(category, section), lang)}
-                        className="group grid grid-cols-[2.5rem_minmax(0,1fr)] items-baseline gap-x-6 rounded-md px-2 py-3 transition-colors hover:bg-white/[0.035] lg:grid-cols-[2.5rem_minmax(0,24ch)_minmax(0,1fr)]"
+                        className="group grid grid-cols-[2rem_minmax(0,1fr)] items-baseline gap-x-3 rounded-md px-2 py-3 transition-colors hover:bg-white/[0.035] sm:grid-cols-[3rem_minmax(0,1fr)] sm:gap-x-8 lg:grid-cols-[3rem_minmax(0,24ch)_minmax(0,1fr)]"
                       >
                         <Folio value={section.order} size="lg" />
                         <span className="min-w-0 text-[15px] leading-snug text-white/85 transition-colors group-hover:text-white">

@@ -4,7 +4,7 @@ export function Folio({ value, size }: { value: number; size: 'lg' | 'sm' }) {
   return (
     <span
       aria-hidden
-      className={`text-right font-mono font-light leading-none tracking-tight tabular-nums ${
+      className={`font-mono font-light leading-none tracking-tight tabular-nums ${
         size === 'lg' ? 'text-[22px] sm:text-[26px]' : 'text-[11px]'
       }`}
     >
