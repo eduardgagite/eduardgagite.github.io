@@ -58,7 +58,7 @@ export function Projects() {
     return (
       <ProjectsShell
         path="~/projects"
-        statusLeft={<span className="text-white/30">{listState === 'error' ? 'error' : 'loading'}</span>}
+        statusLeft={<span className="text-white/55">{listState === 'error' ? 'error' : 'loading'}</span>}
       >
         <StateNote state={listState === 'error' ? 'error' : 'loading'} onRetry={() => setReloadKey((key) => key + 1)} />
       </ProjectsShell>
@@ -99,16 +99,22 @@ function ProjectsShell({
   sticky,
   narrow,
 }: ProjectsShellProps) {
-  const [head, tail] = pathLinkTo ? [path.slice(0, path.indexOf('/')), path.slice(path.indexOf('/'))] : [path, ''];
+  // Ссылкой становится папка целиком («~/projects»), имя файла остаётся статикой:
+  // по одному символу «~» пальцем не попасть, да и ведёт он не туда, куда обещает.
+  const cut = path.lastIndexOf('/');
+  const [head, tail] = pathLinkTo ? [path.slice(0, cut), path.slice(cut)] : [path, ''];
 
   return (
-    <section className="projects-scope relative h-full w-full overflow-y-auto overflow-x-hidden">
+    <section
+      tabIndex={-1}
+      className="projects-scope relative h-full w-full overflow-y-auto overflow-x-hidden focus:outline-none"
+    >
       {/* Фон закреплён во вьюпорте: иначе точки расставляются только по первому
           экрану, а ниже по прокрутке фон остаётся пустым. */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         <NetworkBackground density="medium" interactive />
       </div>
-      <div className={`relative mx-auto w-full px-3 py-5 sm:px-4 sm:py-8 ${narrow ? 'max-w-3xl' : 'max-w-5xl'}`}>
+      <div className={`relative mx-auto w-full px-3 py-4 sm:px-4 sm:py-6 ${narrow ? 'max-w-3xl' : 'max-w-5xl'}`}>
         <div className="relative">
           <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
 
@@ -139,7 +145,7 @@ function ProjectsShell({
               <span className="ml-2 min-w-0 truncate font-mono text-xs text-white/55">
                 {pathLinkTo ? (
                   <>
-                    <Link to={pathLinkTo} className="transition-colors hover:text-white/85">
+                    <Link to={pathLinkTo} className="-my-2 py-2 transition-colors hover:text-white/85">
                       {head}
                     </Link>
                     {tail}
@@ -215,7 +221,7 @@ function KindToken({ kind }: { kind: ProjectMeta['kind'] }) {
   return (
     <span
       className={`font-mono text-[10px] uppercase leading-none tracking-[0.16em] ${
-        isWork ? 'text-white/60' : 'text-white/35'
+        isWork ? 'text-white/80' : 'text-white/55'
       }`}
     >
       {isWork ? t('projects.kindWork') : t('projects.kindPersonal')}
@@ -238,10 +244,10 @@ function RowNumber({ index }: { index: number }) {
   return (
     <span
       aria-hidden
-      className="hidden self-center font-mono text-[26px] font-light leading-none tracking-tight tabular-nums sm:block"
+      className="block self-start pt-1 text-right font-mono text-[21px] font-light leading-none tracking-tight tabular-nums sm:self-center sm:pt-0 sm:text-[26px]"
     >
-      <span className="text-white/[0.13] transition-colors group-hover:text-theme-accent/40">{value.slice(0, -1)}</span>
-      <span className="text-white/35 transition-colors group-hover:text-theme-accent">{value.slice(-1)}</span>
+      <span className="text-white/[0.16] transition-colors group-hover:text-theme-accent/40">{value.slice(0, -1)}</span>
+      <span className="text-white/40 transition-colors group-hover:text-theme-accent">{value.slice(-1)}</span>
     </span>
   );
 }
@@ -306,7 +312,7 @@ function ProjectsIndex({
         {projects.length > 1 && (
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-y-0 left-16 hidden w-px bg-white/[0.07] sm:block"
+            className="pointer-events-none absolute inset-y-0 left-11 w-px bg-white/[0.07] sm:left-16"
           />
         )}
         <ul className="divide-y divide-white/[0.06]">
@@ -314,7 +320,7 @@ function ProjectsIndex({
             <li key={project.id.slug}>
               <Link
                 to={withLang(`/projects/${project.id.slug}`, lang)}
-                className="group grid grid-cols-[1fr] gap-x-8 rounded-lg px-2 py-4 transition-colors hover:bg-white/[0.035] sm:grid-cols-[3rem_1fr_auto]"
+                className="group grid grid-cols-[2rem_minmax(0,1fr)] gap-x-3 rounded-lg px-2 py-4 transition-colors hover:bg-white/[0.035] sm:grid-cols-[3rem_1fr_auto] sm:gap-x-8"
               >
                 <RowNumber index={index} />
 
@@ -440,6 +446,12 @@ function ProjectArticle({
 
   useEffect(() => {
     document.querySelector('.projects-scope')?.scrollTo({ top: 0 });
+    // Кликнутая ссылка списка размонтировалась, фокус откатился на body — возвращаем его
+    // в заголовок кейса, иначе следующий Tab уводит в шапку, а стрелки не прокручивают.
+    const active = document.activeElement;
+    if (!active || active === document.body || active === document.documentElement) {
+      document.getElementById('project-title')?.focus({ preventScroll: true });
+    }
   }, [project.id.slug]);
 
   const currentIndex = useMemo(
@@ -467,11 +479,15 @@ function ProjectArticle({
       closeLabel={t('projects.closeFile')}
       sticky
       narrow
-      statusLeft={<span className="text-white/40">markdown</span>}
-      statusRight={<span className="text-white/40">{project.id.lang}</span>}
+      statusLeft={<span className="text-white/55">markdown</span>}
+      statusRight={<span className="text-white/55">{project.id.lang}</span>}
     >
       <header>
-        <h1 className="max-w-[24ch] text-2xl font-semibold leading-tight tracking-tight text-theme-text sm:text-[2.1rem]">
+        <h1
+          id="project-title"
+          tabIndex={-1}
+          className="max-w-[24ch] text-2xl font-semibold leading-tight tracking-tight text-theme-text focus:outline-none sm:text-[2.1rem]"
+        >
           {project.title}
         </h1>
         <p className="mt-3 max-w-[58ch] text-[17px] leading-[1.7] text-white/65">{project.summary}</p>
