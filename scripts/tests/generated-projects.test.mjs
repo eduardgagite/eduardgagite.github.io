@@ -20,7 +20,6 @@ const frontmatterFields = [
   'code',
   'kind',
   'stack',
-  'period',
   'role',
   'codeUrl',
   'liveUrl',

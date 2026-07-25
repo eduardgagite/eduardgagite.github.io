@@ -54,7 +54,6 @@ test('parseProjectsIndexPayload accepts a valid payload and keeps optional field
   const parsed = parseProjectsIndexPayload({
     entries: [
       rawEntry({
-        period: '2025 — н. в.',
         role: 'соло-разработка',
         shots: [{ src: '/images/projects/a/shot-01.svg', caption: 'Список чатов' }],
       }),
@@ -64,7 +63,6 @@ test('parseProjectsIndexPayload accepts a valid payload and keeps optional field
   assert.equal(parsed.entries.length, 1);
   const entry = parsed.entries[0];
   assert.equal(entry.id.slug, 'aembal-messenger');
-  assert.equal(entry.period, '2025 — н. в.');
   assert.equal(entry.role, 'соло-разработка');
   assert.deepEqual(entry.shots, [{ src: '/images/projects/a/shot-01.svg', caption: 'Список чатов' }]);
   assert.equal(entry.codeUrl, undefined);

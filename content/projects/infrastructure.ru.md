@@ -5,7 +5,6 @@ order: 8
 status: production
 code: private
 kind: work
-period: '2025 — н. в.'
 role: 'проектирование и эксплуатация'
 shots:
   - src: /images/projects/infrastructure/shot-01.svg

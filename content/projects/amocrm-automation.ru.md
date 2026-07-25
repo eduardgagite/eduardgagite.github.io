@@ -5,7 +5,6 @@ order: 4
 status: production
 code: private
 kind: work
-period: '2024 — н. в.'
 role: соло-разработка
 shots:
   - src: /images/projects/amocrm-automation/shot-01.svg

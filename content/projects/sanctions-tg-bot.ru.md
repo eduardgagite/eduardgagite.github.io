@@ -5,7 +5,6 @@ order: 3
 status: production
 code: private
 kind: work
-period: '2025 — н. в.'
 role: соло-разработка
 shots:
   - src: /images/projects/sanctions-tg-bot/shot-01.svg

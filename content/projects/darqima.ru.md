@@ -5,7 +5,6 @@ order: 2
 status: active
 code: private
 kind: work
-period: '2026'
 role: 'бэкенд, инфраструктура, CI/CD'
 shots:
   - src: /images/projects/darqima/shot-01.svg

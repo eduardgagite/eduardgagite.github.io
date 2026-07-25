@@ -5,7 +5,6 @@ order: 1
 status: active
 code: private
 kind: personal
-period: '2025 — н. в.'
 role: соло-разработка
 shots:
   - src: /images/projects/aembal-messenger/shot-01.svg

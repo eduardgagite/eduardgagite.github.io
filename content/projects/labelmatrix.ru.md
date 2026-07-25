@@ -5,7 +5,6 @@ order: 5
 status: production
 code: private
 kind: work
-period: '2025 — н. в.'
 role: 'fullstack, соло-разработка'
 shots:
   - src: /images/projects/labelmatrix/shot-01.svg

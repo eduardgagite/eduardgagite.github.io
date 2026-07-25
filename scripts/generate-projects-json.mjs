@@ -75,7 +75,7 @@ function validateFrontmatter({ frontmatter, filePath }) {
     errors.push(`${filePath}: frontmatter "stack" must be a non-empty array of strings`);
   }
 
-  for (const field of ['period', 'role', 'codeUrl', 'liveUrl']) {
+  for (const field of ['role', 'codeUrl', 'liveUrl']) {
     if (fm[field] !== undefined && !isNonEmptyString(fm[field])) {
       errors.push(`${filePath}: frontmatter "${field}" must be a non-empty string when provided`);
     }
@@ -85,8 +85,10 @@ function validateFrontmatter({ frontmatter, filePath }) {
     errors.push(`${filePath}: frontmatter "codeUrl" is required when "code" is public`);
   }
 
-  if (fm.metrics !== undefined) {
-    errors.push(`${filePath}: frontmatter "metrics" is no longer supported — remove it`);
+  for (const dead of ['metrics', 'period']) {
+    if (fm[dead] !== undefined) {
+      errors.push(`${filePath}: frontmatter "${dead}" is no longer supported — remove it`);
+    }
   }
 
   if (fm.shots !== undefined) {
@@ -113,7 +115,6 @@ function validateFrontmatter({ frontmatter, filePath }) {
     code: fm.code,
     kind: fm.kind,
     stack: fm.stack.map((item) => item.trim()),
-    ...(fm.period !== undefined ? { period: fm.period.trim() } : {}),
     ...(fm.role !== undefined ? { role: fm.role.trim() } : {}),
     ...(fm.codeUrl !== undefined ? { codeUrl: fm.codeUrl.trim() } : {}),
     ...(fm.liveUrl !== undefined ? { liveUrl: fm.liveUrl.trim() } : {}),

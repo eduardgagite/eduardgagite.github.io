@@ -15,7 +15,6 @@
         "WebRTC",
         "Prometheus"
       ],
-      "period": "2025 — н. в.",
       "role": "соло-разработка",
       "shots": [
         {
@@ -48,7 +47,6 @@
         "CatBoost",
         "GitLab CI"
       ],
-      "period": "2026",
       "role": "бэкенд, инфраструктура, CI/CD",
       "shots": [
         {
@@ -78,7 +76,6 @@
         "Telegram Bot API",
         "GitLab CI"
       ],
-      "period": "2025 — н. в.",
       "role": "соло-разработка",
       "shots": [
         {
@@ -106,7 +103,6 @@
         "PDF",
         "Docker"
       ],
-      "period": "2024 — н. в.",
       "role": "соло-разработка",
       "shots": [
         {
@@ -134,7 +130,6 @@
         "Next.js",
         "GitLab CI"
       ],
-      "period": "2025 — н. в.",
       "role": "fullstack, соло-разработка",
       "shots": [
         {
@@ -166,7 +161,6 @@
         "Next.js",
         "Docker"
       ],
-      "period": "2026",
       "role": "fullstack, соло-разработка",
       "shots": [
         {
@@ -198,7 +192,6 @@
         "WidgetKit",
         "XCTest"
       ],
-      "period": "январь 2026 — н. в.",
       "role": "соло-разработка",
       "shots": [
         {
@@ -230,7 +223,6 @@
         "GitLab Runner",
         "PostgreSQL"
       ],
-      "period": "2025 — н. в.",
       "role": "проектирование и эксплуатация",
       "shots": [
         {

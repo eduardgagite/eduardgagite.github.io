@@ -5,7 +5,6 @@ order: 6
 status: production
 code: private
 kind: work
-period: '2026'
 role: 'fullstack, соло-разработка'
 shots:
   - src: /images/projects/nosu-kidsclub/shot-01.svg

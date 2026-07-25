@@ -46,7 +46,7 @@ export const MaterialsWindow = forwardRef<HTMLElement, MaterialsWindowProps>(fun
           />
 
           <div className="relative rounded-[28px] border border-white/10 bg-white/[0.04] shadow-[0_28px_70px_-40px_rgba(0,0,0,0.85)] backdrop-blur-xl">
-            <div className="sticky top-0 z-20 flex h-11 items-center rounded-t-[28px] border-b border-white/10 bg-theme-background px-4">
+            <div className="sticky top-0 z-20 flex h-11 items-center rounded-t-[27px] border-b border-white/10 bg-theme-background px-4">
               <PathLine segments={pathSegments} />
             </div>
 
@@ -86,7 +86,7 @@ export const MaterialsWindow = forwardRef<HTMLElement, MaterialsWindowProps>(fun
               {rail && <div className="hidden py-7 pl-5 pr-4 xl:block">{rail}</div>}
             </div>
 
-            <div className="flex min-h-[2.25rem] flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-b-[28px] border-t border-white/10 bg-white/[0.02] px-4 py-2 font-mono text-[11px]">
+            <div className="flex min-h-[2.25rem] flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-b-[27px] border-t border-white/10 bg-white/[0.02] px-4 py-2 font-mono text-[11px]">
               <span className="flex min-w-0 items-baseline gap-3">{statusLeft}</span>
               {statusRight && <span className="flex shrink-0 items-baseline gap-4">{statusRight}</span>}
             </div>

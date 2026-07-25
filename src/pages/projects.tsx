@@ -26,8 +26,6 @@ const STATUS_TOKEN: Record<ProjectMeta['status'], string> = {
 // Технологии, по которым нанимающая сторона сканирует список: набраны ярче остального стека.
 const STACK_ACCENT = new Set(['Go', 'PostgreSQL', 'Swift', 'Proxmox']);
 
-const TEXT_MEASURE = 'w-full max-w-[66ch]';
-
 export function Projects() {
   const { i18n, t } = useTranslation();
   const lang = (i18n.resolvedLanguage || 'ru') === 'ru' ? 'ru' : 'en';
@@ -87,6 +85,7 @@ interface ProjectsShellProps {
   closeLabel?: string;
   pathLinkTo?: string;
   sticky?: boolean;
+  narrow?: boolean;
 }
 
 function ProjectsShell({
@@ -98,6 +97,7 @@ function ProjectsShell({
   closeLabel,
   pathLinkTo,
   sticky,
+  narrow,
 }: ProjectsShellProps) {
   const [head, tail] = pathLinkTo ? [path.slice(0, path.indexOf('/')), path.slice(path.indexOf('/'))] : [path, ''];
 
@@ -108,13 +108,13 @@ function ProjectsShell({
       <div className="pointer-events-none fixed inset-0 -z-10">
         <NetworkBackground density="medium" interactive />
       </div>
-      <div className="relative mx-auto w-full max-w-5xl px-3 py-5 sm:px-4 sm:py-8">
+      <div className={`relative mx-auto w-full px-3 py-5 sm:px-4 sm:py-8 ${narrow ? 'max-w-3xl' : 'max-w-5xl'}`}>
         <div className="relative">
           <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
 
           <div className="relative rounded-[28px] border border-white/10 bg-white/[0.04] shadow-[0_28px_70px_-40px_rgba(0,0,0,0.85)] backdrop-blur-xl">
             <div
-              className={`flex items-center gap-2 rounded-t-[28px] border-b border-white/10 px-4 py-3 ${
+              className={`flex items-center gap-2 rounded-t-[27px] border-b border-white/10 px-4 py-3 ${
                 sticky ? 'sticky top-0 z-10 bg-theme-background' : 'bg-white/[0.02]'
               }`}
             >
@@ -152,7 +152,7 @@ function ProjectsShell({
 
             <div className="px-6 py-6 sm:px-12 sm:py-9 lg:px-16">{children}</div>
 
-            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-b-[28px] border-t border-white/10 bg-white/[0.02] px-4 py-2.5 font-mono text-[11px]">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-b-[27px] border-t border-white/10 bg-white/[0.02] px-4 py-2.5 font-mono text-[11px]">
               <span className="min-w-0">{statusLeft}</span>
               {statusRight && <span className="shrink-0">{statusRight}</span>}
             </div>
@@ -466,6 +466,7 @@ function ProjectArticle({
       closeTo={withLang('/projects', lang)}
       closeLabel={t('projects.closeFile')}
       sticky
+      narrow
       statusLeft={<span className="text-white/40">markdown</span>}
       statusRight={<span className="text-white/40">{project.id.lang}</span>}
     >
@@ -480,7 +481,6 @@ function ProjectArticle({
           <dl className="grid gap-x-12 gap-y-1.5 font-mono text-[13px] leading-6 sm:grid-cols-2">
             {project.role && <FrontMatterRow name="role" value={project.role} />}
             <FrontMatterRow name="status" value={<span className={statusClass}>{STATUS_TOKEN[project.status]}</span>} />
-            {project.period && <FrontMatterRow name="period" value={project.period} />}
             <FrontMatterRow
               name="type"
               value={project.kind === 'work' ? t('projects.kindWorkFull') : t('projects.kindPersonalFull')}
@@ -564,7 +564,7 @@ function ProjectArticle({
         </div>
       )}
 
-      <div className={`${TEXT_MEASURE} mt-9`}>
+      <div className="mt-9">
         {contentState === 'loading' && <p className="text-sm text-theme-text-muted">{t('common.loading')}</p>}
         {contentState === 'error' && <StateNote state="error" onRetry={() => setReloadKey((key) => key + 1)} />}
         {contentState === 'ready' && content && <MarkdownArticle content={content.content} />}

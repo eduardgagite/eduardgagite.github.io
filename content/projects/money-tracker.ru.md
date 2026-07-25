@@ -5,7 +5,6 @@ order: 7
 status: active
 code: private
 kind: personal
-period: 'январь 2026 — н. в.'
 role: соло-разработка
 shots:
   - src: /images/projects/money-tracker/shot-01.svg

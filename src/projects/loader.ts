@@ -20,7 +20,6 @@ export interface ProjectMeta {
   code: ProjectCode;
   kind: ProjectKind;
   stack: string[];
-  period?: string;
   role?: string;
   codeUrl?: string;
   liveUrl?: string;
@@ -191,12 +190,10 @@ function parseProjectMeta(value: unknown): ProjectMeta {
     contentPath: readRequiredString(value, 'contentPath'),
   };
 
-  const period = readOptionalString(value, 'period');
   const role = readOptionalString(value, 'role');
   const codeUrl = readOptionalString(value, 'codeUrl');
   const liveUrl = readOptionalString(value, 'liveUrl');
 
-  if (period !== undefined) meta.period = period;
   if (role !== undefined) meta.role = role;
   if (codeUrl !== undefined) meta.codeUrl = codeUrl;
   if (liveUrl !== undefined) meta.liveUrl = liveUrl;
