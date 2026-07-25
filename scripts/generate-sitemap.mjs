@@ -44,6 +44,11 @@ async function main() {
     { path: '/materials', priority: '0.9' },
   ];
 
+  const categoryIds = [...new Set(entries.map((entry) => entry.id.category))];
+  for (const categoryId of categoryIds) {
+    mainPages.push({ path: `/materials/${categoryId}`, priority: '0.8' });
+  }
+
   for (const page of mainPages) {
     for (const lang of ['ru', 'en']) {
       const loc = `${BASE_URL}${page.path}?lang=${lang}`;

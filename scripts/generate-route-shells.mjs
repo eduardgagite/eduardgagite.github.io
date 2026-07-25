@@ -263,6 +263,22 @@ async function main() {
   });
   await writeRouteShell('/materials', materialsShell);
 
+  const categoryIds = [...new Set(entries.map((entry) => entry.id.category))];
+  for (const categoryId of categoryIds) {
+    const sample = entries.find((entry) => entry.id.category === categoryId);
+    const courseUrl = `${BASE_URL}/materials/${categoryId}?lang=ru`;
+    await writeRouteShell(
+      `/materials/${categoryId}`,
+      renderPageShell({
+        template,
+        lang: 'ru',
+        title: `${sample.categoryTitle} — Материалы — Eduard Gagite`,
+        description: `Конспекты по теме «${sample.categoryTitle}»: разделы курса и список материалов.`,
+        url: courseUrl,
+      }),
+    );
+  }
+
   let articleShellCount = 0;
   for (const variants of byCanonical.values()) {
     const material = variants.find((variant) => variant.id.lang === 'ru') || variants[0];
@@ -328,7 +344,7 @@ async function main() {
   }
 
   console.log(
-    `Generated 1 materials shell, ${articleShellCount} article shells, 1 projects shell and ${projectShellCount} project shells`,
+    `Generated 1 materials shell, ${categoryIds.length} course shells, ${articleShellCount} article shells, 1 projects shell and ${projectShellCount} project shells`,
   );
 }
 
