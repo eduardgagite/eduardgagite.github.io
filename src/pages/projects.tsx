@@ -103,7 +103,11 @@ function ProjectsShell({
 
   return (
     <section className="projects-scope relative h-full w-full overflow-y-auto overflow-x-hidden">
-      <NetworkBackground density="medium" interactive />
+      {/* Фон закреплён во вьюпорте: иначе точки расставляются только по первому
+          экрану, а ниже по прокрутке фон остаётся пустым. */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <NetworkBackground density="medium" interactive />
+      </div>
       <div className="relative mx-auto w-full max-w-5xl px-3 py-5 sm:px-4 sm:py-8">
         <div className="relative">
           <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_top,_rgba(31,111,235,0.35),_transparent_65%)] opacity-70 blur-3xl" />
@@ -296,10 +300,9 @@ function ProjectsIndex({
       }
     >
       <h1 className="sr-only">{t('projects.title')}</h1>
-      <p className="max-w-[56ch] text-sm leading-relaxed text-white/60">{t('projects.intro')}</p>
-      <RussianContentNotice lang={lang} className="mt-2 max-w-[56ch]" />
+      <RussianContentNotice lang={lang} className="mb-5 max-w-[56ch]" />
 
-      <div className="relative mt-6 -mx-2">
+      <div className="relative -mx-2">
         {projects.length > 1 && (
           <span
             aria-hidden

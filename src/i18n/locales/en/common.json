@@ -51,7 +51,6 @@
   },
   "projects": {
     "title": "Projects",
-    "intro": "Work and personal projects — how they started, how they're built, and where I had to compromise. Some sources are private, but I can walk through any of them.",
     "cta": "View projects",
     "loadError": "Failed to load projects.",
     "codePrivate": "private",
