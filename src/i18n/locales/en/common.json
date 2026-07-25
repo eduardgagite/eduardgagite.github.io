@@ -18,7 +18,6 @@
     "copyLinkSuccess": "Link copied",
     "prevArticle": "Previous article",
     "nextArticle": "Next article",
-    "lead": "Notes I keep open next to the editor: I come back to check what select does with a closed channel, or how COPY differs from ADD. Topics are cut small — to find an answer, not to read a chapter.",
     "ruOnly": "The interface is in English, but the materials themselves are still written in Russian.",
     "startHere": "first time here — start with",
     "bookmark": "last time:",
@@ -34,12 +33,7 @@
     "sectionAhead": "next section: {{title}}",
     "courseEnd": "End of the course. Nearby:",
     "backToTop": "to top",
-    "notFoundNote": "No such file — the material may have been renamed.",
-    "courseNote": {
-      "golang": "My main language. Written as I work, so it gets deeper further in: from syntax to what breaks in concurrent code.",
-      "redis": "Started because of caching, ended up covering Streams and replication.",
-      "docker": "Exactly what I use to build and ship services."
-    }
+    "notFoundNote": "No such file — the material may have been renamed."
   },
   "projects": {
     "title": "Projects",

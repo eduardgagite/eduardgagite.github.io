@@ -29,11 +29,10 @@ export function Landing({ categories, lang, bookmarks }: LandingProps) {
     <div>
       <h1 className="sr-only">{t('nav.materials')}</h1>
 
-      <p className="max-w-[58ch] text-[17px] leading-[1.7] text-white/65">{t('materials.lead')}</p>
-      <RussianNotice lang={lang} className="mt-3 max-w-[56ch]" />
+      <RussianNotice lang={lang} className="mb-5 max-w-[56ch]" />
 
       {!hasAnyBookmark && first && (
-        <p className="mt-6 font-mono text-[12px] text-white/45">
+        <p className="font-mono text-[12px] text-white/45">
           {t('materials.startHere')}{' '}
           <Link
             to={withLang(firstMaterialPath(first), lang)}
@@ -44,9 +43,8 @@ export function Landing({ categories, lang, bookmarks }: LandingProps) {
         </p>
       )}
 
-      <div className="mt-9 space-y-11">
+      <div className={`space-y-11 ${!hasAnyBookmark && first ? 'mt-8' : ''}`}>
         {categories.map((category) => {
-          const note = t(`materials.courseNote.${category.id}`, { defaultValue: '' });
           const bookmark = bookmarks[category.id];
 
           return (
@@ -74,8 +72,6 @@ export function Landing({ categories, lang, bookmarks }: LandingProps) {
                   →
                 </span>
               </Link>
-
-              {note && <p className="mt-1.5 max-w-[60ch] text-sm leading-relaxed text-white/55">{note}</p>}
 
               {bookmark && (
                 <p className="mt-2 font-mono text-[11.5px] text-white/45">

@@ -16,12 +16,11 @@ interface CourseViewProps {
 
 export function CourseView({ category, categories, lang }: CourseViewProps) {
   const { t } = useTranslation();
-  const note = t(`materials.courseNote.${category.id}`, { defaultValue: '' });
   const others = categories.filter((item) => item.id !== category.id);
 
   useEffect(() => {
     const title = `${category.title} — ${t('nav.materials')} — Eduard Gagite`;
-    const description = note || t('materials.lead');
+    const description = t('meta.materialsDescription');
     const url = buildPageSeoUrl({ path: `/materials/${category.id}`, lang });
     updateSEO({
       title,
@@ -36,14 +35,13 @@ export function CourseView({ category, categories, lang }: CourseViewProps) {
     return () => {
       resetSEO();
     };
-  }, [category.id, category.title, lang, note, t]);
+  }, [category.id, category.title, lang, t]);
 
   return (
     <div>
       <h1 className="max-w-[24ch] text-2xl font-semibold leading-tight tracking-tight text-theme-text sm:text-[1.9rem]">
         {category.title}
       </h1>
-      {note && <p className="mt-3 max-w-[58ch] text-[16px] leading-[1.7] text-white/65">{note}</p>}
       <RussianNotice lang={lang} className="mt-3 max-w-[56ch]" />
 
       <p className="mt-9 font-mono text-xs text-white/45">{t('materials.sectionsLabel')}</p>
